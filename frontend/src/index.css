@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

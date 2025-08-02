@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-    <Button variant="default" >Hello world</Button>
+    
     </>
   )
 }
