@@ -1,6 +1,6 @@
-import App from "@/App";
 import { AuthLayout } from "@/components/ui/authLayout";
 import { MainLayout } from "@/components/ui/mainLayout";
+import { Booking } from "@/pages/Booking";
 import { Login } from "@/pages/Login";
 import { createBrowserRouter } from "react-router";
 
@@ -8,7 +8,7 @@ import { createBrowserRouter } from "react-router";
 export const router = createBrowserRouter([
     {  
         index: true,
-        element: <MainLayout><App /></MainLayout>
+        element: <MainLayout><Booking /></MainLayout>
     },
     {
         path: "login",
