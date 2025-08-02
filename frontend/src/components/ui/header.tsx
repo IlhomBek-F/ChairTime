@@ -17,8 +17,8 @@ export function Header() {
           </Avatar>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] flex flex-col p-1 gap-2 mr-5">
-            <Button variant="outline">Profile</Button>
-            <Button variant="outline" className="border border-red-400" onClick={() => navigate("login")}>Log out</Button>
+            <Button variant="outline" onClick={() => navigate("/profile")}>Profile</Button>
+            <Button variant="outline" className="border border-red-400" onClick={() => navigate("/login")}>Log out</Button>
         </PopoverContent>
       </Popover>
     </header>
