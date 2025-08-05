@@ -15,12 +15,12 @@ export function Header() {
 
   return (
     <header className="w-full h-14 shadow-sm flex justify-between items-center px-4">
-      <div>chair time</div>
+      <h1 className="font-bold" onClick={() => navigate("/")}>MasterM</h1>
       <Popover open={openPopover}>
         <PopoverTrigger>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png"  onClick={() => setOpenPopover(true)}/>
-            <AvatarFallback onClick={() => setOpenPopover(true)}>CN</AvatarFallback>
+            <AvatarImage src="https://github.com/shadcn.png"  onClick={() => setOpenPopover(!openPopover)}/>
+            <AvatarFallback onClick={() => setOpenPopover(!openPopover)}>CN</AvatarFallback>
           </Avatar>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] flex flex-col p-1 gap-2 mr-5">
