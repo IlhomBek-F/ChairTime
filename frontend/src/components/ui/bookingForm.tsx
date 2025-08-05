@@ -33,7 +33,6 @@ const userName = ({ formControl }: { formControl: any }) => {
           <FormControl>
             <Input placeholder="shadcn" {...field} />
           </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />
@@ -50,7 +49,6 @@ const phone = ({ formControl }: { formControl: any }) => (
         <FormControl>
           <Input placeholder="shadcn" {...field} />
         </FormControl>
-        <FormMessage />
       </FormItem>
     )}
   />
@@ -75,7 +73,6 @@ const master = ({ formControl }: { formControl: any }) => (
             <SelectItem value="m@support.com">m@support.com</SelectItem>
           </SelectContent>
         </Select>
-        <FormMessage />
       </FormItem>
     )}
   />
@@ -100,7 +97,6 @@ const style = ({ formControl }: { formControl: any }) => (
             <SelectItem value="m@support.com">m@support.com</SelectItem>
           </SelectContent>
         </Select>
-        <FormMessage />
       </FormItem>
     )}
   />
@@ -149,7 +145,6 @@ const date = ({ formControl }: { formControl: any }) => {
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
         </FormItem>
       )}
     />
@@ -175,7 +170,6 @@ const time = ({ formControl }: { formControl: any }) => (
             <SelectItem value="m@support.com">m@support.com</SelectItem>
           </SelectContent>
         </Select>
-        <FormMessage />
       </FormItem>
     )}
   />
@@ -195,7 +189,6 @@ const comment = ({ formControl }: { formControl: any }) => (
             {...field}
           />
         </FormControl>
-        <FormMessage />
       </FormItem>
     )}
   />
