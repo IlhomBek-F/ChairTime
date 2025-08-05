@@ -5,7 +5,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "./form";
 import { Input } from "./input";
 import {
@@ -22,14 +21,14 @@ import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
 
-const userName = ({ formControl }: { formControl: any }) => {
+const inputField = ({ formControl, name, label }: { formControl: any, name: string, label: string }) => {
   return (
     <FormField
-      name="username"
+      name={name}
       control={formControl}
       render={({ field }) => (
         <FormItem className="mb-4">
-          <FormLabel>Username</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input placeholder="shadcn" {...field} />
           </FormControl>
@@ -39,62 +38,23 @@ const userName = ({ formControl }: { formControl: any }) => {
   );
 };
 
-const phone = ({ formControl }: { formControl: any }) => (
+const select = ({ formControl, options, name, label }: { formControl: any, options: any, name: string, label: string }) => (
   <FormField
     control={formControl}
-    name="phone"
+    name={name}
     render={({ field }) => (
-      <FormItem className="mb-4">
-        <FormLabel>Phone</FormLabel>
-        <FormControl>
-          <Input placeholder="shadcn" {...field} />
-        </FormControl>
-      </FormItem>
-    )}
-  />
-);
-
-const master = ({ formControl }: { formControl: any }) => (
-  <FormField
-    control={formControl}
-    name="master"
-    render={({ field }) => (
-      <FormItem className="mb-4">
-        <FormLabel>Master</FormLabel>
+      <FormItem className="w-full mb-4">
+        <FormLabel>{label}</FormLabel>
         <Select onValueChange={field.onChange} defaultValue={field.value}>
           <FormControl className="w-full">
             <SelectTrigger>
-              <SelectValue placeholder="Select a verified email to display" />
+              <SelectValue placeholder="Select" className="w-full"/>
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectItem value="m@example.com">m@example.com</SelectItem>
-            <SelectItem value="m@google.com">m@google.com</SelectItem>
-            <SelectItem value="m@support.com">m@support.com</SelectItem>
-          </SelectContent>
-        </Select>
-      </FormItem>
-    )}
-  />
-);
-
-const style = ({ formControl }: { formControl: any }) => (
-  <FormField
-    control={formControl}
-    name="style"
-    render={({ field }) => (
-      <FormItem className="mb-4">
-        <FormLabel>Style</FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl className="w-full">
-            <SelectTrigger>
-              <SelectValue placeholder="Select a verified email to display" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectItem value="m@example.com">m@example.com</SelectItem>
-            <SelectItem value="m@google.com">m@google.com</SelectItem>
-            <SelectItem value="m@support.com">m@support.com</SelectItem>
+            {options.map((option: string) => {
+              return <SelectItem value={option}>{option}</SelectItem>
+            })}
           </SelectContent>
         </Select>
       </FormItem>
@@ -151,37 +111,13 @@ const date = ({ formControl }: { formControl: any }) => {
   );
 };
 
-const time = ({ formControl }: { formControl: any }) => (
+const textArea = ({ formControl, name, label }: { formControl: any, name: string, label: string }) => (
   <FormField
     control={formControl}
-    name="time"
-    render={({ field }) => (
-      <FormItem className="w-full">
-        <FormLabel>Time</FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl className="w-full">
-            <SelectTrigger>
-              <SelectValue placeholder="Select" className="w-full" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectItem value="m@example.com">m@example.com</SelectItem>
-            <SelectItem value="m@google.com">m@google.com</SelectItem>
-            <SelectItem value="m@support.com">m@support.com</SelectItem>
-          </SelectContent>
-        </Select>
-      </FormItem>
-    )}
-  />
-);
-
-const comment = ({ formControl }: { formControl: any }) => (
-  <FormField
-    control={formControl}
-    name="description"
+    name={name}
     render={({ field }) => (
       <FormItem className="mb-4">
-        <FormLabel>Comment</FormLabel>
+        <FormLabel>{label}</FormLabel>
         <FormControl>
           <Textarea
             placeholder="comment..."
@@ -194,15 +130,7 @@ const comment = ({ formControl }: { formControl: any }) => (
   />
 );
 
-export function BookingForm({
-  children,
-  form,
-  handleSubmit,
-}: {
-  children: ReactNode;
-  form: any;
-  handleSubmit: () => void;
-}) {
+export function BookingForm({ children, form, handleSubmit} : { children: ReactNode; form: any; handleSubmit: () => void}) {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>{children}</form>
@@ -210,10 +138,7 @@ export function BookingForm({
   );
 }
 
-BookingForm.UserName = userName;
-BookingForm.Phone = phone;
-BookingForm.Master = master;
-BookingForm.Style = style;
+BookingForm.InputField = inputField;
+BookingForm.Select = select;
 BookingForm.Date = date;
-BookingForm.Time = time;
-BookingForm.Comment = comment;
+BookingForm.TextArea = textArea;

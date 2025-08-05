@@ -70,15 +70,15 @@ export function Booking() {
       </h1>
 
       <BookingForm form={form} handleSubmit={form.handleSubmit(onSubmit)}>
-        <BookingForm.UserName formControl={form.control} />
-        <BookingForm.Phone formControl={form.control} />
-        <BookingForm.Master formControl={form.control} />
-        <BookingForm.Style formControl={form.control} />
-        <div className="flex gap-2 w-full items-center mb-4">
+        <BookingForm.InputField formControl={form.control} name="username" label="Username"/>
+        <BookingForm.InputField formControl={form.control} name="phone" label="Phone"/>
+        <BookingForm.Select formControl={form.control} name="master" label="Master" options={["Makhmudjon", "Hatamjon"]}/>
+        <BookingForm.Select formControl={form.control} name="style" label="Style" options={["Men", "Modern"]}/>
+        <div className="flex gap-2 w-full">
           <BookingForm.Date formControl={form.control} />
-          <BookingForm.Time formControl={form.control} />
+          <BookingForm.Select formControl={form.control} name="time" label="Time" options={["8:00", "8:30", "9:00", "9:30"]}/>
         </div>
-        <BookingForm.Comment formControl={form.control} />
+        <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">
           {/* <Loader2Icon className="animate-spin" /> */}
           Submit</Button>
