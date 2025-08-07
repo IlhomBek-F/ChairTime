@@ -33,7 +33,7 @@ func main() {
 	defer logger.Sync()
 
 	// Main Database
-	_, err := db.New(
+	db, err := db.New(
 		cfg.Db.Addr,
 		cfg.Db.MaxOpenConns,
 		cfg.Db.MaxIdleConns,
@@ -57,6 +57,7 @@ func main() {
 		Config:        cfg,
 		Authenticator: jwtAuthenticator,
 		Logger:        logger,
+		Db:            db,
 	}
 
 	echoRoute := app.Mount()

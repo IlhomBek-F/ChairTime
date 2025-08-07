@@ -5,16 +5,20 @@ import (
 	"net/http"
 	"time"
 
+	echojwt "github.com/labstack/echo-jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
+	"gorm.io/gorm"
 )
 
 type Application struct {
 	Config        domain.Config
 	Authenticator domain.Authenticator
 	Logger        *zap.SugaredLogger
+	Db            *gorm.DB
 }
 
 func (app *Application) Mount() http.Handler {
@@ -28,6 +32,12 @@ func (app *Application) Mount() http.Handler {
 		ErrorMessage: "custom timeout error message returns to client",
 		Timeout:      2 * time.Second,
 	}))
+
+	publicRoute := e.Group("/api")
+	protectedRoute := e.Group("/api")
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	protectedRoute.Use(echojwt.JWT([]byte(app.Config.Auth.Secret)))
 
 	return e
 }
