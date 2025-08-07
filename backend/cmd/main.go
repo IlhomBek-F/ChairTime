@@ -1,7 +1,9 @@
 package main
 
 import (
+	"chairTime/api"
 	"chairTime/domain"
+	"chairTime/internal/auth"
 	"chairTime/internal/db"
 	"chairTime/internal/env"
 	"time"
@@ -31,7 +33,7 @@ func main() {
 	defer logger.Sync()
 
 	// Main Database
-	db, err := db.New(
+	_, err := db.New(
 		cfg.Db.Addr,
 		cfg.Db.MaxOpenConns,
 		cfg.Db.MaxIdleConns,
@@ -45,4 +47,18 @@ func main() {
 	logger.Info("Database connection established")
 
 	// Authentcator
+	jwtAuthenticator := auth.NewJwtAuthenticator(
+		cfg.Auth.Secret,
+		cfg.Auth.Iss,
+		cfg.Auth.Iss,
+	)
+
+	app := &api.Application{
+		Config:        cfg,
+		Authenticator: jwtAuthenticator,
+		Logger:        logger,
+	}
+
+	echoRoute := app.Mount()
+	logger.Fatal(app.Run(echoRoute))
 }

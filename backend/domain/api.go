@@ -1,9 +1,15 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"go.uber.org/zap"
+)
 
 type Application struct {
-	Config Config
+	Config        Config
+	Authenticator Authenticator
+	Logger        *zap.SugaredLogger
 }
 
 type Config struct {
