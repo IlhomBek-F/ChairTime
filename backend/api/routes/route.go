@@ -1,4 +1,4 @@
-package api
+package routes
 
 import (
 	"chairTime/domain"
@@ -9,19 +9,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"go.uber.org/zap"
 	"golang.org/x/time/rate"
-	"gorm.io/gorm"
 )
 
-type Application struct {
-	Config        domain.Config
-	Authenticator domain.Authenticator
-	Logger        *zap.SugaredLogger
-	Db            *gorm.DB
-}
-
-func (app *Application) Mount() http.Handler {
+func Mount(app *Application) http.Handler {
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
@@ -39,10 +30,12 @@ func (app *Application) Mount() http.Handler {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	protectedRoute.Use(echojwt.JWT([]byte(app.Config.Auth.Secret)))
 
+	LoginRoute(app, *publicRoute)
+
 	return e
 }
 
-func (app *Application) Run(routeHandler http.Handler) error {
+func Run(app *domain.Application, routeHandler http.Handler) error {
 	serverConfig := http.Server{
 		Addr:         app.Config.Addr,
 		Handler:      routeHandler,
