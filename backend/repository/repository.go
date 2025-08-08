@@ -15,6 +15,6 @@ type Repository struct {
 
 func NewRepo(db *gorm.DB) Repository {
 	return Repository{
-		Auth: NewLoginRepo(db),
+		Auth: NewAuthRepo(db),
 	}
 }

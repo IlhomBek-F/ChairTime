@@ -9,8 +9,8 @@ type Authenticator interface {
 }
 
 type LoginPayload struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"required,min=3,max=20"`
+	Password string `json:"password" validate:"required,min=4,max=72"`
 }
 
 type Credential struct {

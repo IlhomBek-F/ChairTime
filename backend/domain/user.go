@@ -2,6 +2,6 @@ package domain
 
 type User struct {
 	Base
-	Username string
-	Password string
+	Username string `json:"username"`
+	Password string `json:"-"`
 }

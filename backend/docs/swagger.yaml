@@ -1,0 +1,21 @@
+basePath: /api/
+host: localhost:8080
+info:
+  contact: {}
+  description: A comprehensive API for managing hair style booking system.
+  license:
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: ChairTime API
+  version: "1.0"
+paths: {}
+schemes:
+- http
+- https
+securityDefinitions:
+  JWT:
+    description: JWT security accessToken. Please add it in the format "Bearer {AccessToken}"
+      to authorize your requests.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
