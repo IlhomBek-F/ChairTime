@@ -3,6 +3,7 @@ package controllers
 import (
 	"chairTime/api"
 	"chairTime/domain"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -19,7 +20,7 @@ func SignUp(app *api.Application, e echo.Context) error {
 	user, err := app.Repository.Auth.GetUserByName(userPayload.Username)
 
 	if user.ID != 0 {
-		return app.ConflictResponse(e, err)
+		return app.ConflictResponse(e, errors.New("username already exists"))
 	}
 
 	if err != nil {
