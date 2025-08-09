@@ -8,11 +8,6 @@ type Authenticator interface {
 	GenerateToken(claims jwt.Claims) (string, error)
 }
 
-type LoginRepo interface {
-	GetUserByName(username string) (User, error)
-	Login(username, password string) (LoginRes, error)
-}
-
 type LoginPayload struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

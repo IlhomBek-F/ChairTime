@@ -5,6 +5,7 @@ import (
 	"chairTime/domain"
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -20,7 +21,7 @@ func Login(app *api.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	user, err := app.Repository.Login.GetUserByName(userCredential.Username)
+	user, err := app.Repository.Auth.GetUserByName(userCredential.Username)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -37,7 +38,7 @@ func Login(app *api.Application, e echo.Context) error {
 	}
 
 	claims := jwt.RegisteredClaims{
-		Subject:   string(user.ID),
+		Subject:   strconv.Itoa(user.ID),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.Exp)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		NotBefore: jwt.NewNumericDate(time.Now()),

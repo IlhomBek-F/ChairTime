@@ -30,7 +30,7 @@ func Mount(app *api.Application) http.Handler {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	protectedRoute.Use(echojwt.JWT([]byte(app.Config.Auth.Secret)))
 
-	LoginRoute(app, *publicRoute)
+	AuthRoute(app, *publicRoute)
 
 	return e
 }

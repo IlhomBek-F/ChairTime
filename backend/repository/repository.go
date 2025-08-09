@@ -7,14 +7,14 @@ import (
 )
 
 type Repository struct {
-	Login interface {
+	Auth interface {
 		GetUserByName(username string) (domain.User, error)
-		Login(username, password string) (domain.LoginRes, error)
+		SignUp(username, password string) (domain.User, error)
 	}
 }
 
 func NewRepo(db *gorm.DB) Repository {
 	return Repository{
-		Login: NewLoginRepo(db),
+		Auth: NewLoginRepo(db),
 	}
 }
