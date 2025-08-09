@@ -14,8 +14,8 @@ func NewLoginRepo(db *gorm.DB) domain.LoginRepo {
 	return loginRepo{db: db}
 }
 
-func (lr loginRepo) GetUserByName(username string) (any, error) {
-	return "", nil
+func (lr loginRepo) GetUserByName(username string) (domain.User, error) {
+	return domain.User{}, nil
 }
 
 func (lr loginRepo) Login(username, password string) (domain.LoginRes, error) {

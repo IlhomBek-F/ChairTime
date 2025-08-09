@@ -6,7 +6,7 @@ import (
 )
 
 type Base struct {
-	ID        uint         `json:"id"`
+	ID        int          `json:"id"`
 	CreatedAt time.Time    `json:"created_at"`
 	UpdatedAt time.Time    `json:"updated_at"`
 	DeletedAt sql.NullTime `gorm:"index" json:"-"`

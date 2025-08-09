@@ -1,6 +1,7 @@
 package main
 
 import (
+	"chairTime/api"
 	"chairTime/api/routes"
 	"chairTime/domain"
 	"chairTime/internal/auth"
@@ -10,16 +11,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
-
-type Application struct {
-	Config        domain.Config
-	Authenticator domain.Authenticator
-	Logger        *zap.SugaredLogger
-	Db            *gorm.DB
-	Repo          repository.Repository
-}
 
 func main() {
 	cfg := domain.Config{
@@ -65,12 +57,12 @@ func main() {
 
 	repository := repository.NewRepo(db)
 
-	app := &Application{
+	app := &api.Application{
 		Config:        cfg,
 		Authenticator: jwtAuthenticator,
 		Logger:        logger,
 		Db:            db,
-		Repo:          repository,
+		Repository:    repository,
 	}
 
 	echoRoute := routes.Mount(app)

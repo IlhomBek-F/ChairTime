@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"chairTime/domain"
+	"chairTime/api"
 	"net/http"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-func Mount(app *Application) http.Handler {
+func Mount(app *api.Application) http.Handler {
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
@@ -35,7 +35,7 @@ func Mount(app *Application) http.Handler {
 	return e
 }
 
-func Run(app *domain.Application, routeHandler http.Handler) error {
+func Run(app *api.Application, routeHandler http.Handler) error {
 	serverConfig := http.Server{
 		Addr:         app.Config.Addr,
 		Handler:      routeHandler,
