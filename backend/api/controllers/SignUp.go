@@ -18,7 +18,7 @@ func SignUp(app *api.Application, e echo.Context) error {
 
 	user, err := app.Repository.Auth.GetUserByName(userPayload.Username)
 
-	if user.ID != 0 && err == nil {
+	if user.ID != 0 {
 		return app.ConflictResponse(e, err)
 	}
 
