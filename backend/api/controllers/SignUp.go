@@ -20,7 +20,9 @@ func SignUp(app *api.Application, e echo.Context) error {
 
 	if user.ID != 0 && err == nil {
 		return app.ConflictResponse(e, err)
-	} else {
+	}
+
+	if err != nil {
 		return app.InternalServerError(e, err)
 	}
 
