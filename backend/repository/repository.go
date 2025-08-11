@@ -9,7 +9,7 @@ import (
 type Repository struct {
 	Auth interface {
 		GetUserByName(username string) (domain.User, error)
-		SignUp(username, password string) (domain.User, error)
+		SignUp(username, password, phone string) (domain.User, error)
 	}
 }
 

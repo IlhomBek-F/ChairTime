@@ -4,4 +4,5 @@ type User struct {
 	Base
 	Username string `json:"username"`
 	Password string `json:"-"`
+	Phone    string `json:"phone"`
 }

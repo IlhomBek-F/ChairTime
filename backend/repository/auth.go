@@ -14,7 +14,7 @@ type authDB struct {
 
 type authRepo interface {
 	GetUserByName(username string) (domain.User, error)
-	SignUp(username, password string) (domain.User, error)
+	SignUp(username, password, phone string) (domain.User, error)
 }
 
 func NewAuthRepo(db *gorm.DB) authRepo {
@@ -32,11 +32,11 @@ func (lr authDB) GetUserByName(username string) (domain.User, error) {
 	return user, result.Error
 }
 
-func (lr authDB) SignUp(username, password string) (domain.User, error) {
+func (lr authDB) SignUp(username, password, phone string) (domain.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	user := domain.User{Username: username, Password: password}
+	user := domain.User{Username: username, Password: password, Phone: phone}
 
 	result := lr.db.WithContext(ctx).Create(&user)
 	return user, result.Error

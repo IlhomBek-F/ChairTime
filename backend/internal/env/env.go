@@ -52,8 +52,8 @@ func GetDbAddr() string {
 	host := GetString("DB_HOST", "localhost")
 	DbPort := GetString("DB_PORT", "5432")
 	database := GetString("DB_DATABASE", "postgres")
-	password := GetString("DB_PASSWORD", "12345")
-	username := GetString("DB_USERNAME", "owner")
+	password := GetString("DB_PASSWORD", "1234")
+	username := GetString("DB_USERNAME", "postgres")
 	schema := GetString("DB_SCHEMA", "public")
 
 	address := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable search_path=%s",
