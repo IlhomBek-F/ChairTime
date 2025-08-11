@@ -1,15 +1,14 @@
 package domain
 
 import (
-	"database/sql"
 	"time"
 )
 
 type Base struct {
-	ID        int          `json:"id"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
-	DeletedAt sql.NullTime `gorm:"index" json:"-"`
+	ID        int       `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	// DeletedAt sql.NullTime `gorm:"index" json:"-"`
 }
 
 type MetaModel struct {

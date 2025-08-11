@@ -23,9 +23,9 @@ func SignUp(app *api.Application, e echo.Context) error {
 		return app.ConflictResponse(e, errors.New("username already exists"))
 	}
 
-	if err != nil {
-		return app.InternalServerError(e, err)
-	}
+	// if err != nil {
+	// 	return app.InternalServerError(e, err)
+	// }
 
 	hashUserPassword, err := bcrypt.GenerateFromPassword([]byte(userPayload.Password), bcrypt.DefaultCost)
 
