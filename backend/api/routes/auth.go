@@ -8,14 +8,14 @@ import (
 )
 
 func AuthRoute(app *api.Application, groupRoute echo.Group) {
-	login := func(e echo.Context) error {
-		return controllers.Login(app, e)
+	signIn := func(e echo.Context) error {
+		return controllers.SignIn(app, e)
 	}
 
 	signUp := func(e echo.Context) error {
 		return controllers.SignUp(app, e)
 	}
 
-	groupRoute.POST("/auth/login", login)
+	groupRoute.POST("/auth/sign-in", signIn)
 	groupRoute.POST("/auth/sign-up", signUp)
 }

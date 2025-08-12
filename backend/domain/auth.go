@@ -20,3 +20,4 @@ type Credential struct {
 }
 
 type LoginRes = SuccessResWithData[Credential]
+type SignUpRes = SuccessResWithData[User]

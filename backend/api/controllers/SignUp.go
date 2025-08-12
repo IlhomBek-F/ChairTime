@@ -2,14 +2,28 @@ package controllers
 
 import (
 	"chairTime/api"
+	_ "chairTime/docs"
 	"chairTime/domain"
 	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
+// sign-up godoc
+//
+//	@Summary		Create a new account
+//	@Description	Create a new account
+//	@Tags			authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		domain.LoginPayload	true "User credentials"
+//	@Success		201		{object}	domain.SignUpRes "Created new account"
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/auth/sign-up [post]
 func SignUp(app *api.Application, e echo.Context) error {
 	var userPayload domain.LoginPayload
 
@@ -23,7 +37,7 @@ func SignUp(app *api.Application, e echo.Context) error {
 		return app.ConflictResponse(e, errors.New("username already exists"))
 	}
 
-	if err != nil {
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return app.InternalServerError(e, err)
 	}
 
@@ -33,13 +47,13 @@ func SignUp(app *api.Application, e echo.Context) error {
 		return app.InternalServerError(e, err)
 	}
 
-	createdNewUser, err := app.Repository.Auth.SignUp(userPayload.Username, string(hashUserPassword))
+	createdNewUser, err := app.Repository.Auth.SignUp(userPayload.Username, string(hashUserPassword), userPayload.Phone)
 
 	if err != nil {
 		return app.InternalServerError(e, err)
 	}
 
-	successRes := domain.SuccessResWithData[domain.User]{
+	successRes := domain.SignUpRes{
 		Status:  http.StatusCreated,
 		Message: "Success",
 		Data:    createdNewUser,

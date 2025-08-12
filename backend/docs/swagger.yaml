@@ -1,4 +1,62 @@
 basePath: /api/
+definitions:
+  domain.Credential:
+    properties:
+      access_token:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.LoginPayload:
+    properties:
+      password:
+        maxLength: 72
+        minLength: 4
+        type: string
+      phone:
+        maxLength: 20
+        minLength: 4
+        type: string
+      username:
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - password
+    - phone
+    - username
+    type: object
+  domain.LoginRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.Credential'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  domain.SignUpRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.User'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -7,7 +65,63 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: ChairTime API
   version: "1.0"
-paths: {}
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign in to account
+      parameters:
+      - description: User credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Logged in
+          schema:
+            $ref: '#/definitions/domain.LoginRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Sign in to account
+      tags:
+      - authentication
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create a new account
+      parameters:
+      - description: User credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new account
+          schema:
+            $ref: '#/definitions/domain.SignUpRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Create a new account
+      tags:
+      - authentication
 schemes:
 - http
 - https

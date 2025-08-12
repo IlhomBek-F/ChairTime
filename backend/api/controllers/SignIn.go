@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"chairTime/api"
+	_ "chairTime/docs"
 	"chairTime/domain"
 	"errors"
 	"net/http"
@@ -14,7 +15,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func Login(app *api.Application, e echo.Context) error {
+// Sign in godoc
+//
+//	@Summary		Sign in to account
+//	@Description	Sign in to account
+//	@Tags			authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		domain.LoginPayload	true "User credentials"
+//	@Success		201		{object}	domain.LoginRes		"Logged in"
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/auth/sign-in [post]
+func SignIn(app *api.Application, e echo.Context) error {
 	var userCredential domain.LoginPayload
 
 	if err := e.Bind(&userCredential); err != nil {
