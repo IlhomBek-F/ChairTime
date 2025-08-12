@@ -48,7 +48,7 @@ func (mr masterDB) CreateMaster(masterPayload domain.CreateMasterPayload) (domai
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	master := domain.Master{First_name: masterPayload.Firstname, Last_name: masterPayload.Lastname, Phone: masterPayload.Phone}
+	master := domain.Master{Firstname: masterPayload.Firstname, Lastname: masterPayload.Lastname, Phone: masterPayload.Phone}
 
 	result := mr.db.WithContext(ctx).Create(&master)
 
