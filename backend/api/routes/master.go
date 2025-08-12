@@ -1,0 +1,13 @@
+package routes
+
+import (
+	"chairTime/api"
+	controllers "chairTime/api/controllers/Master"
+
+	"github.com/labstack/echo/v4"
+)
+
+func MasterRoute(app *api.Application, groupRoute echo.Group) {
+	groupRoute.GET("/masters", app.RouteHandler(controllers.GetMasters))
+	groupRoute.POST("/create-master", app.RouteHandler(controllers.CreateMaster))
+}

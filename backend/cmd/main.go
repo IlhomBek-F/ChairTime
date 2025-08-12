@@ -39,7 +39,7 @@ func main() {
 		Env: env.GetString("ENV", "development"),
 		Auth: domain.AuthConfig{
 			Secret: env.GetString("ACCESS_TOKEN_SECRET", "example"),
-			Exp:    time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 2)),
+			Exp:    time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 2)) * time.Hour,
 			Iss:    "chairtime",
 		},
 	}

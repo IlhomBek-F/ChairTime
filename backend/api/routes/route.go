@@ -31,6 +31,8 @@ func Mount(app *api.Application) http.Handler {
 	protectedRoute.Use(echojwt.JWT([]byte(app.Config.Auth.Secret)))
 
 	AuthRoute(app, *publicRoute)
+	MasterRoute(app, *protectedRoute)
+	StyleTypeRoute(app, *protectedRoute)
 
 	return e
 }

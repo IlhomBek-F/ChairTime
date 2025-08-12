@@ -1,5 +1,53 @@
 basePath: /api/
 definitions:
+  domain.CreateMasterPayload:
+    properties:
+      first_name:
+        maxLength: 20
+        minLength: 3
+        type: string
+      last_name:
+        maxLength: 50
+        type: string
+      offer_style_ids:
+        items:
+          type: integer
+        type: array
+      phone:
+        type: string
+    required:
+    - first_name
+    - offer_style_ids
+    - phone
+    type: object
+  domain.CreateMasterRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.Master'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  domain.CreateStyleTypePayload:
+    properties:
+      description:
+        maxLength: 50
+        type: string
+      duration:
+        type: integer
+      name:
+        type: string
+    type: object
+  domain.CreateStyleTypeRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.StyleType'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   domain.Credential:
     properties:
       access_token:
@@ -35,12 +83,83 @@ definitions:
       status:
         type: integer
     type: object
+  domain.Master:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        maxLength: 20
+        minLength: 3
+        type: string
+      id:
+        type: integer
+      last_name:
+        maxLength: 50
+        type: string
+      phone:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - first_name
+    type: object
+  domain.MasterListRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.Master'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/domain.MetaModel'
+      status:
+        type: integer
+    type: object
+  domain.MetaModel:
+    properties:
+      page:
+        type: integer
+      per_page:
+        type: integer
+      total:
+        type: integer
+    type: object
   domain.SignUpRes:
     properties:
       data:
         $ref: '#/definitions/domain.User'
       message:
         type: string
+      status:
+        type: integer
+    type: object
+  domain.StyleType:
+    properties:
+      created_at:
+        type: string
+      description:
+        maxLength: 50
+        type: string
+      duration:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.StyleTypeListRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.StyleType'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/domain.MetaModel'
       status:
         type: integer
     type: object
@@ -122,6 +241,130 @@ paths:
       summary: Create a new account
       tags:
       - authentication
+  /create-master:
+    post:
+      consumes:
+      - application/json
+      description: Create master
+      parameters:
+      - description: Master payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateMasterPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new master
+          schema:
+            $ref: '#/definitions/domain.CreateMasterRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create master
+      tags:
+      - master
+  /create-style-type:
+    post:
+      consumes:
+      - application/json
+      description: Create new style type
+      parameters:
+      - description: Create styleType payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateStyleTypePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new styleType
+          schema:
+            $ref: '#/definitions/domain.CreateStyleTypeRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create new style type
+      tags:
+      - styleType
+  /masters:
+    get:
+      consumes:
+      - application/json
+      description: Get masters
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: page_size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Master list
+          schema:
+            $ref: '#/definitions/domain.MasterListRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get masters
+      tags:
+      - master
+  /style-types:
+    get:
+      consumes:
+      - application/json
+      description: Get style types
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: page_size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: StyleType list
+          schema:
+            $ref: '#/definitions/domain.StyleTypeListRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get style types
+      tags:
+      - styleType
 schemes:
 - http
 - https

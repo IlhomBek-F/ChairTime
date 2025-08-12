@@ -11,10 +11,24 @@ type Repository struct {
 		GetUserByName(username string) (domain.User, error)
 		SignUp(username, password, phone string) (domain.User, error)
 	}
+
+	Master interface {
+		GetMasterByName(name string) (domain.Master, error)
+		GetMasters() ([]domain.Master, error)
+		CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
+	}
+
+	StyleType interface {
+		GetStyleTypeByName(name string) (domain.StyleType, error)
+		CreateStyleType(styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
+		GetStyleTypes() ([]domain.StyleType, error)
+	}
 }
 
 func NewRepo(db *gorm.DB) Repository {
 	return Repository{
-		Auth: NewAuthRepo(db),
+		Auth:      NewAuthRepo(db),
+		Master:    NewMasterRepo(db),
+		StyleType: NewStyleTypeRepo(db),
 	}
 }
