@@ -16,6 +16,7 @@ type Repository struct {
 		GetMasterByName(name string) (domain.Master, error)
 		GetMasters() ([]domain.Master, error)
 		CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
+		GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 	}
 
 	StyleType interface {

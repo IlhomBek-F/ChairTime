@@ -37,3 +37,9 @@ func New(addr string, maxOpenConns, maxIdleConns int, maxIdleTime string) (*gorm
 
 	return db, nil
 }
+
+func WithTransaction(ctx context.Context, db *gorm.DB, fn func(tx *gorm.DB) error) error {
+	return db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		return fn(tx)
+	})
+}

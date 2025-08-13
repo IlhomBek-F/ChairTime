@@ -2,11 +2,11 @@ basePath: /api/
 definitions:
   domain.CreateMasterPayload:
     properties:
-      first_name:
+      firstname:
         maxLength: 20
         minLength: 3
         type: string
-      last_name:
+      lastname:
         maxLength: 50
         type: string
       offer_style_ids:
@@ -16,7 +16,7 @@ definitions:
       phone:
         type: string
     required:
-    - first_name
+    - firstname
     - offer_style_ids
     - phone
     type: object
@@ -87,13 +87,13 @@ definitions:
     properties:
       created_at:
         type: string
-      first_name:
+      firstname:
         maxLength: 20
         minLength: 3
         type: string
       id:
         type: integer
-      last_name:
+      lastname:
         maxLength: 50
         type: string
       phone:
@@ -101,7 +101,7 @@ definitions:
       updated_at:
         type: string
     required:
-    - first_name
+    - firstname
     type: object
   domain.MasterListRes:
     properties:
@@ -113,6 +113,26 @@ definitions:
         type: string
       meta:
         $ref: '#/definitions/domain.MetaModel'
+      status:
+        type: integer
+    type: object
+  domain.MasterStyleOffer:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      style_type_id:
+        type: integer
+    type: object
+  domain.MasterStyleOfferRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.MasterStyleOffer'
+        type: array
+      message:
+        type: string
       status:
         type: integer
     type: object
@@ -301,6 +321,43 @@ paths:
       summary: Create new style type
       tags:
       - styleType
+  /master/{master_id}/styles-offer:
+    get:
+      consumes:
+      - application/json
+      description: Get master styles offer
+      parameters:
+      - description: master_id
+        in: path
+        name: master_id
+        required: true
+        type: integer
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: page_size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Master style offer list
+          schema:
+            $ref: '#/definitions/domain.MasterStyleOfferRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get master styles offer
+      tags:
+      - master
   /masters:
     get:
       consumes:
