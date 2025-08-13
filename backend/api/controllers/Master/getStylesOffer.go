@@ -3,10 +3,12 @@ package controllers
 import (
 	"chairTime/api"
 	"chairTime/domain"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 // Get master styles offer godoc
@@ -31,7 +33,17 @@ func GetMasterStylesOffer(app *api.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	stylesOffer, err := app.Repository.Master.GetMasterStylesOffer(master_id)
+	master, err := app.Repository.Master.GetMasterById(master_id)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return app.NotFoundResponse(e, errors.New("master with this id does not exist"))
+		} else {
+			return app.InternalServerError(e, err)
+		}
+	}
+
+	stylesOffer, err := app.Repository.Master.GetMasterStylesOffer(master.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

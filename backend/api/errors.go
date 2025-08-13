@@ -34,7 +34,7 @@ func (app *Application) ConflictResponse(e echo.Context, err error) error {
 func (app *Application) NotFoundResponse(e echo.Context, err error) error {
 	app.Logger.Warnf("not found error", "method", e.Request().Method, "path", e.Request().URL.Path, "error", err.Error())
 
-	return writeJSONError(e, http.StatusNotFound, "not found")
+	return writeJSONError(e, http.StatusNotFound, err.Error())
 }
 
 func (app *Application) UnauthorizedErrorResponse(e echo.Context, err error) error {

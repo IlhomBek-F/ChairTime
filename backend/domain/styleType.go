@@ -28,3 +28,4 @@ type CreateStyleTypePayload struct {
 type CreateStyleTypeRes = SuccessResWithData[StyleType]
 type StyleTypeListRes = SuccessResWithMeta[StyleType]
 type MasterStyleOfferRes = SuccessResWithData[[]MasterStyleOffer]
+type MasterRes = SuccessResWithData[Master]

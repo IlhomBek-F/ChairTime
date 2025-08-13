@@ -18,6 +18,7 @@ type masterRepo interface {
 	GetMasters() ([]domain.Master, error)
 	CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
 	GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
+	GetMasterById(masterId int) (domain.Master, error)
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
@@ -89,4 +90,15 @@ func (mr masterDB) GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer
 		Where("mst.master_id = ?", masterId).Scan(&styleOffers)
 
 	return styleOffers, result.Error
+}
+
+func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var master domain.Master
+
+	result := mr.db.WithContext(ctx).First(&master, masterId)
+
+	return master, result.Error
 }

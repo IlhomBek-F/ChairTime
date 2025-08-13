@@ -196,6 +196,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/master/{master_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get master by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "master"
+                ],
+                "summary": "Get master by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "master_id",
+                        "name": "master_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Master info",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/{master_id}/styles-offer": {
             "get": {
                 "security": [
@@ -525,6 +570,20 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.MasterRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.Master"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.MasterStyleOffer": {
             "type": "object",
             "properties": {
@@ -669,8 +728,6 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "A comprehensive API for managing hair style booking system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
 }
 
 func init() {

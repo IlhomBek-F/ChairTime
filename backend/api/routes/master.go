@@ -11,4 +11,5 @@ func MasterRoute(app *api.Application, groupRoute echo.Group) {
 	groupRoute.GET("/masters", app.RouteHandler(controllers.GetMasters))
 	groupRoute.POST("/create-master", app.RouteHandler(controllers.CreateMaster))
 	groupRoute.GET("/master/:master_id/styles-offer", app.RouteHandler(controllers.GetMasterStylesOffer))
+	groupRoute.GET("/master/:master_id", app.RouteHandler(controllers.GetMasterById))
 }
