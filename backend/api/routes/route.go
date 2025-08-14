@@ -33,6 +33,7 @@ func Mount(app *api.Application) http.Handler {
 	AuthRoute(app, *publicRoute)
 	MasterRoute(app, *protectedRoute)
 	StyleTypeRoute(app, *protectedRoute)
+	BookingRoute(app, *protectedRoute)
 
 	return e
 }

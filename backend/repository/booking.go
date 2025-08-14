@@ -1,0 +1,65 @@
+package repository
+
+import (
+	"chairTime/domain"
+	"context"
+	"time"
+
+	"gorm.io/gorm"
+)
+
+type bookingRepo interface {
+	CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
+	CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
+	GetUserBookings(userId int) ([]domain.BookingResponse, error)
+}
+
+type bookingDB struct {
+	db *gorm.DB
+}
+
+func NewBookingRepo(db *gorm.DB) bookingRepo {
+	return bookingDB{db: db}
+}
+
+func (br bookingDB) CreateBooking(payload domain.CreateBookingPayload) (domain.Booking, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	booking := domain.Booking{
+		UserId:            payload.UserId,
+		MasterStyleTypeId: payload.MasterStyleTypeId,
+		Date:              payload.Date,
+		Time:              payload.Time,
+	}
+
+	result := br.db.WithContext(ctx).Create(&booking)
+
+	return booking, result.Error
+}
+
+func (br bookingDB) CheckBookingExist(userId int, masterStyleTYpeId int) (domain.Booking, error) {
+	return domain.Booking{}, nil
+}
+
+func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var bookings []domain.BookingResponse
+
+	result := br.db.WithContext(ctx).Table("bookings AS bk").
+		Select("bk.id",
+			"bk.created_at",
+			"bk.updated_at",
+			"ms.firstname || ' ' || ms.lastname AS master",
+			"bk.date",
+			"bk.time",
+			"st.name AS style_type").
+		Joins("JOIN master_style_types AS mst ON mst.id = bk.master_style_type_id").
+		Joins("JOIN masters AS ms ON ms.id = mst.master_id").
+		Joins("JOIN style_types AS st ON st.id = mst.style_type_id").
+		Where("bk.user_id = ?", userId).Scan(&bookings)
+
+	return bookings, result.Error
+}

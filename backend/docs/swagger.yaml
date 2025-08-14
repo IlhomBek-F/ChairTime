@@ -1,5 +1,46 @@
 basePath: /api/
 definitions:
+  domain.BookingListRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.BookingResponse'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/domain.MetaModel'
+      status:
+        type: integer
+    type: object
+  domain.BookingResponse:
+    properties:
+      created_at:
+        type: string
+      date:
+        type: string
+      id:
+        type: integer
+      master:
+        type: string
+      style_type:
+        type: string
+      time:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.CreateBookingPayload:
+    properties:
+      date:
+        type: string
+      master_style_type_id:
+        type: integer
+      time:
+        type: string
+      user_id:
+        type: integer
+    type: object
   domain.CreateMasterPayload:
     properties:
       firstname:
@@ -192,6 +233,13 @@ definitions:
       status:
         type: integer
     type: object
+  domain.SuccessRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   domain.User:
     properties:
       created_at:
@@ -270,6 +318,65 @@ paths:
       summary: Create a new account
       tags:
       - authentication
+  /bookings/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get bookings
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Bookings
+          schema:
+            $ref: '#/definitions/domain.BookingListRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get bookings
+      tags:
+      - booking
+  /create-booking:
+    post:
+      consumes:
+      - application/json
+      description: Create booking
+      parameters:
+      - description: Booking payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateBookingPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new booking
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create booking
+      tags:
+      - booking
   /create-master:
     post:
       consumes:
