@@ -15,7 +15,7 @@ import (
 //
 //	@Summary		Get master by id
 //	@Description	Get master by id
-//	@Tags			master
+//	@Tags			Master
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json

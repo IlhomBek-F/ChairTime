@@ -30,6 +30,8 @@ type Repository struct {
 		CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
 		CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
 		GetUserBookings(userId int) ([]domain.BookingResponse, error)
+		DeleteBooking(bookingId int) error
+		GetBookingById(bookingId int) (domain.Booking, error)
 	}
 }
 

@@ -15,7 +15,7 @@ import (
 //
 //	@Summary		Get master styles offer
 //	@Description	Get master styles offer
-//	@Tags			master
+//	@Tags			Master
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json

@@ -289,7 +289,7 @@ paths:
           schema: {}
       summary: Sign in to account
       tags:
-      - authentication
+      - Authentication
   /auth/sign-up:
     post:
       consumes:
@@ -317,25 +317,25 @@ paths:
           schema: {}
       summary: Create a new account
       tags:
-      - authentication
-  /bookings/{user_id}:
-    get:
+      - Authentication
+  /booking/{bookingId}:
+    delete:
       consumes:
       - application/json
-      description: Get bookings
+      description: Delete booking
       parameters:
-      - description: user_id
+      - description: bookingId
         in: path
-        name: user_id
+        name: bookingId
         required: true
         type: integer
       produces:
       - application/json
       responses:
         "201":
-          description: Bookings
+          description: Deleted booking
           schema:
-            $ref: '#/definitions/domain.BookingListRes'
+            $ref: '#/definitions/domain.SuccessRes'
         "400":
           description: Bad Request
           schema: {}
@@ -344,10 +344,10 @@ paths:
           schema: {}
       security:
       - JWT: []
-      summary: Get bookings
+      summary: Delete booking
       tags:
-      - booking
-  /create-booking:
+      - Booking
+  /booking/create:
     post:
       consumes:
       - application/json
@@ -376,26 +376,25 @@ paths:
       - JWT: []
       summary: Create booking
       tags:
-      - booking
-  /create-master:
-    post:
+      - Booking
+  /bookings/{user_id}:
+    get:
       consumes:
       - application/json
-      description: Create master
+      description: Get bookings
       parameters:
-      - description: Master payload
-        in: body
-        name: payload
+      - description: user_id
+        in: path
+        name: user_id
         required: true
-        schema:
-          $ref: '#/definitions/domain.CreateMasterPayload'
+        type: integer
       produces:
       - application/json
       responses:
         "201":
-          description: Created new master
+          description: Bookings
           schema:
-            $ref: '#/definitions/domain.CreateMasterRes'
+            $ref: '#/definitions/domain.BookingListRes'
         "400":
           description: Bad Request
           schema: {}
@@ -404,39 +403,9 @@ paths:
           schema: {}
       security:
       - JWT: []
-      summary: Create master
+      summary: Get bookings
       tags:
-      - master
-  /create-style-type:
-    post:
-      consumes:
-      - application/json
-      description: Create new style type
-      parameters:
-      - description: Create styleType payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateStyleTypePayload'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created new styleType
-          schema:
-            $ref: '#/definitions/domain.CreateStyleTypeRes'
-        "400":
-          description: Bad Request
-          schema: {}
-        "500":
-          description: Internal Server Error
-          schema: {}
-      security:
-      - JWT: []
-      summary: Create new style type
-      tags:
-      - styleType
+      - Booking
   /master/{master_id}:
     get:
       consumes:
@@ -465,7 +434,7 @@ paths:
       - JWT: []
       summary: Get master by id
       tags:
-      - master
+      - Master
   /master/{master_id}/styles-offer:
     get:
       consumes:
@@ -502,7 +471,37 @@ paths:
       - JWT: []
       summary: Get master styles offer
       tags:
-      - master
+      - Master
+  /master/create:
+    post:
+      consumes:
+      - application/json
+      description: Create master
+      parameters:
+      - description: Master payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateMasterPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new master
+          schema:
+            $ref: '#/definitions/domain.CreateMasterRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create master
+      tags:
+      - Master
   /masters:
     get:
       consumes:
@@ -534,7 +533,37 @@ paths:
       - JWT: []
       summary: Get masters
       tags:
-      - master
+      - Master
+  /style-type/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new style type
+      parameters:
+      - description: Create styleType payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateStyleTypePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new styleType
+          schema:
+            $ref: '#/definitions/domain.CreateStyleTypeRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create new style type
+      tags:
+      - StyleType
   /style-types:
     get:
       consumes:
@@ -566,7 +595,7 @@ paths:
       - JWT: []
       summary: Get style types
       tags:
-      - styleType
+      - StyleType
 schemes:
 - http
 - https

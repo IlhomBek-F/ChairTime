@@ -15,7 +15,7 @@ import (
 //
 //	@Summary		Create master
 //	@Description	Create master
-//	@Tags			master
+//	@Tags			Master
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json
@@ -23,7 +23,7 @@ import (
 //	@Success		201		{object}	domain.CreateMasterRes		"Created new master"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
-//	@Router			/create-master [post]
+//	@Router			/master/create [post]
 func CreateMaster(app *api.Application, e echo.Context) error {
 	var masterPayload domain.CreateMasterPayload
 

@@ -13,7 +13,7 @@ import (
 //
 //		@Summary		Get bookings
 //		@Description	Get bookings
-//		@Tags			booking
+//		@Tags			Booking
 //		@Accept			json
 //		@Security       JWT
 //		@Produce		json

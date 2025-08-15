@@ -13,7 +13,7 @@ import (
 //
 //	@Summary		Get style types
 //	@Description	Get style types
-//	@Tags			styleType
+//	@Tags			StyleType
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json

@@ -16,7 +16,7 @@ import (
 //
 //	@Summary		Create a new account
 //	@Description	Create a new account
-//	@Tags			authentication
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			payload	body		domain.LoginPayload	true "User credentials"

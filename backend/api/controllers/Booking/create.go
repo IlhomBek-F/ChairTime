@@ -12,7 +12,7 @@ import (
 //
 //	@Summary		Create booking
 //	@Description	Create booking
-//	@Tags			booking
+//	@Tags			Booking
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json
@@ -20,7 +20,7 @@ import (
 //	@Success		201		{object}	domain.SuccessRes		"Created new booking"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
-//	@Router			/create-booking [post]
+//	@Router			/booking/create [post]
 func CreateBooking(app *api.Application, e echo.Context) error {
 	var bookingPayload domain.CreateBookingPayload
 

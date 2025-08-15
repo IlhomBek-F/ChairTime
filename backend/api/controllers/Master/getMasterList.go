@@ -13,7 +13,7 @@ import (
 //
 //	@Summary		Get masters
 //	@Description	Get masters
-//	@Tags			master
+//	@Tags			Master
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json

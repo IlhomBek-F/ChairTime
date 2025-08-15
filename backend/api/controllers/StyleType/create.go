@@ -15,7 +15,7 @@ import (
 //
 //	@Summary		Create new style type
 //	@Description	Create new style type
-//	@Tags			styleType
+//	@Tags			StyleType
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json
@@ -23,7 +23,7 @@ import (
 //	@Success		201		{object}	domain.CreateStyleTypeRes		"Created new styleType"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
-//	@Router			/create-style-type [post]
+//	@Router			/style-type/create [post]
 func CreateStyleType(app *api.Application, e echo.Context) error {
 	var styleTypePayload domain.CreateStyleTypePayload
 

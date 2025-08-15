@@ -19,7 +19,7 @@ import (
 //
 //	@Summary		Sign in to account
 //	@Description	Sign in to account
-//	@Tags			authentication
+//	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
 //	@Param			payload	body		domain.LoginPayload	true "User credentials"

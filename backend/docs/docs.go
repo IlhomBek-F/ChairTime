@@ -28,7 +28,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "Authentication"
                 ],
                 "summary": "Sign in to account",
                 "parameters": [
@@ -70,7 +70,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "Authentication"
                 ],
                 "summary": "Create a new account",
                 "parameters": [
@@ -102,52 +102,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bookings/{user_id}": {
-            "get": {
-                "security": [
-                    {
-                        "JWT": []
-                    }
-                ],
-                "description": "Get bookings",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "booking"
-                ],
-                "summary": "Get bookings",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "user_id",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Bookings",
-                        "schema": {
-                            "$ref": "#/definitions/domain.BookingListRes"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/create-booking": {
+        "/booking/create": {
             "post": {
                 "security": [
                     {
@@ -162,7 +117,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "booking"
+                    "Booking"
                 ],
                 "summary": "Create booking",
                 "parameters": [
@@ -194,7 +149,97 @@ const docTemplate = `{
                 }
             }
         },
-        "/create-master": {
+        "/booking/{bookingId}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Delete booking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Delete booking",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "bookingId",
+                        "name": "bookingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Deleted booking",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/bookings/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get bookings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Get bookings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bookings",
+                        "schema": {
+                            "$ref": "#/definitions/domain.BookingListRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/create": {
             "post": {
                 "security": [
                     {
@@ -209,7 +254,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "master"
+                    "Master"
                 ],
                 "summary": "Create master",
                 "parameters": [
@@ -241,53 +286,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/create-style-type": {
-            "post": {
-                "security": [
-                    {
-                        "JWT": []
-                    }
-                ],
-                "description": "Create new style type",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "styleType"
-                ],
-                "summary": "Create new style type",
-                "parameters": [
-                    {
-                        "description": "Create styleType payload",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateStyleTypePayload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created new styleType",
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateStyleTypeRes"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
         "/master/{master_id}": {
             "get": {
                 "security": [
@@ -303,7 +301,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "master"
+                    "Master"
                 ],
                 "summary": "Get master by id",
                 "parameters": [
@@ -348,7 +346,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "master"
+                    "Master"
                 ],
                 "summary": "Get master styles offer",
                 "parameters": [
@@ -405,7 +403,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "master"
+                    "Master"
                 ],
                 "summary": "Get masters",
                 "parameters": [
@@ -440,6 +438,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/style-type/create": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Create new style type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StyleType"
+                ],
+                "summary": "Create new style type",
+                "parameters": [
+                    {
+                        "description": "Create styleType payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateStyleTypePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created new styleType",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateStyleTypeRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/style-types": {
             "get": {
                 "security": [
@@ -455,7 +500,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "styleType"
+                    "StyleType"
                 ],
                 "summary": "Get style types",
                 "parameters": [

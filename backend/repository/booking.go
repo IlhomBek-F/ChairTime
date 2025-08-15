@@ -12,6 +12,8 @@ type bookingRepo interface {
 	CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
 	CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
 	GetUserBookings(userId int) ([]domain.BookingResponse, error)
+	DeleteBooking(bookingId int) error
+	GetBookingById(bookingId int) (domain.Booking, error)
 }
 
 type bookingDB struct {
@@ -62,4 +64,22 @@ func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error
 		Where("bk.user_id = ?", userId).Scan(&bookings)
 
 	return bookings, result.Error
+}
+
+func (br bookingDB) DeleteBooking(bookingId int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return br.db.WithContext(ctx).Delete(domain.Booking{}, bookingId).Error
+}
+
+func (br bookingDB) GetBookingById(bookingId int) (domain.Booking, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var booking domain.Booking
+
+	result := br.db.WithContext(ctx).First(&booking, bookingId)
+
+	return booking, result.Error
 }
