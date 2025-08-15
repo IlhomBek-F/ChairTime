@@ -19,6 +19,7 @@ type masterRepo interface {
 	CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
 	GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 	GetMasterById(masterId int) (domain.Master, error)
+	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
@@ -43,6 +44,24 @@ func (mr masterDB) GetMasters() ([]domain.Master, error) {
 	var masters []domain.Master
 
 	result := mr.db.WithContext(ctx).Find(&masters)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	for i, master := range masters {
+		var offerStyleIds []int
+		offerStyleResult := mr.db.WithContext(ctx).
+			Model(&domain.MasterStyleType{}).Where("master_id = ?", master.ID).
+			Select("id").
+			Find(&offerStyleIds)
+
+		if offerStyleResult.Error != nil {
+			return nil, offerStyleResult.Error
+		}
+
+		masters[i].OfferStyleIds = offerStyleIds
+	}
 
 	return masters, result.Error
 }
@@ -101,4 +120,64 @@ func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
 	result := mr.db.WithContext(ctx).First(&master, masterId)
 
 	return master, result.Error
+}
+
+func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*152)
+	defer cancel()
+
+	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
+		var currentMasterStylesOffer []domain.MasterStyleType
+		var masterStyleOfferMap = make(map[int]domain.MasterStyleType)
+		var updatedMasterStyleOfferMap = make(map[int]int)
+
+		result := tx.Model(&domain.MasterStyleType{}).Where("master_id = ?", updatedMasterPayload.ID).Find(&currentMasterStylesOffer)
+
+		if result.Error != nil {
+			return result.Error
+		}
+
+		for _, styleOffer := range currentMasterStylesOffer {
+			masterStyleOfferMap[styleOffer.ID] = styleOffer
+		}
+
+		for _, styleOfferId := range updatedMasterPayload.OfferStyleIds {
+			updatedMasterStyleOfferMap[styleOfferId] = 1
+		}
+
+		newAddedOffer := []domain.MasterStyleType{}
+		removedOffer := []int{}
+
+		for _, id := range updatedMasterPayload.OfferStyleIds {
+			if _, ok := masterStyleOfferMap[id]; !ok {
+				newAddedOffer = append(newAddedOffer, domain.MasterStyleType{MasterId: updatedMasterPayload.ID, StyleTypeId: id})
+			}
+		}
+
+		for _, styleOffer := range currentMasterStylesOffer {
+			if _, ok := updatedMasterStyleOfferMap[styleOffer.ID]; !ok {
+				removedOffer = append(removedOffer, styleOffer.ID)
+			}
+		}
+
+		if len(newAddedOffer) > 0 {
+			if err := tx.Create(&newAddedOffer).Error; err != nil {
+				return err
+			}
+		}
+
+		if len(removedOffer) > 0 {
+			if err := tx.Delete(&domain.MasterStyleType{}, removedOffer).Error; err != nil {
+				return err
+			}
+		}
+
+		if err := tx.Save(&updatedMasterPayload).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return updatedMasterPayload, transactionError
 }

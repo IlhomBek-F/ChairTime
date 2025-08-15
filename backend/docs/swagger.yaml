@@ -1,5 +1,22 @@
 basePath: /api/
 definitions:
+  domain.Booking:
+    properties:
+      created_at:
+        type: string
+      date:
+        type: string
+      id:
+        type: integer
+      master_style_type_id:
+        type: integer
+      time:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
   domain.BookingListRes:
     properties:
       data:
@@ -39,6 +56,15 @@ definitions:
       time:
         type: string
       user_id:
+        type: integer
+    type: object
+  domain.CreateBookingRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.Booking'
+      message:
+        type: string
+      status:
         type: integer
     type: object
   domain.CreateMasterPayload:
@@ -137,12 +163,17 @@ definitions:
       lastname:
         maxLength: 50
         type: string
+      offer_style_ids:
+        items:
+          type: integer
+        type: array
       phone:
         type: string
       updated_at:
         type: string
     required:
     - firstname
+    - offer_style_ids
     type: object
   domain.MasterListRes:
     properties:
@@ -399,6 +430,36 @@ paths:
       summary: Create booking
       tags:
       - Booking
+  /booking/update:
+    put:
+      consumes:
+      - application/json
+      description: Update booking
+      parameters:
+      - description: Booking payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Booking'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update booking
+          schema:
+            $ref: '#/definitions/domain.CreateBookingRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Update booking
+      tags:
+      - Booking
   /bookings/{user_id}:
     get:
       consumes:
@@ -522,6 +583,36 @@ paths:
       security:
       - JWT: []
       summary: Create master
+      tags:
+      - Master
+  /master/update:
+    put:
+      consumes:
+      - application/json
+      description: Update master
+      parameters:
+      - description: master payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Master'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update master
+          schema:
+            $ref: '#/definitions/domain.CreateMasterRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Update master
       tags:
       - Master
   /masters:

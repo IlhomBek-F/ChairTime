@@ -149,6 +149,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/booking/update": {
+            "put": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update booking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Update booking",
+                "parameters": [
+                    {
+                        "description": "Booking payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Booking"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Update booking",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateBookingRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/booking/{bookingId}": {
             "delete": {
                 "security": [
@@ -271,6 +318,53 @@ const docTemplate = `{
                 "responses": {
                     "201": {
                         "description": "Created new master",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateMasterRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/update": {
+            "put": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update master",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Update master",
+                "parameters": [
+                    {
+                        "description": "master payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Master"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Update master",
                         "schema": {
                             "$ref": "#/definitions/domain.CreateMasterRes"
                         }
@@ -661,6 +755,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.Booking": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "master_style_type_id": {
+                    "type": "integer"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.BookingListRes": {
             "type": "object",
             "properties": {
@@ -720,6 +840,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateBookingRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.Booking"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "integer"
                 }
             }
@@ -848,7 +982,8 @@ const docTemplate = `{
         "domain.Master": {
             "type": "object",
             "required": [
-                "firstname"
+                "firstname",
+                "offer_style_ids"
             ],
             "properties": {
                 "created_at": {
@@ -865,6 +1000,12 @@ const docTemplate = `{
                 "lastname": {
                     "type": "string",
                     "maxLength": 50
+                },
+                "offer_style_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "phone": {
                     "type": "string"

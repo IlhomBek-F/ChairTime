@@ -14,6 +14,7 @@ type bookingRepo interface {
 	GetUserBookings(userId int) ([]domain.BookingResponse, error)
 	DeleteBooking(bookingId int) error
 	GetBookingById(bookingId int) (domain.Booking, error)
+	UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
 }
 
 type bookingDB struct {
@@ -82,4 +83,13 @@ func (br bookingDB) GetBookingById(bookingId int) (domain.Booking, error) {
 	result := br.db.WithContext(ctx).First(&booking, bookingId)
 
 	return booking, result.Error
+}
+
+func (br bookingDB) UpdateBooking(updatedBookingPayload domain.Booking) (domain.Booking, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	result := br.db.WithContext(ctx).Save(&updatedBookingPayload)
+
+	return updatedBookingPayload, result.Error
 }

@@ -18,6 +18,7 @@ type Repository struct {
 		CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
 		GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 		GetMasterById(masterId int) (domain.Master, error)
+		UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 	}
 
 	StyleType interface {
@@ -32,6 +33,7 @@ type Repository struct {
 		GetUserBookings(userId int) ([]domain.BookingResponse, error)
 		DeleteBooking(bookingId int) error
 		GetBookingById(bookingId int) (domain.Booking, error)
+		UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
 	}
 
 	User interface {
