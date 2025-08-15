@@ -6,3 +6,6 @@ type User struct {
 	Password string `json:"-"`
 	Phone    string `json:"phone"`
 }
+
+type UserListRes = SuccessResWithMeta[User]
+type UserRes = SuccessResWithData[User]

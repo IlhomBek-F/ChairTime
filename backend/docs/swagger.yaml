@@ -253,6 +253,28 @@ definitions:
       username:
         type: string
     type: object
+  domain.UserListRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.User'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/domain.MetaModel'
+      status:
+        type: integer
+    type: object
+  domain.UserRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.User'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -596,6 +618,86 @@ paths:
       summary: Get style types
       tags:
       - StyleType
+  /user/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted user
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Delete user
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get user by id
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User info
+          schema:
+            $ref: '#/definitions/domain.UserRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get user by id
+      tags:
+      - User
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get users
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Users
+          schema:
+            $ref: '#/definitions/domain.UserListRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get users
+      tags:
+      - User
 schemes:
 - http
 - https

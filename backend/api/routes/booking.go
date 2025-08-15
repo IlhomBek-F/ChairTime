@@ -2,7 +2,7 @@ package routes
 
 import (
 	"chairTime/api"
-	bookingController "chairTime/api/controllers/Booking"
+	bookingController "chairTime/api/controllers/booking"
 
 	"github.com/labstack/echo/v4"
 )

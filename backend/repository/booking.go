@@ -61,7 +61,7 @@ func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error
 		Joins("JOIN master_style_types AS mst ON mst.id = bk.master_style_type_id").
 		Joins("JOIN masters AS ms ON ms.id = mst.master_id").
 		Joins("JOIN style_types AS st ON st.id = mst.style_type_id").
-		Where("bk.user_id = ?", userId).Scan(&bookings)
+		Where("bk.user_id = ?", userId).Find(&bookings)
 
 	return bookings, result.Error
 }

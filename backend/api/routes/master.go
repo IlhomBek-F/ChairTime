@@ -2,7 +2,7 @@ package routes
 
 import (
 	"chairTime/api"
-	controllers "chairTime/api/controllers/Master"
+	controllers "chairTime/api/controllers/master"
 
 	"github.com/labstack/echo/v4"
 )

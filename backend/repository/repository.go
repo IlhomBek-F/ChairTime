@@ -33,6 +33,12 @@ type Repository struct {
 		DeleteBooking(bookingId int) error
 		GetBookingById(bookingId int) (domain.Booking, error)
 	}
+
+	User interface {
+		GetUsers() ([]domain.User, error)
+		GetUserById(masterId int) (domain.User, error)
+		DeleteUser(userId int) error
+	}
 }
 
 func NewRepo(db *gorm.DB) Repository {
@@ -41,5 +47,6 @@ func NewRepo(db *gorm.DB) Repository {
 		Master:    NewMasterRepo(db),
 		StyleType: NewStyleTypeRepo(db),
 		Booking:   NewBookingRepo(db),
+		User:      NewUserRepo(db),
 	}
 }
