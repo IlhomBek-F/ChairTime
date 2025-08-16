@@ -8,10 +8,10 @@ export type BookingViewType = BaseType & {
 }
 
 export type CreateBookingType = {
-    userId: number,
+    user_id: number,
     date: string,
     time: string,
     master_style_type_id: number,
 }
 
-export type UpdateBookingType = BaseType & CreateBookingType
+export type BookingByIdType = BaseType & CreateBookingType

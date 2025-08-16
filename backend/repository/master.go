@@ -139,7 +139,7 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 
 		// Build lookup maps
 		for _, styleOffer := range currentMasterStylesOffer {
-			masterStyleOfferMap[styleOffer.StyleTypeId] = styleOffer
+			masterStyleOfferMap[styleOffer.ID] = styleOffer
 		}
 
 		for _, styleOfferId := range updatedMasterPayload.OfferStyleIds {
@@ -159,7 +159,7 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 
 		// Removed ones
 		for _, styleOffer := range currentMasterStylesOffer {
-			if _, ok := updatedOfferSet[styleOffer.StyleTypeId]; !ok {
+			if _, ok := updatedOfferSet[styleOffer.ID]; !ok {
 				removedOfferIds = append(removedOfferIds, styleOffer.ID)
 			}
 		}

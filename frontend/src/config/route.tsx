@@ -14,11 +14,13 @@ export const router = createBrowserRouter([
     },
     {
        path: "booking",
-       element: <PrivateRoute children={<Booking />} />
-    },
-    {
-        path: "booking/:id",
-        element: <PrivateRoute children={ <UserBookings />}/>
+       element: <PrivateRoute children={<Booking />} />,
+       children: [
+         {
+            path: ":id",
+            element: <PrivateRoute children={ <UserBookings />}/>
+         },
+       ]
     },
     {
         path: "profile",

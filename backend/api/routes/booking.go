@@ -8,8 +8,9 @@ import (
 )
 
 func BookingRoute(app *api.Application, groupRoute echo.Group) {
-	groupRoute.POST("/booking/create", app.RouteHandler(bookingController.CreateBooking))
+	groupRoute.GET("/booking/:id", app.RouteHandler(bookingController.GetBookingById))
 	groupRoute.GET("/bookings/:user_id", app.RouteHandler(bookingController.GetBookings))
-	groupRoute.DELETE("/booking/:bookingId", app.RouteHandler(bookingController.DeleteBooking))
 	groupRoute.PUT("/booking/update", app.RouteHandler(bookingController.UpdateBooking))
+	groupRoute.POST("/booking/create", app.RouteHandler(bookingController.CreateBooking))
+	groupRoute.DELETE("/booking/:id", app.RouteHandler(bookingController.DeleteBooking))
 }

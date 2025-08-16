@@ -25,3 +25,4 @@ type CreateBookingPayload struct {
 
 type CreateBookingRes = SuccessResWithData[Booking]
 type BookingListRes = SuccessResWithMeta[BookingResponse]
+type BookingByIdRes = SuccessResWithData[Booking]

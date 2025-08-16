@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BookUser, Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,57 +18,67 @@ import {
 import { useMaster } from "@/hooks/useMaster";
 import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
 import { useAuth } from "@/context/Auth";
+import { createBooking, getBookingById } from "@/api/booking";
 
 type Inputs = {
-  user_id: number;
-  phone: string;
   master_id: string;
-  style_type_id: string;
-  date: Date;
+  master_style_type_id: string;
+  date: string;
   time: string;
   description?: string;
 };
 
 const formSchema = z.object({
-  user_id: z.number(),
-  phone: z.string().min(8).max(10),
-  master_id: z.string().min(1),
-  style_type_id: z.string().min(1),
-  date: z.date(),
+  master_id: z.string(),
+  master_style_type_id: z.string(),
+  date: z.string(),
   time: z.string().min(1),
 });
 
 export function Booking() {
-  const {userInfo} = useAuth();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const {getUserInfo} = useAuth();
   const {masters} = useMaster();
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const {styleTypes, getMasterStylesOffer} = useMasterStylesOffer();
   
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  const form = useForm<Inputs>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      user_id: userInfo?.id || 1,
-      phone: "888281211"
-    },
-    mode: "onChange",
-  });
-
+  const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
   const masterId = form.watch("master_id")
 
   useEffect(() => {
+    console.log(id)
     if(masterId) {
       getMasterStylesOffer(+masterId)
     }
   }, [masterId]);
 
-  const onSubmit = (data: any) => {
-    setOpenAlertDialog(true);
-    console.log(data);
+  useLayoutEffect(() => {
+     if(id) {
+       getBookingById(+id)
+        .then(({data}) => {
+          setTimeout(() => {
+            form.setValue("master_id", "6")
+          }, 200)
+           form.setValue("time", data.time)
+           form.setValue("date", data.date)
+        }).catch(console.log)
+     }
+  }, [id])
+
+  const onSubmit = ({master_style_type_id, ...rest}: Inputs) => {
+    const {id: user_id} = getUserInfo();
+    
+    createBooking({user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest}).
+       then(() => {
+         setOpenAlertDialog(true);
+       }).catch(console.log)
   };
 
+  const closeAndNavigateToHomePage = () => {
+     setOpenAlertDialog(false)
+     navigate("/")
+  }
 
   return (
     <div className="w-full">
@@ -87,7 +97,7 @@ export function Booking() {
         <BookingForm.Select formControl={form.control} 
                             optionLabel="name"
                             optionValue="id"
-                            name="style_type_id" 
+                            name="master_style_type_id" 
                             label="Style" 
                             options={styleTypes}/>
         <div className="flex gap-2 w-full">
@@ -115,7 +125,7 @@ export function Booking() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setOpenAlertDialog(false)}>
+            <AlertDialogAction onClick={closeAndNavigateToHomePage}>
               ok
             </AlertDialogAction>
           </AlertDialogFooter>

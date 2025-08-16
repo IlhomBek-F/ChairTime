@@ -1,29 +1,26 @@
 import { getToken } from "@/utils/token";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 
 type AuthContextType = {
     isAuthenticated: () => boolean;
-    userInfo: any
+    getUserInfo: () => any
 };
 
 const authContext = createContext<AuthContextType>({
     isAuthenticated: () => false,
-    userInfo: {}
+    getUserInfo: () => {}
 });
 
 function AuthProvider({children}: {children: ReactNode}) {
-    const [userInfo, setUserInfo] = useState();
     const isAuthenticated = () => !!getToken();
 
-    useEffect(() => {
-       const userInfoStr = localStorage.getItem("user");
-       if(userInfoStr) {
-         setUserInfo(JSON.parse(userInfoStr))
-       }
-    }, [])
+    const getUserInfo = () => {
+        const userInfoStr = localStorage.getItem("user")
+        return userInfoStr && JSON.parse(userInfoStr) || {}
+    }    
 
 
-    return <authContext.Provider value={{isAuthenticated, userInfo}}>
+    return <authContext.Provider value={{isAuthenticated, getUserInfo}}>
         {children}
     </authContext.Provider>
 }

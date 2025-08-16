@@ -1,32 +1,29 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
 import { Card, CardContent, CardHeader } from "./card";
 import { Button } from "./button";
 import { CalendarDays, Pencil, ShieldUser, Star, Timer, Trash } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import type { BookingViewType } from "@/core/models/booking";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export function BookingItem({key}: {key: number}) {
+export function BookingItem({id, date, time, master, style_type}: BookingViewType) {
   const navigate = useNavigate();
   const [openPopover, setOpenPopover] = useState(false);
 
   return (
-    <Card className=" text-left gap-0 mb-4" key={key}>
+    <Card className=" text-left gap-0 mb-4" key={id}>
       <CardHeader className="font-semibold font-mono flex items-center">
-        <ShieldUser size={18}/> Master: Makhmudjon
+        <ShieldUser size={18}/> Master: {master}
       </CardHeader>
       <CardContent className="flex justify-between items-center">
         <div className="flex flex-col">
-          <span className="font-mono flex items-center gap-2"><CalendarDays size={18}/> Date: 10.07.2025</span>
-          <span className="font-mono flex items-center gap-2"><Timer size={18}/> Time: 13:00</span>
-          <span className="font-mono flex items-center gap-2"><Star size={18}/> Style: Man Style</span>
+          <span className="font-mono flex items-center gap-2"><CalendarDays size={18}/> Date: {date.replace("-", ".")}</span>
+          <span className="font-mono flex items-center gap-2"><Timer size={18}/> Time: {time}</span>
+          <span className="font-mono flex items-center gap-2"><Star size={18}/> Style: {style_type}</span>
         </div>
         <div className="flex flex-col gap-2">
           <Popover open={openPopover}>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="destructive" className="mb-1" onClick={() => setOpenPopover(true)}>
                 <Trash />
               </Button>
@@ -39,7 +36,7 @@ export function BookingItem({key}: {key: number}) {
               </div>
             </PopoverContent>
           </Popover>
-          <Button variant="success" onClick={() => navigate(`booking/${key}`)}>
+          <Button variant="success" onClick={() => navigate(`/booking/${id}`)}>
             <Pencil />
           </Button>
         </div>

@@ -30,7 +30,7 @@ type FormFieldProps = {
 type FormFieldSelectProps = FormFieldProps & {
   options: any[],
   optionLabel?: string,
-  optionValue?: string
+  optionValue?: string,
 }
 
 const inputField = ({ formControl, name, label }: FormFieldProps) => {
@@ -57,7 +57,7 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel }:
     render={({ field }) => (
       <FormItem className="w-full mb-4">
         <FormLabel>{label}</FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select onValueChange={field.onChange} value={field.value} >
           <FormControl className="w-full">
             <SelectTrigger>
               <SelectValue placeholder="Select" className="w-full"/>
@@ -65,7 +65,8 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel }:
           </FormControl>
           <SelectContent>
             {options.map((option: any, index: number) => {
-              return <SelectItem key={index} value={optionValue && `${option[optionValue]}` || option}>{optionLabel && option[optionLabel] || option}</SelectItem>
+              return <SelectItem key={index} 
+                                 value={optionValue && `${option[optionValue]}` || option}>{optionLabel && option[optionLabel] || option}</SelectItem>
             })}
           </SelectContent>
         </Select>
@@ -92,11 +93,7 @@ const date = ({ formControl }: { formControl: any }) => {
                   id="date"
                   className="w-48 justify-between font-normal"
                 >
-                  {field.value ? (
-                    format(field.value, "dd.MM.yyyy")
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
+                  {field.value ? field.value : <span>Pick a date</span>}
                   <ChevronDownIcon />
                 </Button>
               </FormControl>
@@ -111,8 +108,10 @@ const date = ({ formControl }: { formControl: any }) => {
                 className="w-full"
                 captionLayout="dropdown"
                 onSelect={(date) => {
-                  field.onChange(date);
-                  setOpen(false);
+                  if(date instanceof Date) {
+                    field.onChange(format(date, "dd-MM-yyyy"));
+                    setOpen(false);
+                  }
                 }}
               />
             </PopoverContent>
