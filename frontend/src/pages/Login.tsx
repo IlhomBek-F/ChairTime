@@ -31,7 +31,9 @@ export function Login() {
     } else {
         signIn(credential.username, credential.password)
          .then((res) => {
-            setToken(res.data.access_token)
+            const {access_token, ...user_info} = res.data;
+            localStorage.setItem("user", JSON.stringify(user_info));
+            setToken(access_token)
             navigate('/')
          }).catch(console.log)
     }

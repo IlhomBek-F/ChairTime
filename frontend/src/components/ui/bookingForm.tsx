@@ -21,12 +21,19 @@ import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
 
-export type SelectOptionType = {
-   id: number,
-   label: string
+type FormFieldProps = {
+  formControl: any,
+  name: string,
+  label: string
 }
 
-const inputField = ({ formControl, name, label }: { formControl: any, name: string, label: string }) => {
+type FormFieldSelectProps = FormFieldProps & {
+  options: any[],
+  optionLabel?: string,
+  optionValue?: string
+}
+
+const inputField = ({ formControl, name, label }: FormFieldProps) => {
   return (
     <FormField
       name={name}
@@ -43,7 +50,7 @@ const inputField = ({ formControl, name, label }: { formControl: any, name: stri
   );
 };
 
-const select = ({ formControl, options, name, label }: { formControl: any, options: SelectOptionType[], name: string, label: string }) => (
+const select = ({ formControl, options, name, label, optionValue, optionLabel }: FormFieldSelectProps) => (
   <FormField
     control={formControl}
     name={name}
@@ -57,8 +64,8 @@ const select = ({ formControl, options, name, label }: { formControl: any, optio
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            {options.map((option: SelectOptionType) => {
-              return <SelectItem value={`${option.id}`}>{option.label}</SelectItem>
+            {options.map((option: any, index: number) => {
+              return <SelectItem key={index} value={optionValue && `${option[optionValue]}` || option}>{optionLabel && option[optionLabel] || option}</SelectItem>
             })}
           </SelectContent>
         </Select>
@@ -116,7 +123,7 @@ const date = ({ formControl }: { formControl: any }) => {
   );
 };
 
-const textArea = ({ formControl, name, label }: { formControl: any, name: string, label: string }) => (
+const textArea = ({ formControl, name, label }: FormFieldProps) => (
   <FormField
     control={formControl}
     name={name}

@@ -13,49 +13,50 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useMaster } from "@/hooks/useMaster";
 import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
-import type { MasterType } from "@/core/models/master";
-import type { StyleType } from "@/core/models/styleType";
+import { useAuth } from "@/context/Auth";
 
 type Inputs = {
-  username: string;
+  user_id: number;
   phone: string;
-  master: string;
-  style: string;
+  master_id: string;
+  style_type_id: string;
   date: Date;
   time: string;
   description?: string;
 };
 
 const formSchema = z.object({
-  username: z.string().min(3),
+  user_id: z.number(),
   phone: z.string().min(8).max(10),
-  master: z.string().min(1),
-  style: z.string().min(1),
+  master_id: z.string().min(1),
+  style_type_id: z.string().min(1),
   date: z.date(),
   time: z.string().min(1),
 });
 
 export function Booking() {
-  const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const {userInfo} = useAuth();
   const {masters} = useMaster();
+  const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const {styleTypes, getMasterStylesOffer} = useMasterStylesOffer();
-
+  
   const navigate = useNavigate();
   const { id } = useParams();
 
   const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "Arslan",
-      phone: "1234567890",
+      user_id: userInfo?.id || 1,
+      phone: "888281211"
     },
     mode: "onChange",
   });
 
-  const masterId = form.watch("master")
+  const masterId = form.watch("master_id")
 
   useEffect(() => {
     if(masterId) {
@@ -77,20 +78,24 @@ export function Booking() {
 
       <BookingForm form={form} handleSubmit={form.handleSubmit(onSubmit)}>
         <BookingForm.Select formControl={form.control} 
-                            name="master" 
+                            name="master_id" 
+                            optionValue="id"
+                            optionLabel="firstname"
                             label="Master" 
-                            options={masters.map(({id, firstname}: MasterType) => ({id, label: firstname}))}/>
+                            options={masters}/>
 
         <BookingForm.Select formControl={form.control} 
-                            name="style" 
+                            optionLabel="name"
+                            optionValue="id"
+                            name="style_type_id" 
                             label="Style" 
-                            options={styleTypes.map(({id, name}: StyleType) => ({id, label: name}))}/>
+                            options={styleTypes}/>
         <div className="flex gap-2 w-full">
           <BookingForm.Date formControl={form.control} />
           <BookingForm.Select formControl={form.control} 
                               name="time" 
                               label="Time" 
-                              options={[]}/>
+                              options={["18:00", "19:00"]}/>
         </div>
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">
@@ -99,6 +104,7 @@ export function Booking() {
       </BookingForm>
 
       <AlertDialog open={openAlertDialog}>
+        <AlertDialogTitle></AlertDialogTitle>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogDescription className="flex flex-col items-center gap-4">
