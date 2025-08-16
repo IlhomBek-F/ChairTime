@@ -129,7 +129,7 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
 		var currentMasterStylesOffer []domain.MasterStyleType
 		var masterStyleOfferMap = make(map[int]domain.MasterStyleType)
-		var updatedMasterStyleOfferMap = make(map[int]int)
+		var updatedOfferSet = make(map[int]int)
 
 		result := tx.Model(&domain.MasterStyleType{}).Where("master_id = ?", updatedMasterPayload.ID).Find(&currentMasterStylesOffer)
 
@@ -137,42 +137,48 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 			return result.Error
 		}
 
+		// Build lookup maps
 		for _, styleOffer := range currentMasterStylesOffer {
-			masterStyleOfferMap[styleOffer.ID] = styleOffer
+			masterStyleOfferMap[styleOffer.StyleTypeId] = styleOffer
 		}
 
 		for _, styleOfferId := range updatedMasterPayload.OfferStyleIds {
-			updatedMasterStyleOfferMap[styleOfferId] = 1
+			updatedOfferSet[styleOfferId] = 1
 		}
 
+		// Track changes
 		newAddedOffer := []domain.MasterStyleType{}
-		removedOffer := []int{}
+		removedOfferIds := []int{}
 
+		// New additions
 		for _, id := range updatedMasterPayload.OfferStyleIds {
 			if _, ok := masterStyleOfferMap[id]; !ok {
 				newAddedOffer = append(newAddedOffer, domain.MasterStyleType{MasterId: updatedMasterPayload.ID, StyleTypeId: id})
 			}
 		}
 
+		// Removed ones
 		for _, styleOffer := range currentMasterStylesOffer {
-			if _, ok := updatedMasterStyleOfferMap[styleOffer.ID]; !ok {
-				removedOffer = append(removedOffer, styleOffer.ID)
+			if _, ok := updatedOfferSet[styleOffer.StyleTypeId]; !ok {
+				removedOfferIds = append(removedOfferIds, styleOffer.ID)
 			}
 		}
 
+		//Apply changes
 		if len(newAddedOffer) > 0 {
 			if err := tx.Create(&newAddedOffer).Error; err != nil {
 				return err
 			}
 		}
 
-		if len(removedOffer) > 0 {
-			if err := tx.Delete(&domain.MasterStyleType{}, removedOffer).Error; err != nil {
+		if len(removedOfferIds) > 0 {
+			if err := tx.Delete(&domain.MasterStyleType{}, removedOfferIds).Error; err != nil {
 				return err
 			}
 		}
 
-		if err := tx.Save(&updatedMasterPayload).Error; err != nil {
+		// Update master itself
+		if err := tx.Updates(&updatedMasterPayload).Error; err != nil {
 			return err
 		}
 
