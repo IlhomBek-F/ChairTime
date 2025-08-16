@@ -1,28 +1,28 @@
 import { AuthLayout } from "@/components/ui/authLayout";
-import { MainLayout } from "@/components/ui/mainLayout";
-import { Booking } from "@/pages/Booking";
+ import { Booking } from "@/pages/Booking";
 import { Login } from "@/pages/Login";
-import { Profile } from "@/pages/Profile";
 import { UserBookings } from "@/pages/UserBookings";
 import { createBrowserRouter } from "react-router";
+import { PrivateRoute } from "./PrivateRoute";
+import { Profile } from "@/pages/Profile";
 
 
 export const router = createBrowserRouter([
     {  
         index: true,
-        element: <MainLayout><UserBookings /></MainLayout>
+        element: <PrivateRoute children={<UserBookings />}/>
     },
     {
        path: "booking",
-       element: <MainLayout><Booking /></MainLayout>
+       element: <PrivateRoute children={<Booking />} />
     },
     {
         path: "booking/:id",
-        element: <MainLayout><Booking /></MainLayout>
+        element: <PrivateRoute children={ <UserBookings />}/>
     },
     {
         path: "profile",
-        element: <MainLayout><Profile /></MainLayout>
+        element: <PrivateRoute children={<Profile />}/>
     },
     {
         path: "login",

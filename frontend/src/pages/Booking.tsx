@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BookUser, Check, Loader2Icon } from "lucide-react";
+import { BookUser, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
@@ -9,14 +9,15 @@ import { BookingForm } from "@/components/ui/bookingForm";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useMaster } from "@/hooks/useMaster";
+import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
+import type { MasterType } from "@/core/models/master";
+import type { StyleType } from "@/core/models/styleType";
 
 type Inputs = {
   username: string;
@@ -39,9 +40,12 @@ const formSchema = z.object({
 
 export function Booking() {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const {masters} = useMaster();
+  const {styleTypes, getMasterStylesOffer} = useMasterStylesOffer();
 
   const navigate = useNavigate();
   const { id } = useParams();
+
   const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,17 +55,19 @@ export function Booking() {
     mode: "onChange",
   });
 
+  const masterId = form.watch("master")
+
   useEffect(() => {
-    if (id) {
-      // fetch booking data
-      console.log("fetching,,,,");
+    if(masterId) {
+      getMasterStylesOffer(+masterId)
     }
-  }, [id]);
+  }, [masterId]);
 
   const onSubmit = (data: any) => {
     setOpenAlertDialog(true);
     console.log(data);
   };
+
 
   return (
     <div className="w-full">
@@ -70,13 +76,21 @@ export function Booking() {
       </h1>
 
       <BookingForm form={form} handleSubmit={form.handleSubmit(onSubmit)}>
-        <BookingForm.InputField formControl={form.control} name="username" label="Username"/>
-        <BookingForm.InputField formControl={form.control} name="phone" label="Phone"/>
-        <BookingForm.Select formControl={form.control} name="master" label="Master" options={["Makhmudjon", "Hatamjon"]}/>
-        <BookingForm.Select formControl={form.control} name="style" label="Style" options={["Men", "Modern"]}/>
+        <BookingForm.Select formControl={form.control} 
+                            name="master" 
+                            label="Master" 
+                            options={masters.map(({id, firstname}: MasterType) => ({id, label: firstname}))}/>
+
+        <BookingForm.Select formControl={form.control} 
+                            name="style" 
+                            label="Style" 
+                            options={styleTypes.map(({id, name}: StyleType) => ({id, label: name}))}/>
         <div className="flex gap-2 w-full">
           <BookingForm.Date formControl={form.control} />
-          <BookingForm.Select formControl={form.control} name="time" label="Time" options={["8:00", "8:30", "9:00", "9:30"]}/>
+          <BookingForm.Select formControl={form.control} 
+                              name="time" 
+                              label="Time" 
+                              options={[]}/>
         </div>
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">

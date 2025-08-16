@@ -1,11 +1,18 @@
+import { getBooking } from "@/api/booking";
 import { BookingItem } from "@/components/ui/bookingItem";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BookUser } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 export function UserBookings() {
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    getBooking(2)
+     .then(console.log)
+  }, [])
 
   return (
     <div className="w-full h-[87vh]">

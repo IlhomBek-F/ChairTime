@@ -1,3 +1,4 @@
+import { signIn } from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { setToken } from "@/utils/token";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -20,13 +22,18 @@ const LOGIN_DESC = "Enter your username below to login to your account"
 
 export function Login() {
   const [signUpMode, setSignUpMode] = useState(false);
+  const [credential, setCredential] = useState({username: "", password: ""})
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     if(signUpMode) {
         setSignUpMode(!signUpMode)
     } else {
-        navigate('/')
+        signIn(credential.username, credential.password)
+         .then((res) => {
+            setToken(res.data.access_token)
+            navigate('/')
+         }).catch(console.log)
     }
   }
 
@@ -43,6 +50,7 @@ export function Login() {
               <Label htmlFor="email">Username</Label>
               <Input id="email"
                      type="email"
+                     onChange={(e) => setCredential({...credential, username: e.target.value})}
                      placeholder="m@example.com"
                      required
                     />
@@ -57,7 +65,8 @@ export function Login() {
                   Forgot your password?
                 </a>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" required onChange={(e) => setCredential({...credential, password: e.target.value})}
+/>
             </div>
           </div>
         </form>

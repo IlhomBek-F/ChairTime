@@ -21,6 +21,11 @@ import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
 
+export type SelectOptionType = {
+   id: number,
+   label: string
+}
+
 const inputField = ({ formControl, name, label }: { formControl: any, name: string, label: string }) => {
   return (
     <FormField
@@ -38,7 +43,7 @@ const inputField = ({ formControl, name, label }: { formControl: any, name: stri
   );
 };
 
-const select = ({ formControl, options, name, label }: { formControl: any, options: any, name: string, label: string }) => (
+const select = ({ formControl, options, name, label }: { formControl: any, options: SelectOptionType[], name: string, label: string }) => (
   <FormField
     control={formControl}
     name={name}
@@ -52,8 +57,8 @@ const select = ({ formControl, options, name, label }: { formControl: any, optio
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            {options.map((option: string) => {
-              return <SelectItem value={option}>{option}</SelectItem>
+            {options.map((option: SelectOptionType) => {
+              return <SelectItem value={`${option.id}`}>{option.label}</SelectItem>
             })}
           </SelectContent>
         </Select>
