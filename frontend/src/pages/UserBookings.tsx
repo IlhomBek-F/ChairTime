@@ -3,6 +3,7 @@ import { BookingItem } from "@/components/ui/bookingItem";
 import { BookingSkeleton } from "@/components/ui/bookingSkeleton";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/context/Auth";
 import type { BookingViewType } from "@/core/models/booking";
 import { BookUser } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -10,17 +11,20 @@ import { useNavigate } from "react-router";
 
 export function UserBookings() {
   const [bookings, setBookings] = useState<BookingViewType[]>([]);
+  const {getUserInfo} = useAuth();
+  const {id: userId} = getUserInfo();
+  
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
   
   const handleDeleteBooking = (id: number) => {
     deleteBooking(id)
-     .then(() => getBookings(2))
+     .then(() => getBookings(userId))
      .catch(() => console.log("error deleted"))
   }
 
   useEffect(() => {
-    getBookings(2)
+    getBookings(userId)
   }, [])
 
   const getBookings = (id: number) => {

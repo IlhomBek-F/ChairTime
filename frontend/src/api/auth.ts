@@ -1,5 +1,5 @@
 import type { AuthResType, AuthType } from "@/core/models/auth";
-import { publicHttp } from "./http";
+import { privateHttp, publicHttp } from "./http";
 import type { ResponseSuccess, ResponseSuccessWithData } from "@/core/models/base";
 
 export async function signIn(username: string, password: string): Promise<ResponseSuccessWithData<AuthResType>> {
@@ -8,4 +8,8 @@ export async function signIn(username: string, password: string): Promise<Respon
 
 export async function signUp(credential: AuthType): Promise<ResponseSuccess> {
     return publicHttp.post("/auth/sign-up", credential)
+}
+
+export async function deleteAccount(userId: number): Promise<ResponseSuccess> {
+    return privateHttp.delete(`/user/${userId}`)
 }

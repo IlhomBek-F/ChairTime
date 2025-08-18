@@ -1,4 +1,4 @@
-import { signIn } from "@/api/auth";
+import { signIn, signUp } from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,7 +27,10 @@ export function Login() {
 
   const handleSubmit = () => {
     if(signUpMode) {
-        setSignUpMode(!signUpMode)
+        signUp(credential)
+         .then(() => {
+           setSignUpMode(!signUpMode)
+         }).catch(console.log)
     } else {
         signIn(credential.username, credential.password)
          .then((res) => {

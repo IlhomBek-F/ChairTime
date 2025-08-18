@@ -1,3 +1,4 @@
+import { deleteAccount } from "@/api/auth";
 import AvatarUploader from "@/components/ui/avatarUpload";
 import { BookingForm } from "@/components/ui/bookingForm";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useAuth } from "@/context/Auth";
+import { clearToken } from "@/utils/token";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookUser, ChevronsUpDown } from "lucide-react";
+import { BookUser, ChevronsUpDown, Loader2Icon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import z from "zod";
@@ -18,6 +22,10 @@ const formSchema = z.object({
 
 export function Profile() {
   const navigate = useNavigate();
+  const {getUserInfo} = useAuth();
+  const {id: user_id} = getUserInfo();
+  const [deletingAccount, setDeletingAccount] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,6 +35,16 @@ export function Profile() {
   });
 
   const handleSubmit = () => {};
+  
+  const handleDeleteAccount = () => {
+    setDeletingAccount(true);
+    deleteAccount(+user_id)
+     .then(() => {
+        clearToken()
+        navigate("/login");
+     }).catch(console.log)
+     .finally(() => setDeletingAccount(false))
+  }
 
   return (
     <div className="w-full">
@@ -41,11 +59,15 @@ export function Profile() {
           name="username"
           label="Username"
         />
+        <BookingForm.InputField
+          formControl={form.control}
+          name="phone"
+          label="Phone"
+        />
         <Button
           type="submit"
           className="absolute w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
         >
-          {/* <Loader2Icon className="animate-spin" /> */}
           Submit
         </Button>
       </BookingForm>
@@ -60,7 +82,8 @@ export function Profile() {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="flex flex-col gap-2">
-          <Button variant="destructive">Delete account</Button>
+          {deletingAccount && <Loader2Icon className="animate-spin" />}
+          <Button variant="destructive" onClick={handleDeleteAccount}>Delete account</Button>
         </CollapsibleContent>
       </Collapsible>
     </div>
