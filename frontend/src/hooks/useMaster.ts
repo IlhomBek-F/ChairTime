@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 
 export function useMaster() {
     const [masters, setMasters] = useState<MasterType[]>([])
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+       setLoading(true)
        getMasters()
        .then((res) => setMasters(res.data))
        .catch(console.log)
+       .finally(() => setLoading(false))
     }, [])
 
-    return {masters}
+    return {masters, loading}
 }

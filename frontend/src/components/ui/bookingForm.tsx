@@ -16,7 +16,7 @@ import {
 } from "./select";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Loader2Icon } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
@@ -25,6 +25,7 @@ type FormFieldProps = {
   formControl: any,
   name: string,
   label: string
+  loading?: boolean
 }
 
 type FormFieldSelectProps = FormFieldProps & {
@@ -50,17 +51,19 @@ const inputField = ({ formControl, name, label }: FormFieldProps) => {
   );
 };
 
-const select = ({ formControl, options, name, label, optionValue, optionLabel }: FormFieldSelectProps) => (
+const select = ({ formControl, options, name, label, optionValue, optionLabel, loading }: FormFieldSelectProps) => (
   <FormField
+    disabled={loading}
     control={formControl}
     name={name}
     render={({ field }) => (
       <FormItem className="w-full mb-4">
         <FormLabel>{label}</FormLabel>
-        <Select onValueChange={field.onChange} value={field.value} >
+        <Select onValueChange={field.onChange} value={field.value}>
           <FormControl className="w-full">
             <SelectTrigger>
-              <SelectValue placeholder="Select" className="w-full"/>
+              {loading && <Loader2Icon className="animate-spin" />}
+              <SelectValue  className="w-full"/>
             </SelectTrigger>
           </FormControl>
           <SelectContent>

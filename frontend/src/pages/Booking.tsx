@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BookUser, Check } from "lucide-react";
+import { BookUser, Check, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
@@ -42,10 +42,10 @@ export function Booking() {
 
   const navigate = useNavigate();
   const {getUserInfo} = useAuth();
-  const {masters} = useMaster();
+  const {masters, loading} = useMaster();
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
-  const {styleTypes} = useMasterStylesOffer(+form.watch("master_id"));
+  const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(+form.watch("master_id"));
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
 
   useEffect(() => {
@@ -108,7 +108,8 @@ export function Booking() {
                             name="master_id" 
                             optionValue="id"
                             optionLabel="firstname"
-                            label="Master" 
+                            label="Master"
+                            loading={loading}
                             options={masters}/>
 
         <BookingForm.Select formControl={form.control} 
@@ -116,6 +117,7 @@ export function Booking() {
                             optionValue="id"
                             name="master_style_type_id" 
                             label="Style" 
+                            loading={loadingStyleTypes}
                             options={styleTypes}/>
         <div className="flex gap-2 w-full">
           <BookingForm.Date formControl={form.control} />
@@ -126,7 +128,7 @@ export function Booking() {
         </div>
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">
-          {/* <Loader2Icon className="animate-spin" /> */}
+          <Loader2Icon className="animate-spin" />
           {bookingId ? "update" : "save"}</Button>
       </BookingForm>
 

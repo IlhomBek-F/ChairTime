@@ -4,6 +4,7 @@ import {  useEffect, useState } from "react";
 
 export function useMasterStylesOffer(masterId: number) {
   const [styleTypes, setOptions] = useState<MasterStylesOfferType[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
       if(masterId) {
@@ -12,10 +13,12 @@ export function useMasterStylesOffer(masterId: number) {
   }, [masterId])
 
   const getMasterStylesOffer = (masterId: number) => {
+     setLoading(true)
     _getMasterStylesOffer(masterId)
       .then((res) => setOptions(res.data))
-      .catch(console.log);
+      .catch(console.log)
+      .finally(() => setLoading(false))
   };
 
-  return { styleTypes , getMasterStylesOffer};
+  return { styleTypes , getMasterStylesOffer, loading};
 }
