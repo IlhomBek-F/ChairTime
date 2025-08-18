@@ -226,6 +226,39 @@ definitions:
       status:
         type: integer
     type: object
+  domain.MasterStyleType:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      master_id:
+        type: integer
+      style_type_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  domain.MasterStyleTypeByIdRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.MasterStyleType'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  domain.MasterStyleTypeRes:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.MasterStyleType'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   domain.MetaModel:
     properties:
       page:
@@ -527,6 +560,58 @@ paths:
       summary: Get bookings
       tags:
       - Booking
+  /master-style-type/{master_style_type_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get masterStyleType by id
+      parameters:
+      - description: master_style_type_id
+        in: path
+        name: master_style_type_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: MasterStyleType info
+          schema:
+            $ref: '#/definitions/domain.MasterStyleTypeByIdRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get masterStyleType by id
+      tags:
+      - MasterStyleType
+  /master-style-types:
+    get:
+      consumes:
+      - application/json
+      description: Get masterStyleTypes
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: MasterStyleTypes
+          schema:
+            $ref: '#/definitions/domain.MasterStyleTypeRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get masterStyleTypes
+      tags:
+      - MasterStyleType
   /master/{master_id}:
     get:
       consumes:

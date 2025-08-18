@@ -27,6 +27,11 @@ type Repository struct {
 		GetStyleTypes() ([]domain.StyleType, error)
 	}
 
+	MasterStyleType interface {
+		GetMasterStyleTypes() ([]domain.MasterStyleType, error)
+		GetMasterStyleTypeById(id int) (domain.MasterStyleType, error)
+	}
+
 	Booking interface {
 		CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
 		CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
@@ -45,10 +50,11 @@ type Repository struct {
 
 func NewRepo(db *gorm.DB) Repository {
 	return Repository{
-		Auth:      NewAuthRepo(db),
-		Master:    NewMasterRepo(db),
-		StyleType: NewStyleTypeRepo(db),
-		Booking:   NewBookingRepo(db),
-		User:      NewUserRepo(db),
+		Auth:            NewAuthRepo(db),
+		Master:          NewMasterRepo(db),
+		StyleType:       NewStyleTypeRepo(db),
+		Booking:         NewBookingRepo(db),
+		User:            NewUserRepo(db),
+		MasterStyleType: NewMasterStyleTypeRepo(db),
 	}
 }

@@ -329,6 +329,87 @@
                 }
             }
         },
+        "/master-style-type/{master_style_type_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get masterStyleType by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterStyleType"
+                ],
+                "summary": "Get masterStyleType by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "master_style_type_id",
+                        "name": "master_style_type_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "MasterStyleType info",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterStyleTypeByIdRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master-style-types": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get masterStyleTypes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MasterStyleType"
+                ],
+                "summary": "Get masterStyleTypes",
+                "responses": {
+                    "201": {
+                        "description": "MasterStyleTypes",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterStyleTypeRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/create": {
             "post": {
                 "security": [
@@ -1127,6 +1208,57 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.MasterStyleOffer"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.MasterStyleType": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "master_id": {
+                    "type": "integer"
+                },
+                "style_type_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.MasterStyleTypeByIdRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.MasterStyleType"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.MasterStyleTypeRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.MasterStyleType"
                     }
                 },
                 "message": {
