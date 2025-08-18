@@ -22,7 +22,7 @@ const LOGIN_DESC = "Enter your username below to login to your account"
 
 export function Login() {
   const [signUpMode, setSignUpMode] = useState(false);
-  const [credential, setCredential] = useState({username: "", password: ""})
+  const [credential, setCredential] = useState({username: "", password: "", phone: ""})
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -60,6 +60,14 @@ export function Login() {
                      required
                     />
             </div>
+            {signUpMode && <div className="grid gap-2">
+              <Label htmlFor="email">Phone</Label>
+              <Input id="phone"
+                     onChange={(e) => setCredential({...credential, phone: e.target.value})}
+                     placeholder="+992"
+                     required
+                    />
+            </div>}
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>

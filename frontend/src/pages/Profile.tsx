@@ -1,4 +1,4 @@
-import { deleteAccount } from "@/api/auth";
+import { deleteAccount, getUserInfo as _getUserInfo } from "@/api/auth";
 import AvatarUploader from "@/components/ui/avatarUpload";
 import { BookingForm } from "@/components/ui/bookingForm";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,14 @@ import { useAuth } from "@/context/Auth";
 import { clearToken } from "@/utils/token";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookUser, ChevronsUpDown, Loader2Icon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import z from "zod";
 
 const formSchema = z.object({
   username: z.string().min(3),
+  phone: z.string().min(3)
 });
 
 export function Profile() {
@@ -26,13 +27,17 @@ export function Profile() {
   const {id: user_id} = getUserInfo();
   const [deletingAccount, setDeletingAccount] = useState(false);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "Arslan",
-    },
-    mode: "onChange",
-  });
+  const form = useForm({resolver: zodResolver(formSchema), mode: "onChange" });
+
+  useEffect(() => {
+     if(user_id) {
+       _getUserInfo(user_id)
+        .then(({data}) => {
+           form.setValue("username", data.username)
+           form.setValue("phone", data.phone)
+        }).catch(console.log)
+     }
+  }, [])
 
   const handleSubmit = () => {};
   
