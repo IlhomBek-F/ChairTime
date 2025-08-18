@@ -47,12 +47,13 @@ export function Booking() {
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
   const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(+form.watch("master_id"));
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
+  const [upsertLoading, setUpsertLoading] = useState(false);
 
   useEffect(() => {
     if (masters.length && bookingId) {
       getBooking(bookingId)
     }
-  }, [bookingId, masters.length])
+  }, [bookingId, masters])
 
   useEffect(() => {
      if(styleTypes && pendingMstStyleTypeId) {
@@ -74,22 +75,33 @@ export function Booking() {
     }
   }
 
-  const onSave = ({master_style_type_id, ...rest}: Inputs) => {
+  const _createBooking = ({master_style_type_id, ...rest}: Inputs) => {
     const {id: user_id} = getUserInfo();
     const payload = {user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest};
     createBooking(payload)
     .then(() => {
       setOpenAlertDialog(true);
     }).catch(console.log)
+    .finally(() => setUpsertLoading(false))
   };
 
-  const onUpdate = ({master_style_type_id, ...rest}: Inputs) => {
+  const _updateBooking = ({master_style_type_id, ...rest}: Inputs) => {
     const {id: user_id} = getUserInfo();
     const payload = {id: bookingId, user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest};
     updateBooking(payload)
     .then(() => {
       setOpenAlertDialog(true);
     }).catch(console.log)
+    .finally(() => setUpsertLoading(false))
+  }
+
+  const onSubmit = ({master_style_type_id, ...rest}: Inputs) => {
+    setUpsertLoading(true);
+    if(bookingId) {
+      _updateBooking({master_style_type_id, ...rest})
+    } else {
+      _createBooking({master_style_type_id, ...rest})
+    }
   }
 
   const closeAndNavigateToHomePage = () => {
@@ -103,7 +115,7 @@ export function Booking() {
         <BookUser size={18} /> Booking
       </h1>
 
-      <BookingForm form={form} handleSubmit={form.handleSubmit(bookingId ? onUpdate : onSave)}>
+      <BookingForm form={form} handleSubmit={form.handleSubmit(onSubmit)}>
         <BookingForm.Select formControl={form.control} 
                             name="master_id" 
                             optionValue="id"
@@ -128,8 +140,8 @@ export function Booking() {
         </div>
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">
-          <Loader2Icon className="animate-spin" />
-          {bookingId ? "update" : "save"}</Button>
+          {upsertLoading && <Loader2Icon className="animate-spin" />}
+          {bookingId ? (upsertLoading ? "updating..." : "update") : (upsertLoading ? "saving..." : "save")}</Button>
       </BookingForm>
 
       <AlertDialog open={openAlertDialog}>
