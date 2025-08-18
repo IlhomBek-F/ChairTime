@@ -15,3 +15,4 @@ export type CreateBookingType = {
 }
 
 export type BookingByIdType = BaseType & CreateBookingType
+export type UpdateBookingType = BookingByIdType

@@ -12,5 +12,5 @@ func BookingRoute(app *api.Application, groupRoute echo.Group) {
 	groupRoute.GET("/bookings/:user_id", app.RouteHandler(bookingController.GetBookings))
 	groupRoute.PUT("/booking/update", app.RouteHandler(bookingController.UpdateBooking))
 	groupRoute.POST("/booking/create", app.RouteHandler(bookingController.CreateBooking))
-	groupRoute.DELETE("/booking/:id", app.RouteHandler(bookingController.DeleteBooking))
+	groupRoute.DELETE("/booking/:bookingId", app.RouteHandler(bookingController.DeleteBooking))
 }

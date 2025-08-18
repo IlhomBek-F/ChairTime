@@ -3,11 +3,13 @@ import { privateHttp, publicHttp } from "./http";
 
 publicHttp.interceptors.response.use((response) => response.data, (error) => Promise.reject(error.response));
 
-privateHttp.interceptors.request.use(function (config) {
+privateHttp.interceptors.request.use(async function (config) {
+        await pending()
+
     const token = getToken();
 
     if(!token) {
-        window.location.replace("login");
+        window.location.replace("/login");
     }
 
     config.headers.setAuthorization(`Bearer ${token}`);
@@ -17,7 +19,15 @@ privateHttp.interceptors.request.use(function (config) {
 
 privateHttp.interceptors.response.use((response) => response.data, function (error) {
     if(error.status === 401) {
-       window.location.replace("login")
+       window.location.replace("/login")
     }
     return Promise.reject(error.response);
 });
+
+const pending = async () => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(true)
+        }, 2000)
+    })
+}

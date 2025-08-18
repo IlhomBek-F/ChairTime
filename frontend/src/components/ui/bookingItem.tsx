@@ -6,7 +6,11 @@ import { useState } from "react";
 import type { BookingViewType } from "@/core/models/booking";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export function BookingItem({id, date, time, master, style_type}: BookingViewType) {
+type BookingItemPropsType = BookingViewType & {
+  handleDeleteBooking: (id: number) => void
+}
+
+export function BookingItem({id, date, time, master, style_type, handleDeleteBooking}: BookingItemPropsType) {
   const navigate = useNavigate();
   const [openPopover, setOpenPopover] = useState(false);
 
@@ -31,7 +35,7 @@ export function BookingItem({id, date, time, master, style_type}: BookingViewTyp
             <PopoverContent className="w-[300px] p-2 text-[14px] flex flex-col gap-2 mr-10 z-10 bg-[#faf9f9] border rounded-md">
               <span>Are you sure you want to delete this booking?</span>
               <div className="flex gap-1 justify-end">
-                <Button variant="outline">Yes</Button>
+                <Button variant="outline" onClick={() => handleDeleteBooking(id)}>Yes</Button>
                 <Button variant="outline" onClick={() => setOpenPopover(false)}>No</Button>
               </div>
             </PopoverContent>

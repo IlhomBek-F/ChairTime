@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BookUser, Check } from "lucide-react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +18,8 @@ import {
 import { useMaster } from "@/hooks/useMaster";
 import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
 import { useAuth } from "@/context/Auth";
-import { createBooking, getBookingById } from "@/api/booking";
+import { createBooking, getBookingById, updateBooking } from "@/api/booking";
+import { getMasterStyleTypeById } from "@/api/masterStyleType";
 
 type Inputs = {
   master_id: string;
@@ -36,44 +37,60 @@ const formSchema = z.object({
 });
 
 export function Booking() {
-  const { id } = useParams();
+  const param = useParams();
+  const bookingId = Number(param["id"]);
+
   const navigate = useNavigate();
   const {getUserInfo} = useAuth();
   const {masters} = useMaster();
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
-  const {styleTypes, getMasterStylesOffer} = useMasterStylesOffer();
-  
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
-  const masterId = form.watch("master_id")
+  const {styleTypes} = useMasterStylesOffer(+form.watch("master_id"));
+  const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
 
   useEffect(() => {
-    console.log(id)
-    if(masterId) {
-      getMasterStylesOffer(+masterId)
+    if (masters.length && bookingId) {
+      getBooking(bookingId)
     }
-  }, [masterId]);
+  }, [bookingId, masters.length])
 
-  useLayoutEffect(() => {
-     if(id) {
-       getBookingById(+id)
-        .then(({data}) => {
-          setTimeout(() => {
-            form.setValue("master_id", "6")
-          }, 200)
-           form.setValue("time", data.time)
-           form.setValue("date", data.date)
-        }).catch(console.log)
+  useEffect(() => {
+     if(styleTypes && pendingMstStyleTypeId) {
+       form.setValue("master_style_type_id", String(pendingMstStyleTypeId))
      }
-  }, [id])
+  }, [styleTypes])
 
-  const onSubmit = ({master_style_type_id, ...rest}: Inputs) => {
+  const getBooking = async (id: number) => {
+    try {
+      const {data} = await getBookingById(id);
+      const {data:masterStyleType} = await getMasterStyleTypeById(data.master_style_type_id);
+      
+      form.setValue("master_id", String(masterStyleType.master_id))
+      setPendingMstStyleTypeId(String(masterStyleType.id))
+      form.setValue("time", data.time)
+      form.setValue("date", data.date)
+    } catch (error) {
+      console.log("error fetching booking")
+    }
+  }
+
+  const onSave = ({master_style_type_id, ...rest}: Inputs) => {
     const {id: user_id} = getUserInfo();
-    
-    createBooking({user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest}).
-       then(() => {
-         setOpenAlertDialog(true);
-       }).catch(console.log)
+    const payload = {user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest};
+    createBooking(payload)
+    .then(() => {
+      setOpenAlertDialog(true);
+    }).catch(console.log)
   };
+
+  const onUpdate = ({master_style_type_id, ...rest}: Inputs) => {
+    const {id: user_id} = getUserInfo();
+    const payload = {id: bookingId, user_id: +user_id, master_style_type_id: +master_style_type_id, ...rest};
+    updateBooking(payload)
+    .then(() => {
+      setOpenAlertDialog(true);
+    }).catch(console.log)
+  }
 
   const closeAndNavigateToHomePage = () => {
      setOpenAlertDialog(false)
@@ -86,7 +103,7 @@ export function Booking() {
         <BookUser size={18} /> Booking
       </h1>
 
-      <BookingForm form={form} handleSubmit={form.handleSubmit(onSubmit)}>
+      <BookingForm form={form} handleSubmit={form.handleSubmit(bookingId ? onUpdate : onSave)}>
         <BookingForm.Select formControl={form.control} 
                             name="master_id" 
                             optionValue="id"
@@ -110,7 +127,7 @@ export function Booking() {
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
         <Button type="submit" className="w-full">
           {/* <Loader2Icon className="animate-spin" /> */}
-          Submit</Button>
+          {bookingId ? "update" : "save"}</Button>
       </BookingForm>
 
       <AlertDialog open={openAlertDialog}>
@@ -121,7 +138,7 @@ export function Booking() {
               <span className="size-[50px] rounded-full flex justify-center items-center border-green-400 border-2">
                 <Check color="green" />
               </span>
-              Your booking has been accepted successfully
+              Your booking has been {bookingId ? "updated" : "accepted"} successfully
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
