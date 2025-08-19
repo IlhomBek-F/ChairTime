@@ -106,7 +106,7 @@ const date = ({ formControl }: { formControl: any }) => {
               align="start"
             >
               <Calendar
-                mode="single"
+                mode="multiple"
                 selected={field.value}
                 className="w-full"
                 captionLayout="dropdown"

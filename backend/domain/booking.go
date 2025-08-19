@@ -6,6 +6,7 @@ type Booking struct {
 	MasterStyleTypeId int    `json:"master_style_type_id"`
 	Date              string `json:"date"`
 	Time              string `json:"time"`
+	Description       string `json:"description"`
 }
 
 type BookingResponse struct {
@@ -21,6 +22,7 @@ type CreateBookingPayload struct {
 	MasterStyleTypeId int    `json:"master_style_type_id"`
 	Date              string `json:"date"`
 	Time              string `json:"time"`
+	Description       string `json:"description"`
 }
 
 type CreateBookingRes = SuccessResWithData[Booking]

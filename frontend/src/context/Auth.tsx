@@ -1,5 +1,6 @@
 import { getToken } from "@/utils/token";
 import { createContext, useContext, type ReactNode } from "react";
+import { Toaster } from "sonner";
 
 type AuthContextType = {
     isAuthenticated: () => boolean;
@@ -22,6 +23,7 @@ function AuthProvider({children}: {children: ReactNode}) {
 
     return <authContext.Provider value={{isAuthenticated, getUserInfo}}>
         {children}
+        <Toaster />
     </authContext.Provider>
 }
 
