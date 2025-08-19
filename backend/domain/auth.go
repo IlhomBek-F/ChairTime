@@ -11,6 +11,11 @@ type Authenticator interface {
 type LoginPayload struct {
 	Username string `json:"username" validate:"required,min=3,max=20"`
 	Password string `json:"password" validate:"required,min=4,max=72"`
+}
+
+type CreateAccountPayload struct {
+	Username string `json:"username" validate:"required,min=3,max=20"`
+	Password string `json:"password" validate:"required,min=4,max=72"`
 	Phone    string `json:"phone" validate:"required,min=4,max=20"`
 }
 

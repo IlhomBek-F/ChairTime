@@ -43,11 +43,11 @@ export function Booking() {
   const navigate = useNavigate();
   const {getUserInfo} = useAuth();
   const {masters, loading} = useMaster();
+  const [upsertLoading, setUpsertLoading] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
   const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(+form.watch("master_id"));
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
-  const [upsertLoading, setUpsertLoading] = useState(false);
 
   useEffect(() => {
     if (masters.length && bookingId) {

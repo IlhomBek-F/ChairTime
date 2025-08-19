@@ -19,13 +19,13 @@ import (
 //	@Tags			Authentication
 //	@Accept			json
 //	@Produce		json
-//	@Param			payload	body		domain.LoginPayload	true "User credentials"
+//	@Param			payload	body		domain.CreateAccountPayload	true "User credentials"
 //	@Success		201		{object}	domain.SignUpRes "Created new account"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/auth/sign-up [post]
 func SignUp(app *api.Application, e echo.Context) error {
-	var userPayload domain.LoginPayload
+	var userPayload domain.CreateAccountPayload
 
 	if err := e.Bind(&userPayload); err != nil {
 		return app.BadRequestResponse(e, err)

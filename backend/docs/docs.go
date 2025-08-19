@@ -80,7 +80,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.LoginPayload"
+                            "$ref": "#/definitions/domain.CreateAccountPayload"
                         }
                     }
                 ],
@@ -967,6 +967,31 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.CreateAccountPayload": {
+            "type": "object",
+            "required": [
+                "password",
+                "phone",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 72,
+                    "minLength": 4
+                },
+                "phone": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 4
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
+                }
+            }
+        },
         "domain.CreateBookingPayload": {
             "type": "object",
             "properties": {
@@ -1084,18 +1109,12 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "password",
-                "phone",
                 "username"
             ],
             "properties": {
                 "password": {
                     "type": "string",
                     "maxLength": 72,
-                    "minLength": 4
-                },
-                "phone": {
-                    "type": "string",
-                    "maxLength": 20,
                     "minLength": 4
                 },
                 "username": {

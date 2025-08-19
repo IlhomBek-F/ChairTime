@@ -21,7 +21,7 @@ export function BookingItem({id, date, time, master, style_type, handleDeleteBoo
       </CardHeader>
       <CardContent className="flex justify-between items-center">
         <div className="flex flex-col">
-          <span className="font-mono flex items-center gap-2"><CalendarDays size={18}/> Date: {date.replace("-", ".")}</span>
+          <span className="font-mono flex items-center gap-2"><CalendarDays size={18}/> Date: {date.replaceAll("-", ".")}</span>
           <span className="font-mono flex items-center gap-2"><Timer size={18}/> Time: {time}</span>
           <span className="font-mono flex items-center gap-2"><Star size={18}/> Style: {style_type}</span>
         </div>

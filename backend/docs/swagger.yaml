@@ -56,6 +56,25 @@ definitions:
       updated_at:
         type: string
     type: object
+  domain.CreateAccountPayload:
+    properties:
+      password:
+        maxLength: 72
+        minLength: 4
+        type: string
+      phone:
+        maxLength: 20
+        minLength: 4
+        type: string
+      username:
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - password
+    - phone
+    - username
+    type: object
   domain.CreateBookingPayload:
     properties:
       date:
@@ -137,17 +156,12 @@ definitions:
         maxLength: 72
         minLength: 4
         type: string
-      phone:
-        maxLength: 20
-        minLength: 4
-        type: string
       username:
         maxLength: 20
         minLength: 3
         type: string
     required:
     - password
-    - phone
     - username
     type: object
   domain.LoginRes:
@@ -396,7 +410,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/domain.LoginPayload'
+          $ref: '#/definitions/domain.CreateAccountPayload'
       produces:
       - application/json
       responses:
