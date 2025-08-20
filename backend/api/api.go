@@ -6,6 +6,8 @@ import (
 	"chairTime/repository"
 	"errors"
 
+	"slices"
+
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -43,10 +45,8 @@ func (app *Application) Authorization(roles []int) echo.MiddlewareFunc {
 				return app.BadRequestResponse(e, errors.New("invalid token claims"))
 			}
 
-			for _, role := range roles {
-				if claims.Role == role {
-					return next(e)
-				}
+			if slices.Contains(roles, claims.Role) {
+				return next(e)
 			}
 
 			return app.ForbiddenResponse(e)
