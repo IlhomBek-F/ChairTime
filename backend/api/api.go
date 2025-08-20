@@ -2,6 +2,7 @@ package api
 
 import (
 	"chairTime/domain"
+	"chairTime/internal/auth"
 	"chairTime/repository"
 	"errors"
 
@@ -31,15 +32,15 @@ func (app *Application) Authorization(roles []int) echo.MiddlewareFunc {
 			userContext := e.Get("user")
 
 			if userContext == nil {
-				return app.BadRequestResponse(e, errors.New("error getting user context key"))
+				return app.BadRequestResponse(e, errors.New("missing user context"))
 			}
 
-			token := userContext.(*jwt.Token).Raw
+			token := userContext.(*jwt.Token)
 
-			claims, err := app.Authenticator.ParseToken(token, app.Config.Auth.Secret)
+			claims, ok := token.Claims.(*auth.CustomClaims)
 
-			if err != nil {
-				return app.BadRequestResponse(e, errors.New("error parsing token"))
+			if !ok || !token.Valid {
+				return app.BadRequestResponse(e, errors.New("invalid token claims"))
 			}
 
 			for _, role := range roles {

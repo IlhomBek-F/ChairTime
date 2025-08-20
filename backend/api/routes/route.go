@@ -2,9 +2,11 @@ package routes
 
 import (
 	"chairTime/api"
+	"chairTime/internal/auth"
 	"net/http"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +30,13 @@ func Mount(app *api.Application) http.Handler {
 	protectedRoute := e.Group("/api")
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	protectedRoute.Use(echojwt.JWT([]byte(app.Config.Auth.Secret)))
+
+	protectedRoute.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(app.Config.Auth.Secret),
+		NewClaimsFunc: func(e echo.Context) jwt.Claims {
+			return new(auth.CustomClaims)
+		},
+	}))
 
 	AuthRoute(app, *publicRoute)
 	MasterRoute(app, *protectedRoute)
