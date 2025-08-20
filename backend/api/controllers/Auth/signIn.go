@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"chairTime/api"
+	"chairTime/constant"
 	_ "chairTime/docs"
 	"chairTime/domain"
+	"chairTime/internal/auth"
 	"errors"
 	"net/http"
 	"strconv"
@@ -50,12 +52,15 @@ func SignIn(app *api.Application, e echo.Context) error {
 		return app.UnauthorizedErrorResponse(e, passwordErr)
 	}
 
-	claims := jwt.RegisteredClaims{
-		Subject:   strconv.Itoa(user.ID),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.Exp)),
-		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		NotBefore: jwt.NewNumericDate(time.Now()),
-		Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
+	claims := auth.CustomClaims{
+		Role: constant.UserRoleId,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   strconv.Itoa(user.ID),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.Exp)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
+		},
 	}
 
 	token, err := app.Authenticator.GenerateToken(claims)

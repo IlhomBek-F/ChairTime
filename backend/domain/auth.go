@@ -1,11 +1,12 @@
 package domain
 
 import (
-	"github.com/golang-jwt/jwt/v4"
+	"chairTime/internal/auth"
 )
 
 type Authenticator interface {
-	GenerateToken(claims jwt.Claims) (string, error)
+	GenerateToken(claims auth.CustomClaims) (string, error)
+	ParseToken(token, secretKey string) (*auth.CustomClaims, error)
 }
 
 type LoginPayload struct {
