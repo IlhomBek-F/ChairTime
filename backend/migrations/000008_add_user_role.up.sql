@@ -1,0 +1,1 @@
+ALTER TABLE users ADD role_id int NOT NULL DEFAULT 1;

@@ -6,7 +6,6 @@ import { createBrowserRouter } from "react-router";
 import { PrivateRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
 
-
 export const router = createBrowserRouter([
     {  
         index: true,

@@ -72,10 +72,8 @@ export function Booking() {
       setPendingMstStyleTypeId(String(masterStyleType.id))
       form.setValue("time", data.time)
       form.setValue("date", data.date)
-    } catch (error) {
-       if(error instanceof Error) {
-         toast.error(error.message)
-       }
+    } catch (error: any) {
+       toast.error(error.message)
     }
   }
 
