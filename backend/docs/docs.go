@@ -755,6 +755,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/upload": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Upload a file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "File"
+                ],
+                "summary": "Upload a file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File to upload",
+                        "name": "profile_image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/user/{user_id}": {
             "get": {
                 "security": [
@@ -890,6 +935,9 @@ const docTemplate = `{
                 "date": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -996,6 +1044,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date": {
+                    "type": "string"
+                },
+                "description": {
                     "type": "string"
                 },
                 "master_style_type_id": {

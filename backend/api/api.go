@@ -31,18 +31,10 @@ func (app *Application) RouteHandler(handler func(app *Application, e echo.Conte
 func (app *Application) Authorization(roles []int) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(e echo.Context) error {
-			userContext := e.Get("user")
+			claims, err := app.GetCustomClaims(e)
 
-			if userContext == nil {
-				return app.BadRequestResponse(e, errors.New("missing user context"))
-			}
-
-			token := userContext.(*jwt.Token)
-
-			claims, ok := token.Claims.(*auth.CustomClaims)
-
-			if !ok || !token.Valid {
-				return app.BadRequestResponse(e, errors.New("invalid token claims"))
+			if err != nil {
+				return app.BadRequestResponse(e, err)
 			}
 
 			if slices.Contains(roles, claims.Role) {
@@ -52,4 +44,22 @@ func (app *Application) Authorization(roles []int) echo.MiddlewareFunc {
 			return app.ForbiddenResponse(e)
 		}
 	}
+}
+
+func (app *Application) GetCustomClaims(e echo.Context) (auth.CustomClaims, error) {
+	userContext := e.Get("user")
+
+	if userContext == nil {
+		return auth.CustomClaims{}, errors.New("missing user context")
+	}
+
+	token := userContext.(*jwt.Token)
+
+	claims, ok := token.Claims.(*auth.CustomClaims)
+
+	if !ok || !token.Valid {
+		return auth.CustomClaims{}, errors.New("invalid token claims")
+	}
+
+	return *claims, nil
 }

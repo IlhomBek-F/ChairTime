@@ -29,6 +29,7 @@ func Mount(app *api.Application) http.Handler {
 	publicRoute := e.Group("/api")
 	protectedRoute := e.Group("/api")
 
+	protectedRoute.Static("/", "../public")
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	protectedRoute.Use(echojwt.WithConfig(echojwt.Config{
@@ -44,6 +45,8 @@ func Mount(app *api.Application) http.Handler {
 	BookingRoute(app, *protectedRoute)
 	UserRoute(app, *protectedRoute)
 	NewMasterStyleTypeRoute(app, *protectedRoute)
+	NewFileRoute(app, *protectedRoute, *publicRoute)
+
 	return e
 }
 
