@@ -20,6 +20,8 @@ import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
 import { useAuth } from "@/context/Auth";
 import { createBooking, getBookingById, updateBooking } from "@/api/booking";
 import { getMasterStyleTypeById } from "@/api/masterStyleType";
+import { toast } from "sonner";
+import { toastError } from "@/lib/utils";
 
 type Inputs = {
   master_id: string;
@@ -71,7 +73,9 @@ export function Booking() {
       form.setValue("time", data.time)
       form.setValue("date", data.date)
     } catch (error) {
-      console.log("error fetching booking")
+       if(error instanceof Error) {
+         toast.error(error.message)
+       }
     }
   }
 
@@ -81,7 +85,7 @@ export function Booking() {
     createBooking(payload)
     .then(() => {
       setOpenAlertDialog(true);
-    }).catch(console.log)
+    }).catch(toastError)
     .finally(() => setUpsertLoading(false))
   };
 
@@ -91,7 +95,7 @@ export function Booking() {
     updateBooking(payload)
     .then(() => {
       setOpenAlertDialog(true);
-    }).catch(console.log)
+    }).catch(toastError)
     .finally(() => setUpsertLoading(false))
   }
 

@@ -1,5 +1,6 @@
 import { getMasters } from "@/api/master";
 import type { MasterType } from "@/core/models/master";
+import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export function useMaster() {
@@ -10,7 +11,7 @@ export function useMaster() {
        setLoading(true)
        getMasters()
        .then((res) => setMasters(res.data))
-       .catch(console.log)
+       .catch(toastError)
        .finally(() => setLoading(false))
     }, [])
 

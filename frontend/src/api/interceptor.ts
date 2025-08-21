@@ -1,7 +1,7 @@
-import { getToken } from "@/utils/token";
+import { getToken } from "@/lib/token";
 import { privateHttp, publicHttp } from "./http";
 
-publicHttp.interceptors.response.use((response) => response.data, (error) => Promise.reject(error.response));
+publicHttp.interceptors.response.use((response) => response.data, (error) => Promise.reject(error.response.data));
 
 privateHttp.interceptors.request.use(async function (config) {
         await pending()
@@ -21,7 +21,7 @@ privateHttp.interceptors.response.use((response) => response.data, function (err
     if(error.status === 401) {
        window.location.replace("/login")
     }
-    return Promise.reject(error.response);
+    return Promise.reject(error.response.data);
 });
 
 const pending = async () => {

@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setToken } from "@/utils/token";
+import { setToken } from "@/lib/token";
+import { toastError } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -30,7 +31,7 @@ export function Login() {
         signUp(credential)
          .then(() => {
            setSignUpMode(!signUpMode)
-         }).catch(console.log)
+         }).catch(toastError)
     } else {
         signIn(credential.username, credential.password)
          .then((res) => {
@@ -38,7 +39,7 @@ export function Login() {
             localStorage.setItem("user", JSON.stringify(user_info));
             setToken(access_token)
             navigate('/')
-         }).catch(console.log)
+         }).catch(toastError)
     }
   }
 

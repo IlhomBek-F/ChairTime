@@ -1,4 +1,4 @@
-import { getToken } from "@/utils/token";
+import { getToken } from "@/lib/token";
 import { createContext, useContext, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
@@ -20,10 +20,12 @@ function AuthProvider({children}: {children: ReactNode}) {
         return userInfoStr && JSON.parse(userInfoStr) || {}
     }    
 
-
     return <authContext.Provider value={{isAuthenticated, getUserInfo}}>
         {children}
-        <Toaster />
+        <Toaster position="top-center" theme="system" toastOptions={{
+            classNames: {
+            error: "!bg-red-200 text-red-800"
+        }}}/>
     </authContext.Provider>
 }
 

@@ -1,30 +1,34 @@
 import { upload } from "@/api/user";
-import { getToken } from "@/utils/token";
+import { getToken } from "@/lib/token";
 import { useRef, useState } from "react";
 
 export default function AvatarUploader() {
-  const [image, setImage] = useState(null);
-  const fileInputRef = useRef(null);
+  const [image, setImage] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append("profile_image", file);
-      upload(formData)
-      .then(console.log)
+      const reader = new FileReader();
+      
+       upload(formData)
+      .then(() => {
+         reader.onloadend = () => {
+          setImage(reader.result as string);
+        };
+
+        reader.readAsDataURL(file);
+      })
       .catch(console.log)
     }
   };
 
   const handleClick = () => {
-    fileInputRef.current.click();
+     if(fileInputRef.current) {
+       fileInputRef.current.click();
+     }
   };
 
   return (

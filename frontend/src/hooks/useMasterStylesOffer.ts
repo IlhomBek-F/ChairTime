@@ -1,5 +1,6 @@
 import { getMasterStylesOffer as _getMasterStylesOffer } from "@/api/master";
 import type { MasterStylesOfferType } from "@/core/models/master";
+import { toastError } from "@/lib/utils";
 import {  useEffect, useState } from "react";
 
 export function useMasterStylesOffer(masterId: number) {
@@ -16,7 +17,7 @@ export function useMasterStylesOffer(masterId: number) {
      setLoading(true)
     _getMasterStylesOffer(masterId)
       .then((res) => setOptions(res.data))
-      .catch(console.log)
+      .catch(toastError)
       .finally(() => setLoading(false))
   };
 

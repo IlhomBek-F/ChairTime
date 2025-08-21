@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useState } from "react";
-import { getToken } from "@/utils/token";
+import { getToken } from "@/lib/token";
 
 export function Header() {
   const navigate = useNavigate();

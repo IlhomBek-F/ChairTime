@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/Auth";
 import type { BookingViewType } from "@/core/models/booking";
+import { toastError } from "@/lib/utils";
 import { BookUser } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -20,7 +21,7 @@ export function UserBookings() {
   const handleDeleteBooking = (id: number) => {
     deleteBooking(id)
      .then(() => getBookings(userId))
-     .catch(() => console.log("error deleted"))
+     .catch(toastError)
   }
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function UserBookings() {
     getBooking(id)
      .then(({data}) => {
        setBookings(data)
-     }).catch(console.log)
+     }).catch(toastError)
      .finally(() => setLoading(false))
   }
 

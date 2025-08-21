@@ -8,13 +8,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useAuth } from "@/context/Auth";
-import { clearToken } from "@/utils/token";
+import { clearToken } from "@/lib/token";
+import { toastError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookUser, ChevronsUpDown, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { toast } from "sonner";
 import z from "zod";
 
 const formSchema = z.object({
@@ -37,7 +37,7 @@ export function Profile() {
           form.setValue("username", data.username);
           form.setValue("phone", data.phone);
         })
-        .catch(console.log);
+        .catch(toastError);
     }
   }, []);
 
@@ -50,7 +50,7 @@ export function Profile() {
         clearToken();
         navigate("/login");
       })
-      .catch(console.log)
+      .catch(toastError)
       .finally(() => setDeletingAccount(false));
   };
 
@@ -76,9 +76,7 @@ export function Profile() {
           type="submit"
           className="absolute w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
           onClick={() => {
-            toast.error("Event has been created", {
-              description: "Sunday, December 03, 2023 at 9:00 AM",
-            });
+            
           }}
         >
           Submit
