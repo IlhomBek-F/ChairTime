@@ -1,3 +1,5 @@
+import { upload } from "@/api/user";
+import { getToken } from "@/utils/token";
 import { useRef, useState } from "react";
 
 export default function AvatarUploader() {
@@ -12,6 +14,12 @@ export default function AvatarUploader() {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
+
+      let formData = new FormData();
+      formData.append("profile_image", file);
+      upload(formData)
+      .then(console.log)
+      .catch(console.log)
     }
   };
 
@@ -26,7 +34,7 @@ export default function AvatarUploader() {
         onClick={handleClick}
       >
         <img
-          src={image || "https://github.com/shadcn.png"}
+          src={image || `http://localhost:8080/api/file/${getToken()}`}
           alt="Avatar"
           className="w-full h-full object-cover"
         />

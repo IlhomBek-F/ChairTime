@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useState } from "react";
+import { getToken } from "@/utils/token";
 
 export function Header() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export function Header() {
       <Popover open={openPopover}>
         <PopoverTrigger>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png"  onClick={() => setOpenPopover(!openPopover)}/>
+            <AvatarImage src={`http://localhost:8080/api/file/${getToken()}`}  onClick={() => setOpenPopover(!openPopover)}/>
             <AvatarFallback onClick={() => setOpenPopover(!openPopover)}>CN</AvatarFallback>
           </Avatar>
         </PopoverTrigger>
