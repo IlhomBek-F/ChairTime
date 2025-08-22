@@ -20,6 +20,9 @@ type masterRepo interface {
 	GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 	GetMasterById(masterId int) (domain.Master, error)
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
+	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
+	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
+	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
@@ -186,4 +189,34 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 	})
 
 	return updatedMasterPayload, transactionError
+}
+
+func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var masterUnavailableSchedules []domain.MasterUnavailableSchedule
+	result := mr.db.WithContext(ctx).Where("master_id = ?", masterId).Find(&masterUnavailableSchedules)
+
+	return masterUnavailableSchedules, result.Error
+}
+
+func (mr masterDB) CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	master := domain.MasterUnavailableSchedule{
+		MasterId:  payload.MasterId,
+		DayOfWeek: payload.DayOfWeek,
+		Date:      payload.Date,
+		StartTime: payload.StartTime,
+		EndTime:   payload.EndTime,
+	}
+	result := mr.db.WithContext(ctx).Create(&master)
+
+	return result.Error
+}
+
+func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error) {
+	return domain.MasterUnavailableSchedule{}, nil
 }

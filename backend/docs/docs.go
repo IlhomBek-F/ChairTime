@@ -331,6 +331,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/file/upload": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Upload a file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "File"
+                ],
+                "summary": "Upload a file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File to upload",
+                        "name": "profile_image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master-style-type/{master_style_type_id}": {
             "get": {
                 "security": [
@@ -446,6 +491,98 @@ const docTemplate = `{
                         "description": "Created new master",
                         "schema": {
                             "$ref": "#/definitions/domain.CreateMasterRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/unavailable": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Create unavailable schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Create unavailable schedule",
+                "parameters": [
+                    {
+                        "description": "Master unavailable schedule payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created new unavailable schedule",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/unavailables/{master_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get master unavailable schedules",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Get master unavailable schedules",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "master_id",
+                        "name": "master_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Master list",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterUnavailableRes"
                         }
                     },
                     "400": {
@@ -742,51 +879,6 @@ const docTemplate = `{
                         "description": "StyleType list",
                         "schema": {
                             "$ref": "#/definitions/domain.StyleTypeListRes"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/upload": {
-            "post": {
-                "security": [
-                    {
-                        "JWT": []
-                    }
-                ],
-                "description": "Upload a file",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "File"
-                ],
-                "summary": "Upload a file",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "File to upload",
-                        "name": "profile_image",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/domain.SuccessRes"
                         }
                     },
                     "400": {
@@ -1116,6 +1208,29 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.CreateMasterUnavailablePayload": {
+            "type": "object",
+            "required": [
+                "master_id"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "day_of_week": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "master_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.CreateStyleTypePayload": {
             "type": "object",
             "properties": {
@@ -1193,7 +1308,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "firstname",
-                "offer_style_ids"
+                "offer_style_ids",
+                "status"
             ],
             "properties": {
                 "created_at": {
@@ -1218,6 +1334,9 @@ const docTemplate = `{
                     }
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -1341,6 +1460,55 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.MasterUnavailableRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.MasterUnavailableSchedule"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.MasterUnavailableSchedule": {
+            "type": "object",
+            "required": [
+                "master_id"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day_of_week": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "master_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.MetaModel": {
             "type": "object",
             "properties": {
@@ -1435,6 +1603,9 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"

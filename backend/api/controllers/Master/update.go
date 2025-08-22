@@ -54,3 +54,25 @@ func UpdateMaster(app *api.Application, e echo.Context) error {
 
 	return e.JSON(http.StatusOK, successRes)
 }
+
+func UpdateMasterUnavailableSchedule(app *api.Application, e echo.Context) error {
+	var payload domain.MasterUnavailableSchedule
+
+	if err := e.Bind(&payload); err != nil {
+		return app.BadRequestResponse(e, err)
+	}
+
+	updatedMasterUnavailableSchedule, err := app.Repository.Master.UpdateMasterUnavailableSchedule(payload)
+
+	if err != nil {
+		return app.InternalServerError(e, err)
+	}
+
+	successRes := domain.UpdatedMasterUnavailableScheduleRes{
+		Status:  http.StatusOK,
+		Message: "success",
+		Data:    updatedMasterUnavailableSchedule,
+	}
+
+	return e.JSON(http.StatusOK, successRes)
+}

@@ -11,9 +11,11 @@ import (
 func MasterRoute(app *api.Application, groupRoute echo.Group) {
 	adminRoleId, userRoleId := constant.AdminRoleId, constant.UserRoleId
 
+	groupRoute.GET("/master/unavailables/:master_id", app.RouteHandler(masterController.GetMasterUnavailableSchedules))
 	groupRoute.GET("/masters", app.RouteHandler(masterController.GetMasters), app.Authorization([]int{adminRoleId, userRoleId}))
-	groupRoute.POST("/master/create", app.RouteHandler(masterController.CreateMaster), app.Authorization([]int{adminRoleId}))
 	groupRoute.GET("/master/:master_id/styles-offer", app.RouteHandler(masterController.GetMasterStylesOffer), app.Authorization([]int{adminRoleId, userRoleId}))
 	groupRoute.GET("/master/:master_id", app.RouteHandler(masterController.GetMasterById))
 	groupRoute.PUT("/master/update", app.RouteHandler(masterController.UpdateMaster), app.Authorization([]int{adminRoleId}))
+	groupRoute.POST("/master/create", app.RouteHandler(masterController.CreateMaster), app.Authorization([]int{adminRoleId}))
+	groupRoute.POST("/master/unavailable", app.RouteHandler(masterController.CreateMasterUnavailableSchedule))
 }

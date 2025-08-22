@@ -19,6 +19,9 @@ type Repository struct {
 		GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 		GetMasterById(masterId int) (domain.Master, error)
 		UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
+		GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
+		CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
+		UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 	}
 
 	StyleType interface {
