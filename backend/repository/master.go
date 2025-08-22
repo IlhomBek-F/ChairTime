@@ -21,7 +21,7 @@ type masterRepo interface {
 	GetMasterById(masterId int) (domain.Master, error)
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
+	CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 }
 
@@ -201,18 +201,23 @@ func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterU
 	return masterUnavailableSchedules, result.Error
 }
 
-func (mr masterDB) CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error {
+func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	master := domain.MasterUnavailableSchedule{
-		MasterId:  payload.MasterId,
-		DayOfWeek: payload.DayOfWeek,
-		Date:      payload.Date,
-		StartTime: payload.StartTime,
-		EndTime:   payload.EndTime,
+	var schedules []domain.MasterUnavailableSchedule
+
+	for _, schedule := range payload {
+		schedules = append(schedules, domain.MasterUnavailableSchedule{
+			MasterId:  schedule.MasterId,
+			DayOfWeek: schedule.DayOfWeek,
+			Date:      schedule.Date,
+			StartTime: schedule.StartTime,
+			EndTime:   schedule.EndTime,
+		})
 	}
-	result := mr.db.WithContext(ctx).Create(&master)
+
+	result := mr.db.WithContext(ctx).Create(&schedules)
 
 	return result.Error
 }

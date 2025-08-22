@@ -22,6 +22,7 @@ import { createBooking, getBookingById, updateBooking } from "@/api/booking";
 import { getMasterStyleTypeById } from "@/api/masterStyleType";
 import { toast } from "sonner";
 import { toastError } from "@/lib/utils";
+import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 
 type Inputs = {
   master_id: string;
@@ -48,7 +49,10 @@ export function Booking() {
   const [upsertLoading, setUpsertLoading] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
-  const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(+form.watch("master_id"));
+  const masterIdValueChange = +form.watch("master_id")
+  const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(masterIdValueChange);
+  const {offSchedules, loading: loadingMasterSchedule} = useMasterUnavailableSchedule(masterIdValueChange);
+
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
 
   useEffect(() => {
@@ -134,7 +138,13 @@ export function Booking() {
                             loading={loadingStyleTypes}
                             options={styleTypes}/>
         <div className="flex gap-2 w-full">
-          <BookingForm.Date formControl={form.control} />
+          <BookingForm.Date formControl={form.control} 
+                            label="Date" 
+                            name="date"
+                            mode="single"
+                            loading={loadingMasterSchedule}
+                            offDates={offSchedules}
+                            />
           <BookingForm.Select formControl={form.control} 
                               name="time" 
                               label="Time" 

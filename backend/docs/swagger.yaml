@@ -818,7 +818,9 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
+          items:
+            $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
+          type: array
       produces:
       - application/json
       responses:

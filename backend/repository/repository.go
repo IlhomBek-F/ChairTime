@@ -20,7 +20,7 @@ type Repository struct {
 		GetMasterById(masterId int) (domain.Master, error)
 		UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 		GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-		CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
+		CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload) error
 		UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 	}
 

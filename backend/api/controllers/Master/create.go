@@ -64,13 +64,13 @@ func CreateMaster(app *api.Application, e echo.Context) error {
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json
-//	@Param			payload	body		domain.CreateMasterUnavailablePayload	true "Master unavailable schedule payload"
+//	@Param			payload	body		[]domain.CreateMasterUnavailablePayload	true "Master unavailable schedule payload"
 //	@Success		201		{object}	domain.SuccessRes		"Created new unavailable schedule"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/master/unavailable [post]
 func CreateMasterUnavailableSchedule(app *api.Application, e echo.Context) error {
-	var payload domain.CreateMasterUnavailablePayload
+	var payload []domain.CreateMasterUnavailablePayload
 
 	if err := e.Bind(&payload); err != nil {
 		return app.BadRequestResponse(e, err)

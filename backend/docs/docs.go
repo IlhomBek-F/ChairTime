@@ -529,7 +529,10 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
+                            }
                         }
                     }
                 ],

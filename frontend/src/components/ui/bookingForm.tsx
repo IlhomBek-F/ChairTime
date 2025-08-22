@@ -20,12 +20,19 @@ import { ChevronDownIcon, Loader2Icon } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
+import type { MasterUnavailableScheduleType } from "@/core/models/master";
+import type { Matcher, Mode } from "react-day-picker";
 
 type FormFieldProps = {
   formControl: any,
   name: string,
   label: string
   loading?: boolean
+}
+
+type FormFieldDateProps = FormFieldProps & {
+  offDates?: MasterUnavailableScheduleType[],
+  mode: Mode
 }
 
 type FormFieldSelectProps = FormFieldProps & {
@@ -78,16 +85,21 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel, l
   />
 );
 
-const date = ({ formControl }: { formControl: any }) => {
+const date = ({ formControl, loading, label, offDates, name, mode }: FormFieldDateProps) => {
   const [open, setOpen] = useState(false);
+  
+  const disabledDays = offDates?.map((sch) => {
+    const [day, month, year] = sch.date.split("-")
+    return new Date(+year, +month - 1, +day)
+  }) as Matcher[]
 
   return (
     <FormField
       control={formControl}
-      name="date"
+      name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>Date </FormLabel>
+          <FormLabel>{label} </FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl className="w-[50%]">
@@ -96,6 +108,7 @@ const date = ({ formControl }: { formControl: any }) => {
                   id="date"
                   className="w-48 justify-between font-normal"
                 >
+                  {loading && <Loader2Icon className="animate-spin" />}
                   {field.value ? field.value : <span>Pick a date</span>}
                   <ChevronDownIcon />
                 </Button>
@@ -106,16 +119,18 @@ const date = ({ formControl }: { formControl: any }) => {
               align="start"
             >
               <Calendar
-                mode="multiple"
+                mode={mode}
+                disabled={disabledDays}
                 selected={field.value}
                 className="w-full"
                 captionLayout="dropdown"
-                onSelect={(date) => {
+                onSelect={(date: unknown) => {
                   if(date instanceof Date) {
                     field.onChange(format(date, "dd-MM-yyyy"));
                     setOpen(false);
                   }
                 }}
+                required={mode !== "range"}
               />
             </PopoverContent>
           </Popover>
