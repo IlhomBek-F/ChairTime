@@ -74,7 +74,7 @@ export function Profile() {
         />
         <Button
           type="submit"
-          className="absolute w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
+          className="absolute cursor-pointer w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
           onClick={() => {
             
           }}
@@ -86,7 +86,7 @@ export function Profile() {
         <div className="flex items-center justify-between gap-4 px-4">
           <h4 className="text-sm font-semibold text-red-500">Dangerous</h4>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8">
+            <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
               <ChevronsUpDown />
               <span className="sr-only">Toggle</span>
             </Button>

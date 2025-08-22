@@ -20,13 +20,13 @@ export function Header() {
       <Popover open={openPopover}>
         <PopoverTrigger>
           <Avatar>
-            <AvatarImage src={`http://localhost:8080/api/file/${getToken()}`}  onClick={() => setOpenPopover(!openPopover)}/>
-            <AvatarFallback onClick={() => setOpenPopover(!openPopover)}>CN</AvatarFallback>
+            <AvatarImage className="cursor-pointer" src={`http://localhost:8080/api/file/${getToken()}`}  onClick={() => setOpenPopover(!openPopover)}/>
+            <AvatarFallback className="cursor-pointer" onClick={() => setOpenPopover(!openPopover)}>CN</AvatarFallback>
           </Avatar>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] flex flex-col p-1 gap-2 mr-5">
-            <Button variant="outline" onClick={navigateToProfilePage}>Profile</Button>
-            <Button variant="outline" className="border border-red-400" onClick={() => navigate("/login")}>Log out</Button>
+            <Button variant="outline" className="cursor-pointer" onClick={navigateToProfilePage}>Profile</Button>
+            <Button variant="outline" className="border cursor-pointer border-red-400" onClick={() => navigate("/login")}>Log out</Button>
         </PopoverContent>
       </Popover>
     </header>

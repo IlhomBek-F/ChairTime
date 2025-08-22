@@ -44,7 +44,7 @@ export function UserBookings() {
         {loading && <BookingSkeleton /> || bookings.map((booking: BookingViewType) => <BookingItem {...booking} key={booking.id} handleDeleteBooking={handleDeleteBooking}/>)}
       </ScrollArea>}
      
-      <Button className="absolute w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
+      <Button className="absolute w-[95%] cursor-pointer left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
               size="icon"
               onClick={() => navigate("booking")}>New booking</Button>
     </div>

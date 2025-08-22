@@ -51,21 +51,19 @@ export function Booking() {
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
   const masterIdValueChange = +form.watch("master_id")
   const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(masterIdValueChange);
-  const {offSchedules, loading: loadingMasterSchedule} = useMasterUnavailableSchedule(masterIdValueChange);
-
+  const {dateMathcer, loading: loadingMasterSchedule} = useMasterUnavailableSchedule(masterIdValueChange);
+  console.log(dateMathcer)
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
 
   useEffect(() => {
     if (masters.length && bookingId) {
       getBooking(bookingId)
     }
-  }, [bookingId, masters])
 
-  useEffect(() => {
-     if(styleTypes && pendingMstStyleTypeId) {
+    if(styleTypes && pendingMstStyleTypeId) {
        form.setValue("master_style_type_id", String(pendingMstStyleTypeId))
-     }
-  }, [styleTypes])
+    }
+  }, [bookingId, masters, styleTypes])
 
   const getBooking = async (id: number) => {
     try {
@@ -143,7 +141,7 @@ export function Booking() {
                             name="date"
                             mode="single"
                             loading={loadingMasterSchedule}
-                            offDates={offSchedules}
+                            matcher={dateMathcer}
                             />
           <BookingForm.Select formControl={form.control} 
                               name="time" 
@@ -151,7 +149,7 @@ export function Booking() {
                               options={["18:00", "19:00"]}/>
         </div>
         <BookingForm.TextArea formControl={form.control} name="description" label="Comment" />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full cursor-pointer">
           {upsertLoading && <Loader2Icon className="animate-spin" />}
           {bookingId ? (upsertLoading ? "updating..." : "update") : (upsertLoading ? "saving..." : "save")}</Button>
       </BookingForm>

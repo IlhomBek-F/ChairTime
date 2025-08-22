@@ -20,7 +20,6 @@ import { ChevronDownIcon, Loader2Icon } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Textarea } from "./textarea";
 import { format } from "date-fns";
-import type { MasterUnavailableScheduleType } from "@/core/models/master";
 import type { Matcher, Mode } from "react-day-picker";
 
 type FormFieldProps = {
@@ -31,7 +30,7 @@ type FormFieldProps = {
 }
 
 type FormFieldDateProps = FormFieldProps & {
-  offDates?: MasterUnavailableScheduleType[],
+  matcher?: Matcher | Matcher[],
   mode: Mode
 }
 
@@ -85,14 +84,9 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel, l
   />
 );
 
-const date = ({ formControl, loading, label, offDates, name, mode }: FormFieldDateProps) => {
+const date = ({ formControl, loading, label, matcher, name, mode }: FormFieldDateProps) => {
   const [open, setOpen] = useState(false);
   
-  const disabledDays = offDates?.map((sch) => {
-    const [day, month, year] = sch.date.split("-")
-    return new Date(+year, +month - 1, +day)
-  }) as Matcher[]
-
   return (
     <FormField
       control={formControl}
@@ -105,11 +99,12 @@ const date = ({ formControl, loading, label, offDates, name, mode }: FormFieldDa
               <FormControl className="w-[50%]">
                 <Button
                   variant="outline"
+                  disabled={loading}
                   id="date"
                   className="w-48 justify-between font-normal"
                 >
                   {loading && <Loader2Icon className="animate-spin" />}
-                  {field.value ? field.value : <span>Pick a date</span>}
+                  {field.value && field.value}
                   <ChevronDownIcon />
                 </Button>
               </FormControl>
@@ -120,7 +115,7 @@ const date = ({ formControl, loading, label, offDates, name, mode }: FormFieldDa
             >
               <Calendar
                 mode={mode}
-                disabled={disabledDays}
+                disabled={matcher}
                 selected={field.value}
                 className="w-full"
                 captionLayout="dropdown"
