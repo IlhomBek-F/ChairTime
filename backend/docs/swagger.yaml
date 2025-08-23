@@ -777,6 +777,35 @@ paths:
       summary: Get master styles offer
       tags:
       - Master
+  /master/{unavailable_schedule_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete master unavailable schedule
+      parameters:
+      - description: unavailable_schedule_id
+        in: path
+        name: unavailable_schedule_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted master unavailable schedule
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Delete master unavailable schedule
+      tags:
+      - Master
   /master/create:
     post:
       consumes:
@@ -818,9 +847,7 @@ paths:
         name: payload
         required: true
         schema:
-          items:
-            $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
-          type: array
+          $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
       produces:
       - application/json
       responses:

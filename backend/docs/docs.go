@@ -529,10 +529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
-                            }
+                            "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
                         }
                     }
                 ],
@@ -735,6 +732,51 @@ const docTemplate = `{
                         "description": "Master style offer list",
                         "schema": {
                             "$ref": "#/definitions/domain.MasterStyleOfferRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/{unavailable_schedule_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Delete master unavailable schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Delete master unavailable schedule",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "unavailable_schedule_id",
+                        "name": "unavailable_schedule_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Deleted master unavailable schedule",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
                         }
                     },
                     "400": {

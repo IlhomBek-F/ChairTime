@@ -21,8 +21,9 @@ type masterRepo interface {
 	GetMasterById(masterId int) (domain.Master, error)
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-	CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload) error
+	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
+	DeleteMasterUnavailableSchedule(id int) error
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
@@ -201,25 +202,28 @@ func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterU
 	return masterUnavailableSchedules, result.Error
 }
 
-func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload) error {
+func (mr masterDB) CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var schedules []domain.MasterUnavailableSchedule
-
-	for _, schedule := range payload {
-		schedules = append(schedules, domain.MasterUnavailableSchedule{
-			MasterId:  schedule.MasterId,
-			DayOfWeek: schedule.DayOfWeek,
-			Date:      schedule.Date,
-			StartTime: schedule.StartTime,
-			EndTime:   schedule.EndTime,
-		})
+	var schedule = domain.MasterUnavailableSchedule{
+		MasterId:  payload.MasterId,
+		DayOfWeek: payload.DayOfWeek,
+		Date:      payload.Date,
+		StartTime: payload.StartTime,
+		EndTime:   payload.EndTime,
 	}
 
-	result := mr.db.WithContext(ctx).Create(&schedules)
+	result := mr.db.WithContext(ctx).Create(&schedule)
 
 	return result.Error
+}
+
+func (mr masterDB) DeleteMasterUnavailableSchedule(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return mr.db.WithContext(ctx).Delete(domain.MasterUnavailableSchedule{}, id).Error
 }
 
 func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error) {
