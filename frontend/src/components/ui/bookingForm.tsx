@@ -31,11 +31,13 @@ type FormFieldProps = {
 
 type FormFieldDateProps = FormFieldProps & {
   matcher?: Matcher | Matcher[],
+  popover?: boolean,
   mode: Mode
 }
 
 type FormFieldSelectProps = FormFieldProps & {
   options: any[],
+  type?: "number" | "string", 
   optionLabel?: string,
   optionValue?: string,
 }
@@ -57,15 +59,15 @@ const inputField = ({ formControl, name, label }: FormFieldProps) => {
   );
 };
 
-const select = ({ formControl, options, name, label, optionValue, optionLabel, loading }: FormFieldSelectProps) => (
-  <FormField
+const select = ({ formControl, options, name, label, optionValue, optionLabel, loading, type = "string" }: FormFieldSelectProps) => {
+  return <FormField
     disabled={loading}
     control={formControl}
     name={name}
     render={({ field }) => (
       <FormItem className="w-full mb-4">
         <FormLabel>{label}</FormLabel>
-        <Select onValueChange={field.onChange} value={field.value}>
+        <Select onValueChange={(value: string) => field.onChange(type === 'number' ? Number(value) : value)} value={String(field.value)}>
           <FormControl className="w-full">
             <SelectTrigger>
               {loading && <Loader2Icon className="animate-spin" />}
@@ -82,19 +84,35 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel, l
       </FormItem>
     )}
   />
-);
+  }
 
-const date = ({ formControl, loading, label, matcher, name, mode }: FormFieldDateProps) => {
+const date = ({ formControl, loading, label, matcher, name, mode, popover }: FormFieldDateProps) => {
   const [open, setOpen] = useState(false);
-  
+  const decodeValueToDate = (value: string = "") => {
+      const [day, month, year] = value.split("-");
+      return new Date(+year, +month - 1, +day);
+  }
   return (
     <FormField
       control={formControl}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex flex-col">
+        <FormItem className="flex flex-col w-full">
           <FormLabel>{label} </FormLabel>
-          <Popover open={open} onOpenChange={setOpen}>
+          {!popover ?  <Calendar
+                mode={mode}
+                disabled={matcher}
+                selected={decodeValueToDate(field.value)}
+                className="w-full"
+                captionLayout="dropdown"
+                onSelect={(date: unknown) => {
+                  if(date instanceof Date) {
+                    field.onChange(format(date, "dd-MM-yyyy"));
+                    setOpen(false);
+                  }
+                }}
+                required={mode !== "range"}
+              /> : <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl className="w-[50%]">
                 <Button
@@ -116,7 +134,7 @@ const date = ({ formControl, loading, label, matcher, name, mode }: FormFieldDat
               <Calendar
                 mode={mode}
                 disabled={matcher}
-                selected={field.value}
+                selected={decodeValueToDate(field.value)}
                 className="w-full"
                 captionLayout="dropdown"
                 onSelect={(date: unknown) => {
@@ -128,7 +146,7 @@ const date = ({ formControl, loading, label, matcher, name, mode }: FormFieldDat
                 required={mode !== "range"}
               />
             </PopoverContent>
-          </Popover>
+          </Popover>}
         </FormItem>
       )}
     />

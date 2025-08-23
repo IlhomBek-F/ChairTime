@@ -25,16 +25,16 @@ import { toastError } from "@/lib/utils";
 import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 
 type Inputs = {
-  master_id: string;
-  master_style_type_id: string;
+  master_id: number;
+  master_style_type_id: number;
   date: string;
   time: string;
   description?: string;
 };
 
 const formSchema = z.object({
-  master_id: z.string(),
-  master_style_type_id: z.string(),
+  master_id: z.number(),
+  master_style_type_id: z.number(),
   date: z.string(),
   time: z.string().min(1),
 });
@@ -48,34 +48,40 @@ export function Booking() {
   const {masters, loading} = useMaster();
   const [upsertLoading, setUpsertLoading] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+
   const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange"});
-  const masterIdValueChange = +form.watch("master_id")
+  const masterIdValueChange = form.watch("master_id")
   const {styleTypes, loading: loadingStyleTypes} = useMasterStylesOffer(masterIdValueChange);
   const {dateMathcer, loading: loadingMasterSchedule} = useMasterUnavailableSchedule(masterIdValueChange);
-  console.log(dateMathcer)
-  const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<string>("");
+  const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
+  const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<number>();
 
   useEffect(() => {
     if (masters.length && bookingId) {
       getBooking(bookingId)
     }
-
-    if(styleTypes && pendingMstStyleTypeId) {
-       form.setValue("master_style_type_id", String(pendingMstStyleTypeId))
-    }
-  }, [bookingId, masters, styleTypes])
+  }, [bookingId, masters])
+  
+  useEffect(() => {
+     if(styleTypes && pendingMstStyleTypeId) {
+          form.setValue("master_style_type_id", pendingMstStyleTypeId)
+     }
+  }, [styleTypes])
 
   const getBooking = async (id: number) => {
+    setLoadingBookingInfo(true)
     try {
       const {data} = await getBookingById(id);
       const {data:masterStyleType} = await getMasterStyleTypeById(data.master_style_type_id);
       
-      form.setValue("master_id", String(masterStyleType.master_id))
-      setPendingMstStyleTypeId(String(masterStyleType.id))
+      form.setValue("master_id", masterStyleType.master_id)
+      setPendingMstStyleTypeId(masterStyleType.id)
       form.setValue("time", data.time)
       form.setValue("date", data.date)
     } catch (error: any) {
        toast.error(error.message)
+    } finally {
+       setLoadingBookingInfo(false)
     }
   }
 
@@ -123,16 +129,18 @@ export function Booking() {
         <BookingForm.Select formControl={form.control} 
                             name="master_id" 
                             optionValue="id"
+                            type="number"
                             optionLabel="firstname"
                             label="Master"
-                            loading={loading}
+                            loading={loading || loadingBookingInfo}
                             options={masters}/>
 
         <BookingForm.Select formControl={form.control} 
                             optionLabel="name"
                             optionValue="id"
                             name="master_style_type_id" 
-                            label="Style" 
+                            label="Style"
+                            type="number"
                             loading={loadingStyleTypes}
                             options={styleTypes}/>
         <div className="flex gap-2 w-full">
@@ -140,6 +148,7 @@ export function Booking() {
                             label="Date" 
                             name="date"
                             mode="single"
+                            popover={true}
                             loading={loadingMasterSchedule}
                             matcher={dateMathcer}
                             />
