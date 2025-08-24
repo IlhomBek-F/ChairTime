@@ -227,5 +227,9 @@ func (mr masterDB) DeleteMasterUnavailableSchedule(id int) error {
 }
 
 func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error) {
-	return domain.MasterUnavailableSchedule{}, nil
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	result := mr.db.WithContext(ctx).Updates(&payload)
+
+	return payload, result.Error
 }

@@ -3,8 +3,6 @@ import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import type { Matcher } from "react-day-picker";
 
-
-
 export function useMasterUnavailableSchedule(masterId: number) {
     const [dateMathcer, setDateMatcher] = useState<Matcher[]>([]);
 
@@ -20,12 +18,13 @@ export function useMasterUnavailableSchedule(masterId: number) {
         setLoading(true)
         getMasterUnavailableSchedules(masterId)
         .then((res) => {
-            const matcher = res.data.map((sch) => {
-                const [day, month, year] = sch.date.split("-");
-                return new Date(+year, +month - 1, +day);
-            }) as Matcher[]
-            
-            matcher.push({before: new Date() })
+            const matcher = res.data.reduce((matchers, sch) => {
+                if(sch.date) {
+                    const [day, month, year] = sch.date.split("-");
+                    matchers.push(new Date(+year, +month - 1, +day))
+                }
+                return matchers
+            }, [{before: new Date() }] as Matcher[])
             setDateMatcher(matcher)
         })
         .catch(toastError)

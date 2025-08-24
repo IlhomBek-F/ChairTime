@@ -551,6 +551,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/master/unavailable/update": {
+            "put": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update master unavailable schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Update master unavailable schedule",
+                "parameters": [
+                    {
+                        "description": "master unavailable schedule payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterUnavailableSchedule"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Updated master unavailable schedule",
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdatedMasterUnavailableScheduleRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/unavailables/{master_id}": {
             "get": {
                 "security": [
@@ -1629,6 +1676,20 @@ const docTemplate = `{
         "domain.SuccessRes": {
             "type": "object",
             "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.UpdatedMasterUnavailableScheduleRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.MasterUnavailableSchedule"
+                },
                 "message": {
                     "type": "string"
                 },

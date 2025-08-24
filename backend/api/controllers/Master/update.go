@@ -55,6 +55,19 @@ func UpdateMaster(app *api.Application, e echo.Context) error {
 	return e.JSON(http.StatusOK, successRes)
 }
 
+// Update master unavailable schedule godoc
+//
+//	@Summary		Update master unavailable schedule
+//	@Description	Update master unavailable schedule
+//	@Tags			Master
+//	@Accept			json
+//	@Security       JWT
+//	@Produce		json
+//	@Param			payload	body		domain.MasterUnavailableSchedule	true "master unavailable schedule payload"
+//	@Success		201		{object}	domain.UpdatedMasterUnavailableScheduleRes		"Updated master unavailable schedule"
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/master/unavailable/update [put]
 func UpdateMasterUnavailableSchedule(app *api.Application, e echo.Context) error {
 	var payload domain.MasterUnavailableSchedule
 
