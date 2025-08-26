@@ -2,10 +2,12 @@ package routes
 
 import (
 	"chairTime/api"
+	"chairTime/domain"
 	"chairTime/internal/auth"
 	"net/http"
 	"time"
 
+	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt"
 	"github.com/labstack/echo/v4"
@@ -26,6 +28,7 @@ func Mount(app *api.Application) http.Handler {
 		Timeout:      2 * time.Second,
 	}))
 
+	e.Validator = &domain.CustomValidator{Validator: validator.New()}
 	publicRoute := e.Group("/api")
 	protectedRoute := e.Group("/api")
 

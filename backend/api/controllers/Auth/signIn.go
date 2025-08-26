@@ -30,9 +30,13 @@ import (
 //	@Failure		500		{object}	error
 //	@Router			/auth/sign-in [post]
 func SignIn(app *api.Application, e echo.Context) error {
-	var userCredential domain.LoginPayload
+	userCredential := new(domain.LoginPayload)
 
 	if err := e.Bind(&userCredential); err != nil {
+		return app.BadRequestResponse(e, err)
+	}
+
+	if err := e.Validate(userCredential); err != nil {
 		return app.BadRequestResponse(e, err)
 	}
 

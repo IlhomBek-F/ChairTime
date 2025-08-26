@@ -25,9 +25,13 @@ import (
 //	@Failure		500		{object}	error
 //	@Router			/auth/sign-up [post]
 func SignUp(app *api.Application, e echo.Context) error {
-	var userPayload domain.CreateAccountPayload
+	userPayload := new(domain.CreateAccountPayload)
 
 	if err := e.Bind(&userPayload); err != nil {
+		return app.BadRequestResponse(e, err)
+	}
+
+	if err := e.Validate(userPayload); err != nil {
 		return app.BadRequestResponse(e, err)
 	}
 
