@@ -46,7 +46,7 @@ export function Bookings() {
   };
 
   return (
-    <div className="relative w-full h-[80vh] flex flex-col bg-gray-50 rounded-2xl shadow-sm p-4">
+    <div className="relative w-full h-[90vh] flex flex-col bg-gray-50 rounded-2xl shadow-sm p-4">
       <h1 className="font-bold text-xl text-gray-800 mb-3 font-mono flex gap-2 items-center">
         <BookUser size={20} className="text-purple-600" />
         My Bookings
