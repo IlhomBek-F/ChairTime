@@ -172,7 +172,7 @@ const textArea = ({ formControl, name, label }: FormFieldProps) => (
   />
 );
 
-export function BookingForm({ children, form, handleSubmit} : { children: ReactNode; form: any; handleSubmit: () => void}) {
+export function CustomForm({ children, form, handleSubmit} : { children: ReactNode; form: any; handleSubmit: () => void}) {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>{children}</form>
@@ -180,7 +180,7 @@ export function BookingForm({ children, form, handleSubmit} : { children: ReactN
   );
 }
 
-BookingForm.InputField = inputField;
-BookingForm.Select = select;
-BookingForm.Date = date;
-BookingForm.TextArea = textArea;
+CustomForm.InputField = inputField;
+CustomForm.Select = select;
+CustomForm.Date = date;
+CustomForm.TextArea = textArea;

@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/ui/mainLayout";
+import { MainLayout } from "@/components/ui/layouts/mainLayout";
 import { useAuth } from "@/context/Auth";
 import type { Roles } from "@/core/enums/roles";
 

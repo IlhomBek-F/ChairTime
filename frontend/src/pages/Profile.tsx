@@ -1,6 +1,6 @@
 import { deleteAccount, getUserInfo as _getUserInfo } from "@/api/auth";
 import AvatarUploader from "@/components/ui/avatarUpload";
-import { BookingForm } from "@/components/ui/bookingForm";
+import { CustomForm } from "@/components/ui/bookingForm";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -55,50 +55,70 @@ export function Profile() {
   };
 
   return (
-    <div className="w-full">
-      <h1 className="font-bold text-left font-mono flex gap-1 items-center mb-4">
-        <BookUser size={18} />
-        Profile
-      </h1>
-      <AvatarUploader />
-      <BookingForm form={form} handleSubmit={form.handleSubmit(handleSubmit)}>
-        <BookingForm.InputField
-          formControl={form.control}
-          name="username"
-          label="Username"
-        />
-        <BookingForm.InputField
-          formControl={form.control}
-          name="phone"
-          label="Phone"
-        />
+    <div className="relative w-full h-[87vh] flex flex-col p-4 bg-gray-50 rounded-2xl shadow-sm">
+  {/* Header */}
+  <h1 className="font-bold text-xl text-gray-800 mb-6 font-mono flex gap-2 items-center">
+    <BookUser size={20} className="text-purple-600" />
+    Profile
+  </h1>
+
+  {/* Avatar */}
+  <div className="flex flex-col items-center mb-6">
+    <AvatarUploader />
+    <span className="text-sm text-gray-500 mt-2">Tap to update photo</span>
+  </div>
+
+  {/* Form */}
+  <CustomForm form={form} handleSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+    <CustomForm.InputField
+      formControl={form.control}
+      name="username"
+      label="Username"
+    />
+    <CustomForm.InputField
+      formControl={form.control}
+      name="phone"
+      label="Phone"
+    />
+  </CustomForm>
+
+  {/* Submit button */}
+  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-lg">
+    <Button
+      type="submit"
+      className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer"
+    >
+      Save Changes
+    </Button>
+  </div>
+
+  {/* Danger zone */}
+  <Collapsible className="mt-auto border-t pt-4 flex w-full flex-col gap-3">
+    <div className="flex items-center justify-between gap-4">
+      <h4 className="text-sm font-semibold text-red-500">Danger Zone</h4>
+      <CollapsibleTrigger asChild>
         <Button
-          type="submit"
-          className="absolute cursor-pointer w-[95%] left-1/2 transform -translate-x-1/2 bottom-5 max-w-lg"
-          onClick={() => {
-            
-          }}
+          variant="ghost"
+          size="icon"
+          className="size-8 cursor-pointer hover:bg-red-50"
         >
-          Submit
+          <ChevronsUpDown />
+          <span className="sr-only">Toggle</span>
         </Button>
-      </BookingForm>
-      <Collapsible className="flex w-full flex-col gap-2">
-        <div className="flex items-center justify-between gap-4 px-4">
-          <h4 className="text-sm font-semibold text-red-500">Dangerous</h4>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
-              <ChevronsUpDown />
-              <span className="sr-only">Toggle</span>
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="flex flex-col gap-2">
-          {deletingAccount && <Loader2Icon className="animate-spin" />}
-          <Button variant="destructive" onClick={handleDeleteAccount}>
-            Delete account
-          </Button>
-        </CollapsibleContent>
-      </Collapsible>
+      </CollapsibleTrigger>
     </div>
+    <CollapsibleContent className="flex flex-col gap-2">
+      {deletingAccount && <Loader2Icon className="animate-spin text-red-500" />}
+      <Button
+        variant="destructive"
+        className="rounded-lg shadow-sm"
+        onClick={handleDeleteAccount}
+      >
+        Delete Account
+      </Button>
+    </CollapsibleContent>
+  </Collapsible>
+</div>
+
   );
 }

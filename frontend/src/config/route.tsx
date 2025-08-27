@@ -1,12 +1,13 @@
-import { AuthLayout } from "@/components/ui/authLayout";
- import { Booking } from "@/pages/Booking";
+import { AuthLayout } from "@/components/ui/layouts/authLayout";
 import { Login } from "@/pages/Login";
-import { UserBookings } from "@/pages/UserBookings";
+import { Bookings } from "@/pages/Bookings";
 import { createBrowserRouter } from "react-router";
 import { PrivateRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
 import { Master } from "@/pages/Master";
 import { Roles } from "@/core/enums/roles";
+import { IndexRoute } from "./IndexRoute";
+import { BookingForm } from "@/pages/BookingForm";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -15,10 +16,13 @@ export const PAGE_BY_ROLE = {
 }
 
 export const router = createBrowserRouter([
+    {
+      index: true,
+      element: <IndexRoute />
+    },
     {  
-        index: true,
         path: "bookings",
-        element: <PrivateRoute children={<UserBookings />} roles={[Roles.USER]}/>
+        element: <PrivateRoute children={<Bookings />} roles={[Roles.USER]}/>
     },
     {
       path:"master",
@@ -26,11 +30,11 @@ export const router = createBrowserRouter([
     },
     {
        path: "booking",
-       element: <PrivateRoute children={<Booking />} roles={[Roles.USER]}/>,
+       element: <PrivateRoute children={<BookingForm />} roles={[Roles.USER]}/>,
        children: [
          {
             path: ":id",
-            element: <PrivateRoute children={ <UserBookings />} roles={[Roles.USER]}/>
+            element: <PrivateRoute children={ <Bookings />} roles={[Roles.USER]}/>
          },
        ]
     },
