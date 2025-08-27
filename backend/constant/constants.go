@@ -1,7 +1,7 @@
 package constant
 
 const (
-	AdminRoleId  = 1
+	UserRoleId   = 1
 	MasterRoleId = 2
-	UserRoleId   = 3
+	AdminRoleId  = 3
 )

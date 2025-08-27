@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"chairTime/api"
-	"chairTime/constant"
 	_ "chairTime/docs"
 	"chairTime/domain"
 	"chairTime/internal/auth"
@@ -57,7 +56,7 @@ func SignIn(app *api.Application, e echo.Context) error {
 	}
 
 	claims := auth.CustomClaims{
-		Role: constant.UserRoleId,
+		Role: user.RoleId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   strconv.Itoa(user.ID),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.Exp)),
@@ -77,6 +76,7 @@ func SignIn(app *api.Application, e echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data: domain.Credential{
+			Role:        user.RoleId,
 			ID:          user.ID,
 			AccessToken: token,
 		},

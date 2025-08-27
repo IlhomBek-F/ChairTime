@@ -21,6 +21,7 @@ type CreateAccountPayload struct {
 }
 
 type Credential struct {
+	Role        int    `json:"role"`
 	ID          int    `json:"id"`
 	AccessToken string `json:"access_token"`
 }

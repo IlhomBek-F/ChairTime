@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PAGE_BY_ROLE } from "@/config/route";
 import { setToken } from "@/lib/token";
 import { toastError } from "@/lib/utils";
 import { useState } from "react";
@@ -38,7 +39,7 @@ export function Login() {
             const {access_token, ...user_info} = res.data;
             localStorage.setItem("user", JSON.stringify(user_info));
             setToken(access_token)
-            navigate('/')
+            navigate(PAGE_BY_ROLE[user_info.role])
          }).catch(toastError)
     }
   }

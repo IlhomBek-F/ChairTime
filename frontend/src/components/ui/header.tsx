@@ -4,9 +4,11 @@ import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useState } from "react";
 import { getToken } from "@/lib/token";
+import { useAuth } from "@/context/Auth";
 
 export function Header() {
   const navigate = useNavigate();
+  const {logOut} = useAuth()
   const [openPopover, setOpenPopover] = useState(false);
 
   const navigateToProfilePage = () => {
@@ -26,7 +28,7 @@ export function Header() {
         </PopoverTrigger>
         <PopoverContent className="w-[200px] flex flex-col p-1 gap-2 mr-5">
             <Button variant="outline" className="cursor-pointer" onClick={navigateToProfilePage}>Profile</Button>
-            <Button variant="outline" className="border cursor-pointer border-red-400" onClick={() => navigate("/login")}>Log out</Button>
+            <Button variant="outline" className="border cursor-pointer border-red-400" onClick={logOut}>Log out</Button>
         </PopoverContent>
       </Popover>
     </header>
