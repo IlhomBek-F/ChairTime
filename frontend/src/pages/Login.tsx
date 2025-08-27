@@ -45,55 +45,93 @@ export function Login() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>{signUpMode ? SIGN_UP_TITLE : LOGIN_TITLE}</CardTitle>
-        <CardDescription>{signUpMode ? SIGN_UP_DESC : LOGIN_DESC}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form>
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Username</Label>
-              <Input id="email"
-                     type="email"
-                     onChange={(e) => setCredential({...credential, username: e.target.value})}
-                     placeholder="m@example.com"
-                     required
-                    />
-            </div>
-            {signUpMode && <div className="grid gap-2">
-              <Label htmlFor="email">Phone</Label>
-              <Input id="phone"
-                     onChange={(e) => setCredential({...credential, phone: e.target.value})}
-                     placeholder="+992"
-                     required
-                    />
-            </div>}
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </a>
-              </div>
-              <Input id="password" type="password" required onChange={(e) => setCredential({...credential, password: e.target.value})}
-/>
-            </div>
-          </div>
-        </form>
-      </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full" onClick={handleSubmit}>
-          {signUpMode ? "Create account" : "Login"}
-        </Button>
-        <Button variant="link" className="w-full" onClick={() => setSignUpMode(!signUpMode)}>
-           {signUpMode ? 'Login' : 'Create new account'}
-        </Button>
-      </CardFooter>
-    </Card>
+    <Card className="w-full max-w-md shadow-lg rounded-2xl border border-gray-100">
+  <CardHeader className="space-y-1 text-center">
+    <CardTitle className="text-2xl font-bold font-mono">
+      {signUpMode ? SIGN_UP_TITLE : LOGIN_TITLE}
+    </CardTitle>
+    <CardDescription className="text-gray-500">
+      {signUpMode ? SIGN_UP_DESC : LOGIN_DESC}
+    </CardDescription>
+  </CardHeader>
+
+  <CardContent>
+    <form className="flex flex-col gap-4">
+      {/* Username */}
+      <div className="grid gap-2">
+        <Label htmlFor="username">Username</Label>
+        <Input
+          id="username"
+          type="text"
+          placeholder="yourname"
+          required
+          onChange={(e) =>
+            setCredential({ ...credential, username: e.target.value })
+          }
+        />
+      </div>
+
+      {/* Phone only on SignUp */}
+      {signUpMode && (
+        <div className="grid gap-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="+992"
+            required
+            onChange={(e) =>
+              setCredential({ ...credential, phone: e.target.value })
+            }
+          />
+        </div>
+      )}
+
+      {/* Password */}
+      <div className="grid gap-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password">Password</Label>
+          {!signUpMode && (
+            <a
+              href="#"
+              className="text-sm text-blue-600 hover:underline cursor-pointer"
+            >
+              Forgot?
+            </a>
+          )}
+        </div>
+        <Input
+          id="password"
+          type="password"
+          required
+          onChange={(e) =>
+            setCredential({ ...credential, password: e.target.value })
+          }
+        />
+      </div>
+    </form>
+  </CardContent>
+
+  <CardFooter className="flex flex-col gap-3">
+    {/* Primary button */}
+    <Button
+      type="submit"
+      className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded-xl cursor-pointer"
+      onClick={handleSubmit}
+    >
+      {signUpMode ? "Create account" : "Login"}
+    </Button>
+
+    {/* Switch form mode */}
+    <Button
+      variant="ghost"
+      className="w-full text-sm text-gray-600 hover:text-black"
+      onClick={() => setSignUpMode(!signUpMode)}
+    >
+      {signUpMode ? "Already have an account? Login" : "Create new account"}
+    </Button>
+  </CardFooter>
+</Card>
+
   );
 }

@@ -18,6 +18,7 @@ type Repository struct {
 		CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
 		GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
 		GetMasterById(masterId int) (domain.Master, error)
+		GetMasterBooking(masterId int) ([]domain.MasterBooking, error)
 		UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 		GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
 		CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error

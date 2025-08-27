@@ -10,7 +10,7 @@ type SuccessResWithMeta[T any] struct {
 type SuccessResWithData[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Data    T      `json:"data,omitzero"`
+	Data    T      `json:"data"`
 }
 
 type SuccessRes struct {

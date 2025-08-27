@@ -9,6 +9,16 @@ type Master struct {
 	Status        string `json:"status" validate:"required"`
 }
 
+type MasterBooking struct {
+	ID          int    `json:"id"`
+	Username    string `json:"username"`
+	Phone       string `json:"phone"`
+	Date        string `json:"date"`
+	Time        string `json:"time"`
+	Description string `json:"description"`
+	StyleType   string `json:"style_type"`
+}
+
 type CreateMasterPayload struct {
 	Firstname     string `json:"firstname" validate:"required,min=3,max=20"`
 	Lastname      string `json:"lastname" validate:"omitempty,max=50"`
@@ -38,3 +48,4 @@ type CreateMasterRes = SuccessResWithData[Master]
 type MasterListRes = SuccessResWithMeta[Master]
 type MasterUnavailableRes = SuccessResWithData[[]MasterUnavailableSchedule]
 type UpdatedMasterUnavailableScheduleRes = SuccessResWithData[MasterUnavailableSchedule]
+type MasterBookingRes = SuccessResWithData[[]MasterBooking]

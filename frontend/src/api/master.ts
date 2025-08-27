@@ -1,6 +1,7 @@
 import type { ResponseSuccessWithData, ResponseWitMetaType } from "@/core/models/base";
 import { privateHttp } from "./http";
 import type { MasterStylesOfferType, MasterType, MasterUnavailableScheduleType } from "@/core/models/master";
+import type { MasterBookingType } from "@/core/models/booking";
 
 export function getMasters(): Promise<ResponseWitMetaType<MasterType[]>> {
     return privateHttp.get("/masters")
@@ -12,4 +13,8 @@ export function getMasterStylesOffer(masterId: number): Promise<ResponseSuccessW
 
 export function getMasterUnavailableSchedules(masterId: number): Promise<ResponseSuccessWithData<MasterUnavailableScheduleType[]>> {
     return privateHttp.get(`/master/unavailables/${masterId}`)
+}
+
+export function getMasterBookings(masterId: number): Promise<ResponseSuccessWithData<MasterBookingType[]>> {
+    return privateHttp.get(`/master/${masterId}/bookings`)
 }

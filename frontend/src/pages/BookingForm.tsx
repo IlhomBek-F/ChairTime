@@ -12,7 +12,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useMaster } from "@/hooks/useMaster";
 import { useMasterStylesOffer } from "@/hooks/useMasterStylesOffer";
@@ -29,7 +28,7 @@ type Inputs = {
   master_style_type_id: number;
   date: string;
   time: string;
-  description?: string;
+  description: string;
 };
 
 const formSchema = z.object({
@@ -37,6 +36,7 @@ const formSchema = z.object({
   master_style_type_id: z.number(),
   date: z.string(),
   time: z.string().min(1),
+  description: z.string()
 });
 
 export function BookingForm() {
@@ -54,10 +54,9 @@ export function BookingForm() {
     mode: "onChange",
   });
   const masterIdValueChange = form.watch("master_id");
-  const { styleTypes, loading: loadingStyleTypes } =
-    useMasterStylesOffer(masterIdValueChange);
-  const { dateMathcer, loading: loadingMasterSchedule } =
-    useMasterUnavailableSchedule(masterIdValueChange);
+
+  const { styleTypes, loading: loadingStyleTypes } = useMasterStylesOffer(masterIdValueChange);
+  const { dateMathcer, loading: loadingMasterSchedule } = useMasterUnavailableSchedule(masterIdValueChange);
   const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<number>();
 
@@ -76,15 +75,14 @@ export function BookingForm() {
   const getBooking = async (id: number) => {
     setLoadingBookingInfo(true);
     try {
-      const { data } = await getBookingById(id);
-      const { data: masterStyleType } = await getMasterStyleTypeById(
-        data.master_style_type_id
-      );
+      const { data: {time, date, master_style_type_id, description} } = await getBookingById(id);
+      const { data: masterStyleType } = await getMasterStyleTypeById(master_style_type_id);
 
       form.setValue("master_id", masterStyleType.master_id);
       setPendingMstStyleTypeId(masterStyleType.id);
-      form.setValue("time", data.time);
-      form.setValue("date", data.date);
+      form.setValue("time", time);
+      form.setValue("date", date);
+      form.setValue("description", description);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -92,33 +90,22 @@ export function BookingForm() {
     }
   };
 
-  const _createBooking = ({ master_style_type_id, ...rest }: Inputs) => {
+  const _createBooking = (values: Inputs) => {
     const { id: user_id } = getUserInfo();
-    const payload = {
-      user_id: +user_id,
-      master_style_type_id: +master_style_type_id,
-      ...rest,
-    };
+    const payload = {user_id: +user_id, ...values};
+    
     createBooking(payload)
-      .then(() => {
-        setOpenAlertDialog(true);
-      })
+      .then(() => setOpenAlertDialog(true))
       .catch(toastError)
       .finally(() => setUpsertLoading(false));
   };
 
-  const _updateBooking = ({ master_style_type_id, ...rest }: Inputs) => {
+  const _updateBooking = (values: Inputs) => {
     const { id: user_id } = getUserInfo();
-    const payload = {
-      id: bookingId,
-      user_id: +user_id,
-      master_style_type_id: +master_style_type_id,
-      ...rest,
-    };
+    const payload = { id: bookingId, user_id: +user_id, ...values};
+
     updateBooking(payload)
-      .then(() => {
-        setOpenAlertDialog(true);
-      })
+      .then(() => setOpenAlertDialog(true))
       .catch(toastError)
       .finally(() => setUpsertLoading(false));
   };

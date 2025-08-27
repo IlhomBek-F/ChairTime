@@ -733,6 +733,51 @@
                 }
             }
         },
+        "/master/{master_id}/bookings": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get bookings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Get bookings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "master_id",
+                        "name": "master_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Master bookings",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterBookingRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/{master_id}/styles-offer": {
             "get": {
                 "security": [
@@ -1358,6 +1403,9 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "role": {
+                    "type": "integer"
                 }
             }
         },
@@ -1431,6 +1479,55 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.MasterBooking": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "style_type": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.MasterBookingRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.MasterBooking"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },

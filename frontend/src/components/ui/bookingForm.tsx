@@ -26,7 +26,8 @@ type FormFieldProps = {
   formControl: any,
   name: string,
   label: string
-  loading?: boolean
+  loading?: boolean,
+  placeholder?: string
 }
 
 type FormFieldDateProps = FormFieldProps & {
@@ -153,7 +154,7 @@ const date = ({ formControl, loading, label, matcher, name, mode, popover }: For
   );
 };
 
-const textArea = ({ formControl, name, label }: FormFieldProps) => (
+const textArea = ({ formControl, name, label, placeholder }: FormFieldProps) => (
   <FormField
     control={formControl}
     name={name}
@@ -162,7 +163,7 @@ const textArea = ({ formControl, name, label }: FormFieldProps) => (
         <FormLabel>{label}</FormLabel>
         <FormControl>
           <Textarea
-            placeholder="comment..."
+            placeholder={placeholder}
             className="resize-none"
             {...field}
           />
@@ -172,10 +173,10 @@ const textArea = ({ formControl, name, label }: FormFieldProps) => (
   />
 );
 
-export function CustomForm({ children, form, handleSubmit} : { children: ReactNode; form: any; handleSubmit: () => void}) {
+export function CustomForm({ children, form, handleSubmit, className} : { children: ReactNode; form: any; handleSubmit: () => void, className: string}) {
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit}>{children}</form>
+      <form onSubmit={handleSubmit} className={className}>{children}</form>
     </Form>
   );
 }

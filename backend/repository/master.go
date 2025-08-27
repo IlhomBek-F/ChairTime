@@ -18,6 +18,7 @@ type masterRepo interface {
 	GetMasters() ([]domain.Master, error)
 	CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
 	GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
+	GetMasterBooking(masterId int) ([]domain.MasterBooking, error)
 	GetMasterById(masterId int) (domain.Master, error)
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
@@ -190,6 +191,21 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 	})
 
 	return updatedMasterPayload, transactionError
+}
+
+func (mr masterDB) GetMasterBooking(masterId int) ([]domain.MasterBooking, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var bookings []domain.MasterBooking
+
+	result := mr.db.WithContext(ctx).Table("users AS us").
+		Select("bk.id", "us.username", "us.phone", "bk.date", "bk.time", "st.name as style_type", "bk.description").
+		Joins("JOIN bookings AS bk ON us.id = bk.user_id").
+		Joins("JOIN master_style_types AS mst ON mst.id = bk.master_style_type_id").
+		Joins("JOIN style_types AS st ON st.id = mst.style_type_id").Where("mst.master_id = ?", masterId).Find(&bookings)
+
+	return bookings, result.Error
 }
 
 func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error) {
