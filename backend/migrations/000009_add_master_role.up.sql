@@ -1,1 +1,0 @@
-ALTER TABLE masters ADD role_id int NOT NULL DEFAULT 2;

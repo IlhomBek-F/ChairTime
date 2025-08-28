@@ -1,1 +1,0 @@
-ALTER TABLE masters DROP role_id;

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -31,7 +32,7 @@ func CreateMaster(app *api.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.Master.GetMasterByName(masterPayload.Firstname)
+	master, err := app.Repository.Master.GetMasterByName(masterPayload.Username)
 
 	if master.ID != 0 {
 		return app.ConflictResponse(e, errors.New("master with this name exists"))
@@ -40,6 +41,14 @@ func CreateMaster(app *api.Application, e echo.Context) error {
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return app.InternalServerError(e, err)
 	}
+
+	hashMasterPassword, err := bcrypt.GenerateFromPassword([]byte(masterPayload.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return app.InternalServerError(e, err)
+	}
+
+	masterPayload.Password = string(hashMasterPassword)
 
 	createdMaster, err := app.Repository.Master.CreateMaster(masterPayload)
 

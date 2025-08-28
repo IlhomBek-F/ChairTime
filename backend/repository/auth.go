@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"chairTime/constant"
 	"chairTime/domain"
 	"context"
 	"time"
@@ -36,7 +37,7 @@ func (lr authDB) SignUp(username, password, phone string) (domain.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	user := domain.User{Username: username, Password: password, Phone: phone}
+	user := domain.User{Username: username, Password: password, Phone: phone, RoleId: constant.UserRoleId}
 
 	result := lr.db.WithContext(ctx).Create(&user)
 	return user, result.Error

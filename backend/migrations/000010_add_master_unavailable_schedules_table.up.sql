@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS master_unavailable_schedules(
     day_of_week SMALLINT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "master_unavailable_id_fk" FOREIGN KEY (master_id) REFERENCES masters(id)
+    CONSTRAINT "master_unavailable_id_fk" FOREIGN KEY (master_id) REFERENCES users(id)
 );

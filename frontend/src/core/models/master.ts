@@ -1,10 +1,8 @@
 import type { WeekDays } from "../enums/weekDays";
 import type { BaseType } from "./base";
+import type { User } from "./user";
 
-export type MasterType = BaseType & {
-  firstname: string,
-  lastname: string,
-  phone: string,
+export type MasterType = User & {
   offer_style_ids: number[]
 }
 

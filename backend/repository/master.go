@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"chairTime/constant"
 	"chairTime/domain"
 	"chairTime/internal/db"
 	"context"
@@ -40,7 +41,7 @@ func (mr masterDB) GetMasterByName(name string) (domain.Master, error) {
 
 	var master domain.Master
 
-	result := mr.db.WithContext(ctx).Where("firstname = ?", name).First(&master)
+	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("username = ? AND role_id = ?", name, constant.MasterRoleId).First(&master)
 
 	return master, result.Error
 }
@@ -51,7 +52,7 @@ func (mr masterDB) GetMasters() ([]domain.Master, error) {
 
 	var masters []domain.Master
 
-	result := mr.db.WithContext(ctx).Find(&masters)
+	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("role_id = ?", constant.MasterRoleId).Find(&masters)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -78,10 +79,15 @@ func (mr masterDB) CreateMaster(masterPayload domain.CreateMasterPayload) (domai
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	master := domain.Master{Firstname: masterPayload.Firstname, Lastname: masterPayload.Lastname, Phone: masterPayload.Phone}
+	master := domain.Master{}
+	master.RoleId = constant.MasterRoleId
+	master.Password = masterPayload.Password
+	master.Phone = masterPayload.Phone
+	master.Username = masterPayload.Username
+	master.OfferStyleIds = masterPayload.OfferStyleIds
 
 	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
-		result := tx.Create(&master)
+		result := tx.Model(&domain.User{}).Create(&master)
 
 		if result.Error != nil {
 			return result.Error
@@ -125,7 +131,7 @@ func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
 
 	var master domain.Master
 
-	result := mr.db.WithContext(ctx).First(&master, masterId)
+	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("id = ? AND role_id = ?", masterId, constant.MasterRoleId).First(&master)
 
 	return master, result.Error
 }
@@ -228,7 +234,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 
 	workStart, _ := time.Parse("15:04", "9:00")
 	workEnd, _ := time.Parse("15:04", "21:00")
-	slotDuration := 30 * time.Minute
+	slotDuration := 17 * time.Minute
 	slots := []string{}
 
 	availableBookingTimes := []string{}

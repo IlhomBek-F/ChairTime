@@ -2,18 +2,21 @@ import { getMasterBookings } from "@/api/master";
 import { MasterBookingItem } from "@/components/ui/masterBookingItem";
 import { MasterBookingSkeleton } from "@/components/ui/masterBookingSkeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/context/Auth";
 import type {  MasterBookingType } from "@/core/models/booking";
 import { toastError } from "@/lib/utils";
 import { BookUser } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Master() {
-  const [bookings, setBookings] = useState<MasterBookingType[]>([])
+  const [bookings, setBookings] = useState<MasterBookingType[]>([]);
+  const {getUserInfo} = useAuth();
+  const {id} = getUserInfo()
   const [loading, setLoading] = useState(false)
   
   useEffect(() => {
     setLoading(true)
-     getMasterBookings(6)
+     getMasterBookings(id)
       .then((res) => {
          setBookings(res.data)
       }).catch(toastError)

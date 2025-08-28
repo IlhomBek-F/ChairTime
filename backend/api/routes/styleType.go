@@ -10,5 +10,5 @@ import (
 
 func StyleTypeRoute(app *api.Application, groupRoute echo.Group) {
 	groupRoute.GET("/style-types", app.RouteHandler(controllers.GetStyleTypes))
-	groupRoute.POST("/create-style-type", app.RouteHandler(controllers.CreateStyleType), app.Authorization([]int{constant.MasterRoleId}))
+	groupRoute.POST("/style-type/create", app.RouteHandler(controllers.CreateStyleType), app.Authorization([]int{constant.MasterRoleId}))
 }

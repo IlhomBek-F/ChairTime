@@ -148,7 +148,7 @@ export function BookingForm() {
           name="master_id"
           optionValue="id"
           type="number"
-          optionLabel="firstname"
+          optionLabel="username"
           label="Master"
           loading={loading || loadingBookingInfo}
           options={masters}

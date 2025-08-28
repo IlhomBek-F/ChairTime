@@ -1358,27 +1358,25 @@ const docTemplate = `{
         "domain.CreateMasterPayload": {
             "type": "object",
             "required": [
-                "firstname",
                 "offer_style_ids",
+                "password",
                 "phone"
             ],
             "properties": {
-                "firstname": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 3
-                },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 50
-                },
                 "offer_style_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
                 "phone": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -1499,25 +1497,15 @@ const docTemplate = `{
         "domain.Master": {
             "type": "object",
             "required": [
-                "firstname",
                 "offer_style_ids",
-                "status"
+                "username"
             ],
             "properties": {
                 "created_at": {
                     "type": "string"
                 },
-                "firstname": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 3
-                },
                 "id": {
                     "type": "integer"
-                },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 50
                 },
                 "offer_style_ids": {
                     "type": "array",
@@ -1528,11 +1516,16 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
-                "status": {
-                    "type": "string"
+                "role_id": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
                 }
             }
         },
@@ -1843,6 +1836,9 @@ const docTemplate = `{
         },
         "domain.User": {
             "type": "object",
+            "required": [
+                "username"
+            ],
             "properties": {
                 "created_at": {
                     "type": "string"
@@ -1860,7 +1856,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
                 }
             }
         },

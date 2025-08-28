@@ -101,22 +101,20 @@ definitions:
     type: object
   domain.CreateMasterPayload:
     properties:
-      firstname:
-        maxLength: 20
-        minLength: 3
-        type: string
-      lastname:
-        maxLength: 50
-        type: string
       offer_style_ids:
         items:
           type: integer
         type: array
+      password:
+        minLength: 6
+        type: string
       phone:
         type: string
+      username:
+        type: string
     required:
-    - firstname
     - offer_style_ids
+    - password
     - phone
     type: object
   domain.CreateMasterRes:
@@ -198,29 +196,25 @@ definitions:
     properties:
       created_at:
         type: string
-      firstname:
-        maxLength: 20
-        minLength: 3
-        type: string
       id:
         type: integer
-      lastname:
-        maxLength: 50
-        type: string
       offer_style_ids:
         items:
           type: integer
         type: array
       phone:
         type: string
-      status:
-        type: string
+      role_id:
+        type: integer
       updated_at:
         type: string
+      username:
+        maxLength: 20
+        minLength: 3
+        type: string
     required:
-    - firstname
     - offer_style_ids
-    - status
+    - username
     type: object
   domain.MasterBooking:
     properties:
@@ -433,7 +427,11 @@ definitions:
       updated_at:
         type: string
       username:
+        maxLength: 20
+        minLength: 3
         type: string
+    required:
+    - username
     type: object
   domain.UserListRes:
     properties:

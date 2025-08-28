@@ -1,12 +1,8 @@
 package domain
 
 type Master struct {
-	Base
-	Firstname     string `json:"firstname" validate:"required,min=3,max=20"`
-	Lastname      string `json:"lastname" validate:"omitempty,max=50"`
-	Phone         string `json:"phone" validate:"omitempty,e164"`
-	OfferStyleIds []int  `json:"offer_style_ids" validate:"required" gorm:"-"`
-	Status        string `json:"status" validate:"required"`
+	User
+	OfferStyleIds []int `json:"offer_style_ids" validate:"required" gorm:"-"`
 }
 
 type MasterBooking struct {
@@ -20,11 +16,10 @@ type MasterBooking struct {
 }
 
 type CreateMasterPayload struct {
-	Firstname     string `json:"firstname" validate:"required,min=3,max=20"`
-	Lastname      string `json:"lastname" validate:"omitempty,max=50"`
+	Username      string `json:"username"`
 	Phone         string `json:"phone" validate:"required,e164"`
 	OfferStyleIds []int  `json:"offer_style_ids" validate:"required"`
-	Password      string `json:"-" validate:"required,min=6"`
+	Password      string `json:"password" validate:"required,min=6"`
 }
 
 type MasterUnavailableSchedule struct {
