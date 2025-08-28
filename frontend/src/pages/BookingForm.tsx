@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { toastError } from "@/lib/utils";
 import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 import { CustomForm } from "@/components/ui/bookingForm";
+import { useMasterAvailableTimeSlots } from "@/hooks/useMasterAvailableTimeSlots";
 
 type Inputs = {
   master_id: number;
@@ -53,10 +54,13 @@ export function BookingForm() {
     resolver: zodResolver(formSchema),
     mode: "onChange",
   });
+
   const masterIdValueChange = form.watch("master_id");
+  const dateValueChange = form.watch("date");
 
   const { styleTypes, loading: loadingStyleTypes } = useMasterStylesOffer(masterIdValueChange);
   const { dateMathcer, loading: loadingMasterSchedule } = useMasterUnavailableSchedule(masterIdValueChange);
+  const { timeSlots, loading: loadingTimeSlots } = useMasterAvailableTimeSlots(masterIdValueChange, dateValueChange);
   const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
   const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<number>();
 
@@ -177,7 +181,8 @@ export function BookingForm() {
             formControl={form.control}
             name="time"
             label="Time"
-            options={["18:00", "19:00"]}
+            loading={loadingTimeSlots}
+            options={timeSlots}
           />
         </div>
 

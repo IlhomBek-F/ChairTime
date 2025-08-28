@@ -4,6 +4,8 @@ import (
 	"chairTime/domain"
 	"chairTime/internal/db"
 	"context"
+	"strconv"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -25,6 +27,7 @@ type masterRepo interface {
 	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 	DeleteMasterUnavailableSchedule(id int) error
+	GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
@@ -208,6 +211,56 @@ func (mr masterDB) GetMasterBooking(masterId int) ([]domain.MasterBooking, error
 	return bookings, result.Error
 }
 
+func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var bookings []domain.Booking
+
+	result := mr.db.WithContext(ctx).Table("bookings AS bk").
+		Select("bk.time", "bk.date").
+		Joins("JOIN master_style_types AS mst ON mst.id = bk.master_style_type_id").
+		Where("mst.master_id = ? AND bk.date = ?", masterId, date).Find(&bookings)
+
+	if result.Error != nil {
+		return []string{}, result.Error
+	}
+
+	workStart, _ := time.Parse("15:04", "9:00")
+	workEnd, _ := time.Parse("15:04", "21:00")
+	slotDuration := 30 * time.Minute
+	slots := []string{}
+
+	availableBookingTimes := []string{}
+
+	for t := workStart; t.Before(workEnd); t = t.Add(slotDuration) {
+		slots = append(slots, t.Format("15:04"))
+	}
+
+	for _, slot := range slots {
+		slotStart := parseToMinutes(slot)
+		slotEnd := slotStart + int(slotDuration)
+
+		isBooked := false
+
+		for _, booking := range bookings {
+			bookingStart := parseToMinutes(booking.Time)
+			bookingEnd := bookingStart + 30
+
+			if slotStart < bookingEnd && slotEnd > bookingStart {
+				isBooked = true
+				break
+			}
+		}
+
+		if !isBooked {
+			availableBookingTimes = append(availableBookingTimes, slot)
+		}
+	}
+
+	return availableBookingTimes, nil
+}
+
 func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -248,4 +301,11 @@ func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavaila
 	result := mr.db.WithContext(ctx).Updates(&payload)
 
 	return payload, result.Error
+}
+
+func parseToMinutes(time string) int {
+	parts := strings.Split(time, ":")
+	hour, _ := strconv.Atoi(parts[0])
+	minute, _ := strconv.Atoi(parts[1])
+	return hour*60 + minute
 }

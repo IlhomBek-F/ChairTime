@@ -18,3 +18,7 @@ export function getMasterUnavailableSchedules(masterId: number): Promise<Respons
 export function getMasterBookings(masterId: number): Promise<ResponseSuccessWithData<MasterBookingType[]>> {
     return privateHttp.get(`/master/${masterId}/bookings`)
 }
+
+export function getMasterAvailableTimeSlots(masterId: number, date: string): Promise<ResponseSuccessWithData<string[]>> {
+    return privateHttp.get(`/master/${masterId}/${date}`)
+}

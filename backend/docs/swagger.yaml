@@ -224,8 +224,6 @@ definitions:
     type: object
   domain.MasterBooking:
     properties:
-      created_at:
-        type: string
       date:
         type: string
       description:
@@ -237,8 +235,6 @@ definitions:
       style_type:
         type: string
       time:
-        type: string
-      updated_at:
         type: string
       username:
         type: string
@@ -781,6 +777,40 @@ paths:
       security:
       - JWT: []
       summary: Get master by id
+      tags:
+      - Master
+  /master/{master_id}/{date}:
+    get:
+      consumes:
+      - application/json
+      description: Get master available time slots
+      parameters:
+      - description: master_id
+        in: path
+        name: master_id
+        required: true
+        type: integer
+      - description: date
+        in: path
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted master unavailable schedule
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get master available time slots
       tags:
       - Master
   /master/{master_id}/bookings:

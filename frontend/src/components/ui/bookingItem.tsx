@@ -35,7 +35,7 @@ export function BookingItem({
     <Card className="w-full p-4 rounded-2xl shadow-lg border border-gray-200 bg-white transition hover:shadow-xl mb-2">
       <CardHeader className="flex items-center gap-2 border-b">
         <ShieldUser size={20} className="text-purple-600" />
-        <span className="font-semibold text-lg text-gray-800">
+        <span className="font-semibold text-lg text-gray-800 overflow-ellipsis whitespace-nowrap overflow-hidden">
           Master: {master}
         </span>
       </CardHeader>

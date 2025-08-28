@@ -16,6 +16,7 @@ func MasterRoute(app *api.Application, groupRoute echo.Group) {
 	groupRoute.GET("/master/:master_id/bookings", app.RouteHandler(masterController.GetMasterBookings), app.Authorization([]int{masterRoleId}))
 	groupRoute.GET("/master/:master_id/styles-offer", app.RouteHandler(masterController.GetMasterStylesOffer), app.Authorization([]int{adminRoleId, userRoleId}))
 	groupRoute.GET("/master/:master_id", app.RouteHandler(masterController.GetMasterById))
+	groupRoute.GET("/master/:master_id/:date", app.RouteHandler(masterController.GetMasterAvailableTimeSlots))
 	groupRoute.PUT("/master/update", app.RouteHandler(masterController.UpdateMaster), app.Authorization([]int{adminRoleId}))
 	groupRoute.PUT("/master/unavailable/update", app.RouteHandler(masterController.UpdateMasterUnavailableSchedule))
 	groupRoute.POST("/master/create", app.RouteHandler(masterController.CreateMaster), app.Authorization([]int{adminRoleId}))

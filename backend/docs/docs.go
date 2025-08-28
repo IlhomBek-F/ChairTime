@@ -837,6 +837,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/master/{master_id}/{date}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get master available time slots",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Get master available time slots",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "master_id",
+                        "name": "master_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "date",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Deleted master unavailable schedule",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/{unavailable_schedule_id}": {
             "delete": {
                 "security": [
@@ -1487,9 +1539,6 @@ const docTemplate = `{
         "domain.MasterBooking": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "date": {
                     "type": "string"
                 },
@@ -1506,9 +1555,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "time": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "username": {
