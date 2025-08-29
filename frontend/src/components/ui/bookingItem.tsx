@@ -97,7 +97,7 @@ export function BookingItem({
             variant="success"
             size="icon"
             className="rounded-full shadow-md"
-            onClick={() => navigate(`/booking/${id}`)}
+            onClick={() => navigate(`/booking/edit/${id}`)}
           >
             <Pencil />
           </Button>

@@ -129,7 +129,7 @@ export function BookingForm() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto p-4 bg-gray-50 rounded-2xl shadow-sm">
+    <>
       {/* Header */}
       <h1 className="font-bold text-xl text-gray-800 mb-6 font-mono flex gap-2 items-center">
         <BookUser size={20} className="text-purple-600" />
@@ -200,13 +200,7 @@ export function BookingForm() {
           className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer"
         >
           {upsertLoading && <Loader2Icon className="animate-spin mr-2" />}
-          {bookingId
-            ? upsertLoading
-              ? "Updating..."
-              : "Update"
-            : upsertLoading
-            ? "Saving..."
-            : "Save"}
+          {bookingId ? upsertLoading ? "Updating..." : "Update" : upsertLoading ? "Saving...": "Save"}
         </Button>
       </CustomForm>
 
@@ -234,6 +228,6 @@ export function BookingForm() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

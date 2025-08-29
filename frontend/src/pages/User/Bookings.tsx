@@ -2,12 +2,13 @@ import { deleteBooking, getBooking } from "@/api/booking";
 import { BookingItem } from "@/components/ui/bookingItem";
 import { BookingSkeleton } from "@/components/ui/bookingSkeleton";
 import { Button } from "@/components/ui/button";
+import { PageTitle } from "@/components/ui/pageTitle";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/Auth";
 import type { BookingViewType } from "@/core/models/booking";
 import { toastError } from "@/lib/utils";
 import { BookUser } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -20,7 +21,7 @@ export function Bookings() {
 
   const navigate = useNavigate();
 
-  const handleDeleteBooking = (id: number) => {
+  const handleDeleteBooking = useCallback((id: number) => {
     setDeletingBookingId(id)
     deleteBooking(id)
       .then(() => {
@@ -29,13 +30,13 @@ export function Bookings() {
       })
       .catch(toastError)
       .finally(() => setDeletingBookingId(-1))
-  };
+  }, []);
 
   useEffect(() => {
     getBookings(userId);
   }, []);
 
-  const getBookings = (id: number) => {
+  const getBookings = useCallback((id: number) => {
     setLoading(true);
     getBooking(id)
       .then(({ data }) => {
@@ -43,15 +44,11 @@ export function Bookings() {
       })
       .catch(toastError)
       .finally(() => setLoading(false));
-  };
+  }, [userId]);
 
   return (
-    <div className="relative w-full h-[90vh] flex flex-col bg-gray-50 rounded-2xl shadow-sm p-4">
-      <h1 className="font-bold text-xl text-gray-800 mb-3 font-mono flex gap-2 items-center">
-        <BookUser size={20} className="text-purple-600" />
-        My Bookings
-      </h1>
-
+    <>
+      <PageTitle title="My Bookings" icon={<BookUser size={20} className="text-purple-600" />}/>
       <ScrollArea className="pr-2 h-[84%]">
         {loading ? <BookingSkeleton /> : bookings.length > 0 ? (
           bookings.map((booking: BookingViewType) => (
@@ -73,9 +70,9 @@ export function Bookings() {
       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg">
         <Button
           className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer"
-          onClick={() => navigate("/booking")}
+          onClick={() => navigate("/booking/new")}
         >+ New Booking</Button>
       </div>
-    </div>
+    </>
   );
 }

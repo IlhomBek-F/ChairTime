@@ -1,13 +1,13 @@
-import { AuthLayout } from "@/components/ui/layouts/authLayout";
 import { Login } from "@/pages/Login";
-import { Bookings } from "@/pages/Bookings";
+import { Bookings } from "@/pages/User/Bookings";
 import { createBrowserRouter } from "react-router";
-import { PrivateRoute } from "./PrivateRoute";
+import { createProtectedRoute, createPublicRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
-import { Master } from "@/pages/Master";
+import { Master } from "@/pages/Master/Master";
 import { Roles } from "@/core/enums/roles";
 import { IndexRoute } from "./IndexRoute";
-import { BookingForm } from "@/pages/BookingForm";
+import { BookingForm } from "@/pages/User/BookingForm";
+import { Setting } from "@/pages/Master/Setting";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -15,35 +15,59 @@ export const PAGE_BY_ROLE = {
     [Roles.ADMIN]: "/admin"
 }
 
+export const ROUTE_CONFIGS = [
+  {
+    path: "/bookings",
+    element: <Bookings />,
+    roles: [Roles.USER],
+    title: "My Bookings"
+  },
+  {
+    path: "/booking/new",
+    element: <BookingForm />,
+    roles: [Roles.USER],
+    title: "New Booking"
+  },
+  {
+    path: "/booking/edit/:id",
+    element: <BookingForm />,
+    roles: [Roles.USER],
+    title: "Edit Booking"
+  },
+  {
+    path: "/master",
+    element: <Master />,
+    roles: [Roles.MASTER],
+    title: "Master Dashboard"
+  },
+   {
+    path: "/master/setting",
+    element: <Setting />,
+    roles: [Roles.MASTER],
+    title: "Master Dashboard"
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+    roles: [Roles.USER, Roles.MASTER, Roles.ADMIN],
+    title: "Profile"
+  }
+] as const;
+
+// Public routes (no authentication required)
+export const PUBLIC_ROUTES = [
+  {
+    path: "/login",
+    element: <Login />,
+    title: "Login"
+  },
+] as const;
+
 export const router = createBrowserRouter([
     {
       index: true,
       element: <IndexRoute />
     },
-    {  
-        path: "bookings",
-        element: <PrivateRoute children={<Bookings />} roles={[Roles.USER]}/>
-    },
-    {
-      path:"master",
-      element: <PrivateRoute children={<Master />} roles={[Roles.MASTER]}/>
-    },
-    {
-       path: "booking",
-       element: <PrivateRoute children={<BookingForm />} roles={[Roles.USER]}/>,
-       children: [
-         {
-            path: ":id",
-            element: <PrivateRoute children={ <Bookings />} roles={[Roles.USER]}/>
-         },
-       ]
-    },
-    {
-        path: "profile",
-        element: <PrivateRoute children={<Profile />} roles={[Roles.USER, Roles.ADMIN, Roles.MASTER]}/>
-    },
-    {
-        path: "login",
-        element: <AuthLayout><Login /></AuthLayout>       
-    }
+    ...ROUTE_CONFIGS.map(createProtectedRoute),
+    ...PUBLIC_ROUTES.map(createPublicRoute)
 ])

@@ -6,5 +6,5 @@ import type { Roles } from "@/core/enums/roles";
 export function IndexRoute() {
     const {getUserInfo} = useAuth()
     const {role} = getUserInfo()
-    return <Navigate to={PAGE_BY_ROLE[role as Roles]}/>
+    return <Navigate to={PAGE_BY_ROLE[role as Roles]} replace/>
 }

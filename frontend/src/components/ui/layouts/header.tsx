@@ -1,19 +1,22 @@
 import { useNavigate } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { Button } from "./button";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
+import { Button } from "../button";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { useState } from "react";
 import { getToken } from "@/lib/token";
 import { useAuth } from "@/context/Auth";
+import { Roles } from "@/core/enums/roles";
 
 export function Header() {
   const navigate = useNavigate();
-  const { logOut } = useAuth();
+  const { logOut, getUserInfo } = useAuth();
+  const {role} = getUserInfo()
+
   const [openPopover, setOpenPopover] = useState(false);
 
-  const navigateToProfilePage = () => {
+  const navigateTo = (path: string) => {
     setOpenPopover(false);
-    navigate("/profile");
+    navigate(path);
   };
 
   return (
@@ -46,10 +49,17 @@ export function Header() {
           <Button
             variant="outline"
             className="cursor-pointer font-medium hover:bg-purple-50"
-            onClick={navigateToProfilePage}
+            onClick={() => navigateTo("/profile")}
           >
             Profile
           </Button>
+          {role === Roles.MASTER && <Button
+            variant="outline"
+            className="cursor-pointer font-medium hover:bg-purple-50"
+            onClick={() => navigateTo("/master/setting")}
+          >
+            Setting
+          </Button>}
           <Button
             variant="outline"
             className="cursor-pointer border-red-400 text-red-500 hover:bg-red-50"

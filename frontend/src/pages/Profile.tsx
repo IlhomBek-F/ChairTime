@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { PageTitle } from "@/components/ui/pageTitle";
 import { useAuth } from "@/context/Auth";
 import { clearToken } from "@/lib/token";
 import { toastError } from "@/lib/utils";
@@ -55,14 +56,8 @@ export function Profile() {
   };
 
   return (
-    <div className="relative w-full h-[87vh] flex flex-col p-4 bg-gray-50 rounded-2xl shadow-sm">
-  {/* Header */}
-  <h1 className="font-bold text-xl text-gray-800 mb-6 font-mono flex gap-2 items-center">
-    <BookUser size={20} className="text-purple-600" />
-    Profile
-  </h1>
-
-  {/* Avatar */}
+    <>
+  <PageTitle title="Profile" icon={<BookUser size={20} className="text-purple-600" />}/>
   <div className="flex flex-col items-center mb-6">
     <AvatarUploader />
     <span className="text-sm text-gray-500 mt-2">Tap to update photo</span>
@@ -82,7 +77,6 @@ export function Profile() {
     />
   </CustomForm>
 
-  {/* Submit button */}
   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-lg">
     <Button
       type="submit"
@@ -92,8 +86,7 @@ export function Profile() {
     </Button>
   </div>
 
-  {/* Danger zone */}
-  <Collapsible className="mt-auto border-t pt-4 flex w-full flex-col gap-3">
+  <Collapsible  className="mt-auto border-t pt-4 flex w-full flex-col gap-3">
     <div className="flex items-center justify-between gap-4">
       <h4 className="text-sm font-semibold text-red-500">Danger Zone</h4>
       <CollapsibleTrigger asChild>
@@ -118,7 +111,6 @@ export function Profile() {
       </Button>
     </CollapsibleContent>
   </Collapsible>
-</div>
-
+</>
   );
 }
