@@ -52,15 +52,20 @@ type Repository struct {
 		GetUserById(masterId int) (domain.User, error)
 		DeleteUser(userId int) error
 	}
+
+	Admin interface {
+		GetAdminByName(name string) (domain.Admin, error)
+	}
 }
 
 func NewRepo(db *gorm.DB) Repository {
 	return Repository{
-		Auth:            NewAuthRepo(db),
+		Admin:           NewAdminRepo(db),
 		Master:          NewMasterRepo(db),
+		User:            NewUserRepo(db),
+		Auth:            NewAuthRepo(db),
 		StyleType:       NewStyleTypeRepo(db),
 		Booking:         NewBookingRepo(db),
-		User:            NewUserRepo(db),
 		MasterStyleType: NewMasterStyleTypeRepo(db),
 	}
 }

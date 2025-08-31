@@ -41,12 +41,13 @@ func SignIn(app *api.Application, e echo.Context) error {
 
 	client, err := app.Repository.Auth.GetUserByName(userCredential.Username)
 	master, masterErr := app.Repository.Master.GetMasterByName(userCredential.Username)
+	admin, adErr := app.Repository.Admin.GetAdminByName(userCredential.Username)
 
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) || masterErr != nil && !errors.Is(masterErr, gorm.ErrRecordNotFound) {
+	if isUnexpectedError(err, masterErr, adErr) {
 		return app.InternalServerError(e, err)
 	}
 
-	if errors.Is(err, gorm.ErrRecordNotFound) && errors.Is(masterErr, gorm.ErrRecordNotFound) {
+	if errors.Is(err, gorm.ErrRecordNotFound) && errors.Is(masterErr, gorm.ErrRecordNotFound) && errors.Is(adErr, gorm.ErrRecordNotFound) {
 		return app.UnauthorizedErrorResponse(e, err)
 	}
 
@@ -63,7 +64,7 @@ func SignIn(app *api.Application, e echo.Context) error {
 
 		user.ID = client.ID
 		user.RoleId = client.RoleId
-	} else {
+	} else if master.ID != 0 {
 		passwordErr := bcrypt.CompareHashAndPassword([]byte(master.Password), []byte(userCredential.Password))
 
 		if passwordErr != nil {
@@ -72,6 +73,15 @@ func SignIn(app *api.Application, e echo.Context) error {
 
 		user.ID = master.ID
 		user.RoleId = master.RoleId
+	} else {
+		passwordErr := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(userCredential.Password))
+
+		if passwordErr != nil {
+			return app.UnauthorizedErrorResponse(e, passwordErr)
+		}
+
+		user.ID = admin.ID
+		user.RoleId = admin.RoleId
 	}
 
 	claims := auth.CustomClaims{
@@ -102,4 +112,16 @@ func SignIn(app *api.Application, e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, successRes)
+}
+
+func isUnexpectedError(errs ...error) bool {
+	var err error
+
+	for _, e := range errs {
+		if e != nil && !errors.Is(e, gorm.ErrRecordNotFound) {
+			err = e
+		}
+	}
+
+	return err != nil
 }
