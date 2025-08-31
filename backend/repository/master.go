@@ -41,7 +41,7 @@ func (mr masterDB) GetMasterByName(name string) (domain.Master, error) {
 
 	var master domain.Master
 
-	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("username = ? AND role_id = ?", name, constant.MasterRoleId).First(&master)
+	result := mr.db.WithContext(ctx).Where("username = ?", name).First(&master)
 
 	return master, result.Error
 }
@@ -87,7 +87,7 @@ func (mr masterDB) CreateMaster(masterPayload domain.CreateMasterPayload) (domai
 	master.OfferStyleIds = masterPayload.OfferStyleIds
 
 	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
-		result := tx.Model(&domain.User{}).Create(&master)
+		result := tx.Create(&master)
 
 		if result.Error != nil {
 			return result.Error

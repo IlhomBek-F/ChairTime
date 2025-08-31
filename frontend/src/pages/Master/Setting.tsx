@@ -5,7 +5,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { PageTitle } from "@/components/ui/pageTitle";
-import { BookUser, ChevronsUpDown, PhoneOff, Settings } from "lucide-react";
+import {  ChevronsUpDown, PhoneOff, Settings } from "lucide-react";
 
 export function Setting() {
   return (
@@ -14,7 +14,7 @@ export function Setting() {
         title="Setting"
         icon={<Settings size={20} className="text-purple-600" />}
       />
-      <Collapsible className="border-t pt-4 flex w-full flex-col gap-3">
+      <Collapsible className="border-t pt-4 flex w-full flex-col gap-3" open>
         <div className="flex items-center justify-between gap-4">
           <h4 className=" font-semibold text-gray-800">Working hours</h4>
           <CollapsibleTrigger asChild>
@@ -76,7 +76,6 @@ export function Setting() {
             <PhoneOff size={40} className="mb-2 opacity-50" />
             <p className="text-sm mb-3">No days off yet</p>
             <Button type="submit" className="py-5 
-                                             rounded-xl 
                                              font-semibold 
                                              bg-gradient-to-r 
                                              from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">

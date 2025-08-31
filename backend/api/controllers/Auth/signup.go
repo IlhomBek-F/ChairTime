@@ -36,12 +36,13 @@ func SignUp(app *api.Application, e echo.Context) error {
 	}
 
 	user, err := app.Repository.Auth.GetUserByName(userPayload.Username)
+	master, msErr := app.Repository.Master.GetMasterByName(userPayload.Username)
 
-	if user.ID != 0 {
+	if user.ID != 0 || master.ID != 0 {
 		return app.ConflictResponse(e, errors.New("username already exists"))
 	}
 
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
+	if !errors.Is(err, gorm.ErrRecordNotFound) || !errors.Is(msErr, gorm.ErrRecordNotFound) {
 		return app.InternalServerError(e, err)
 	}
 

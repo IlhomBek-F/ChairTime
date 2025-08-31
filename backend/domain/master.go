@@ -1,8 +1,14 @@
 package domain
 
 type Master struct {
-	User
-	OfferStyleIds []int `json:"offer_style_ids" validate:"required" gorm:"-"`
+	Base
+	Username           string `json:"username"`
+	Password           string `json:"-"`
+	Phone              string `json:"phone"`
+	Start_working_time string `json:"start_working_time"`
+	End_working_time   string `json:"end_working_time"`
+	RoleId             int    `json:"role_id"`
+	OfferStyleIds      []int  `json:"offer_style_ids" validate:"required" gorm:"-"`
 }
 
 type MasterBooking struct {
