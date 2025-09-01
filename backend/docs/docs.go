@@ -1497,11 +1497,13 @@ const docTemplate = `{
         "domain.Master": {
             "type": "object",
             "required": [
-                "offer_style_ids",
-                "username"
+                "offer_style_ids"
             ],
             "properties": {
                 "created_at": {
+                    "type": "string"
+                },
+                "end_working_time": {
                     "type": "string"
                 },
                 "id": {
@@ -1519,13 +1521,14 @@ const docTemplate = `{
                 "role_id": {
                     "type": "integer"
                 },
+                "start_working_time": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
                 "username": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 3
+                    "type": "string"
                 }
             }
         },

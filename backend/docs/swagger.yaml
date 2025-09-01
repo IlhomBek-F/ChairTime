@@ -196,6 +196,8 @@ definitions:
     properties:
       created_at:
         type: string
+      end_working_time:
+        type: string
       id:
         type: integer
       offer_style_ids:
@@ -206,15 +208,14 @@ definitions:
         type: string
       role_id:
         type: integer
+      start_working_time:
+        type: string
       updated_at:
         type: string
       username:
-        maxLength: 20
-        minLength: 3
         type: string
     required:
     - offer_style_ids
-    - username
     type: object
   domain.MasterBooking:
     properties:

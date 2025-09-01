@@ -22,10 +22,12 @@ type MasterBooking struct {
 }
 
 type CreateMasterPayload struct {
-	Username      string `json:"username"`
-	Phone         string `json:"phone" validate:"required,e164"`
-	OfferStyleIds []int  `json:"offer_style_ids" validate:"required"`
-	Password      string `json:"password" validate:"required,min=6"`
+	Username           string `json:"username"`
+	Phone              string `json:"phone" validate:"required,e164"`
+	OfferStyleIds      []int  `json:"offer_style_ids" validate:"required"`
+	Start_working_time string `json:"start_working_time" validate:"required"`
+	End_working_time   string `json:"end_working_time" validate:"required"`
+	Password           string `json:"password" validate:"required,min=6"`
 }
 
 type MasterUnavailableSchedule struct {

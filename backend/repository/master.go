@@ -52,7 +52,7 @@ func (mr masterDB) GetMasters() ([]domain.Master, error) {
 
 	var masters []domain.Master
 
-	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("role_id = ?", constant.MasterRoleId).Find(&masters)
+	result := mr.db.WithContext(ctx).Find(&masters)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -131,7 +131,7 @@ func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
 
 	var master domain.Master
 
-	result := mr.db.WithContext(ctx).Model(&domain.User{}).Where("id = ? AND role_id = ?", masterId, constant.MasterRoleId).First(&master)
+	result := mr.db.WithContext(ctx).Where("id = ?", masterId).First(&master)
 
 	return master, result.Error
 }
@@ -232,8 +232,14 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 		return []string{}, result.Error
 	}
 
-	workStart, _ := time.Parse("15:04", "9:00")
-	workEnd, _ := time.Parse("15:04", "21:00")
+	master, err := mr.GetMasterById(masterId)
+
+	if err != nil {
+		return []string{}, err
+	}
+
+	workStart, _ := time.Parse("15:04", master.Start_working_time)
+	workEnd, _ := time.Parse("15:04", master.End_working_time)
 	slotDuration := 17 * time.Minute
 	slots := []string{}
 
@@ -251,7 +257,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 
 		for _, booking := range bookings {
 			bookingStart := parseToMinutes(booking.Time)
-			bookingEnd := bookingStart + 30
+			bookingEnd := bookingStart + 17
 
 			if slotStart < bookingEnd && slotEnd > bookingStart {
 				isBooked = true

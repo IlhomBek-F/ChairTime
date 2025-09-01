@@ -55,7 +55,7 @@ func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error
 		Select("bk.id",
 			"bk.created_at",
 			"bk.updated_at",
-			"us.username AS master",
+			"ms.username AS master",
 			"bk.date",
 			"bk.time",
 			"st.name AS style_type").
