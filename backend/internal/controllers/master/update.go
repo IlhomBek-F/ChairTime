@@ -89,3 +89,36 @@ func UpdateMasterUnavailableSchedule(app *app.Application, e echo.Context) error
 
 	return e.JSON(http.StatusOK, successRes)
 }
+
+// Update master working times godoc
+//
+//	@Summary		Update master working times
+//	@Description	Update master working times
+//	@Tags			Master
+//	@Accept			json
+//	@Security       JWT
+//	@Produce		json
+//	@Param			payload	body		domain.MasterWorkingTimePayload	true "master working times payload"
+//	@Success		201		{object}	domain.MasterWorkingTimeRes		"master working times"
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/master/working-times [put]
+func UpdateWorkingTime(app *app.Application, e echo.Context) error {
+	var payload domain.MasterWorkingTimePayload
+
+	if err := e.Bind(&payload); err != nil {
+		return app.BadRequestResponse(e, err)
+	}
+
+	if err := app.Repository.Master.UpdateMasterWorkingTime(payload); err != nil {
+		return app.InternalServerError(e, err)
+	}
+
+	successRes := domain.MasterWorkingTimeRes{
+		Status:  http.StatusOK,
+		Message: "success",
+		Data:    payload,
+	}
+
+	return e.JSON(http.StatusOK, successRes)
+}

@@ -11,6 +11,12 @@ type Master struct {
 	OfferStyleIds      []int  `json:"offer_style_ids" validate:"required" gorm:"-"`
 }
 
+type MasterWorkingTimePayload struct {
+	ID                 int    `json:"id"`
+	Start_working_time string `json:"start_working_time"`
+	End_working_time   string `json:"end_working_time"`
+}
+
 type MasterBooking struct {
 	ID          int    `json:"id"`
 	Username    string `json:"username"`
@@ -52,3 +58,4 @@ type MasterListRes = SuccessResWithMeta[Master]
 type MasterUnavailableRes = SuccessResWithData[[]MasterUnavailableSchedule]
 type UpdatedMasterUnavailableScheduleRes = SuccessResWithData[MasterUnavailableSchedule]
 type MasterBookingRes = SuccessResWithData[[]MasterBooking]
+type MasterWorkingTimeRes = SuccessResWithData[MasterWorkingTimePayload]

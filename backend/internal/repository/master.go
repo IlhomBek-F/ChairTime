@@ -24,6 +24,7 @@ type masterRepo interface {
 	GetMasterBooking(masterId int) ([]domain.MasterBooking, error)
 	GetMasterById(masterId int) (domain.Master, error)
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
+	UpdateMasterWorkingTime(workingTimePayload domain.MasterWorkingTimePayload) error
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
 	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
@@ -259,7 +260,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 			bookingStart := parseToMinutes(booking.Time)
 			bookingEnd := bookingStart + 30
 
-			if slotStart < bookingEnd && slotEnd > bookingStart {
+			if slotStart < bookingEnd && slotEnd > bookingStart && booking.Time == slot {
 				isBooked = true
 				break
 			}
@@ -313,6 +314,15 @@ func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavaila
 	result := mr.db.WithContext(ctx).Updates(&payload)
 
 	return payload, result.Error
+}
+
+func (mr masterDB) UpdateMasterWorkingTime(payload domain.MasterWorkingTimePayload) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	result := mr.db.WithContext(ctx).Model(&domain.Master{}).Select("start_working_time", "end_working_time").Where("id = ?", payload.ID).Updates(payload)
+
+	return result.Error
 }
 
 func parseToMinutes(time string) int {

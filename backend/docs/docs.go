@@ -690,6 +690,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/master/working-times": {
+            "put": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update master working times",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Update master working times",
+                "parameters": [
+                    {
+                        "description": "master working times payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterWorkingTimePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "master working times",
+                        "schema": {
+                            "$ref": "#/definitions/domain.MasterWorkingTimeRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/master/{master_id}": {
             "get": {
                 "security": [
@@ -1285,6 +1332,9 @@ const docTemplate = `{
                 "master": {
                     "type": "string"
                 },
+                "phone": {
+                    "type": "string"
+                },
                 "style_type": {
                     "type": "string"
                 },
@@ -1358,11 +1408,16 @@ const docTemplate = `{
         "domain.CreateMasterPayload": {
             "type": "object",
             "required": [
+                "end_working_time",
                 "offer_style_ids",
                 "password",
-                "phone"
+                "phone",
+                "start_working_time"
             ],
             "properties": {
+                "end_working_time": {
+                    "type": "string"
+                },
                 "offer_style_ids": {
                     "type": "array",
                     "items": {
@@ -1374,6 +1429,9 @@ const docTemplate = `{
                     "minLength": 6
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "start_working_time": {
                     "type": "string"
                 },
                 "username": {
@@ -1737,6 +1795,34 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.MasterWorkingTimePayload": {
+            "type": "object",
+            "properties": {
+                "end_working_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "start_working_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.MasterWorkingTimeRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.MasterWorkingTimePayload"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
