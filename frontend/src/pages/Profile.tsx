@@ -1,4 +1,5 @@
 import { deleteAccount, getUserInfo as _getUserInfo } from "@/api/auth";
+import { getMasterById } from "@/api/master";
 import AvatarUploader from "@/components/ui/avatarUpload";
 import { CustomForm } from "@/components/ui/bookingForm";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { useAuth } from "@/context/Auth";
+import { Roles } from "@/core/enums/roles";
 import { clearToken } from "@/lib/token";
 import { toastError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,15 +28,15 @@ const formSchema = z.object({
 export function Profile() {
   const navigate = useNavigate();
   const { getUserInfo } = useAuth();
-  const { id: user_id } = getUserInfo();
+  const { id: user_id , role} = getUserInfo();
   const [deletingAccount, setDeletingAccount] = useState(false);
 
   const form = useForm({ resolver: zodResolver(formSchema), mode: "onChange" });
 
   useEffect(() => {
     if (user_id) {
-      _getUserInfo(user_id)
-        .then(({ data }) => {
+      const action = role === Roles.USER ? _getUserInfo(user_id) : getMasterById(user_id)
+        action.then(({ data }) => {
           form.setValue("username", data.username);
           form.setValue("phone", data.phone);
         })
@@ -43,7 +45,7 @@ export function Profile() {
   }, []);
 
   const handleSubmit = () => {};
-
+  
   const handleDeleteAccount = () => {
     setDeletingAccount(true);
     deleteAccount(+user_id)

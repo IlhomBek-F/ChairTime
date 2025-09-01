@@ -63,7 +63,10 @@ export function Header() {
           <Button
             variant="outline"
             className="cursor-pointer border-red-400 text-red-500 hover:bg-red-50"
-            onClick={logOut}
+            onClick={() => {
+              logOut()
+              navigate("/login")
+            }}
           >
             Log out
           </Button>

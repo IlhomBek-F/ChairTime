@@ -5,6 +5,7 @@ export type BookingViewType = BaseType & {
     master: string,
     style_type: string,
     time: string,
+    phone: string
 }
 
 export type MasterBookingType = Omit<BookingViewType, "created_at" | "updated_at"> & {

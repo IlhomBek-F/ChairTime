@@ -240,7 +240,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 
 	workStart, _ := time.Parse("15:04", master.Start_working_time)
 	workEnd, _ := time.Parse("15:04", master.End_working_time)
-	slotDuration := 17 * time.Minute
+	slotDuration := 30 * time.Minute
 	slots := []string{}
 
 	availableBookingTimes := []string{}
@@ -257,7 +257,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 
 		for _, booking := range bookings {
 			bookingStart := parseToMinutes(booking.Time)
-			bookingEnd := bookingStart + 17
+			bookingEnd := bookingStart + 30
 
 			if slotStart < bookingEnd && slotEnd > bookingStart {
 				isBooked = true

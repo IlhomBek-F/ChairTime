@@ -4,6 +4,7 @@ import {
   CalendarDays,
   Loader2Icon,
   Pencil,
+  Phone,
   ShieldUser,
   Star,
   Timer,
@@ -23,6 +24,7 @@ export function BookingItem({
   id,
   date,
   time,
+  phone,
   master,
   style_type,
   deleteingBookingId,
@@ -43,6 +45,9 @@ export function BookingItem({
       <CardContent className="flex justify-between items-center">
         {/* Left side info */}
         <div className="flex flex-col gap-2 text-gray-700">
+          <div className="flex items-center gap-2 text-gray-700">
+          <Phone size={16} className="text-green-500" /> {phone}
+        </div>
           <span className="flex items-center gap-2 text-sm">
             <CalendarDays size={18} className="text-pink-500" />
             <span>{date.replaceAll("-", ".")}</span>

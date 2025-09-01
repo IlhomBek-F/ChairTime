@@ -15,6 +15,7 @@ type BookingResponse struct {
 	StyleType string `json:"style_type"`
 	Date      string `json:"date"`
 	Time      string `json:"time"`
+	Phone     string `json:"phone"`
 }
 
 type CreateBookingPayload struct {

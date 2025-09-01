@@ -29,7 +29,6 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const logOut = () => {
     clearToken();
     localStorage.removeItem("user");
-    window.location.replace("/login");
   };
 
   return (

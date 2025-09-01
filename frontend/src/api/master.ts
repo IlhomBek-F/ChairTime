@@ -22,3 +22,7 @@ export function getMasterBookings(masterId: number): Promise<ResponseSuccessWith
 export function getMasterAvailableTimeSlots(masterId: number, date: string): Promise<ResponseSuccessWithData<string[]>> {
     return privateHttp.get(`/master/${masterId}/${date}`)
 }
+
+export function getMasterById(masterId: number): Promise<ResponseSuccessWithData<MasterType>> {
+    return privateHttp.get(`/master/${masterId}`)
+}

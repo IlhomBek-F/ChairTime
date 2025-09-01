@@ -34,6 +34,7 @@ func (br bookingDB) CreateBooking(payload domain.CreateBookingPayload) (domain.B
 		MasterStyleTypeId: payload.MasterStyleTypeId,
 		Date:              payload.Date,
 		Time:              payload.Time,
+		Description:       payload.Description,
 	}
 
 	result := br.db.WithContext(ctx).Create(&booking)
@@ -56,6 +57,7 @@ func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error
 			"bk.created_at",
 			"bk.updated_at",
 			"ms.username AS master",
+			"ms.phone",
 			"bk.date",
 			"bk.time",
 			"st.name AS style_type").
