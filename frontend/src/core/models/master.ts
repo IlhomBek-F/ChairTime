@@ -13,6 +13,12 @@ export type MasterUnavailableScheduleType = BaseType & {
   date: string
 }
 
+export type WorkingTime = {
+  id: number
+  start_working_time: string,
+  end_working_time: string
+}
+
 export type CreateMasterUnavailableScheduleType = Omit<MasterUnavailableScheduleType, "id" | "created_at" | "updated_at">
 
 export type MasterStylesOfferType = {

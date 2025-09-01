@@ -12,7 +12,7 @@ type Master struct {
 }
 
 type MasterWorkingTimePayload struct {
-	ID                 int    `json:"id"`
+	ID                 int    `json:"id" validate:"required"`
 	Start_working_time string `json:"start_working_time"`
 	End_working_time   string `json:"end_working_time"`
 }

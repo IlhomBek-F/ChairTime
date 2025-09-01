@@ -76,7 +76,7 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel, l
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            {options.map((option: any, index: number) => {
+            {options?.map((option: any, index: number) => {
               return <SelectItem key={index} 
                                  value={optionValue && `${option[optionValue]}` || option}>{optionLabel && option[optionLabel] || option}</SelectItem>
             })}
