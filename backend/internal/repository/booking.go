@@ -91,7 +91,7 @@ func (br bookingDB) UpdateBooking(updatedBookingPayload domain.Booking) (domain.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	result := br.db.WithContext(ctx).Save(&updatedBookingPayload)
+	result := br.db.WithContext(ctx).Updates(&updatedBookingPayload)
 
 	return updatedBookingPayload, result.Error
 }

@@ -19,7 +19,7 @@ export type CreateBookingType = {
     date: string,
     time: string,
     master_style_type_id: number,
-    description: string
+    description?: string
 }
 
 export type BookingByIdType = BaseType & CreateBookingType

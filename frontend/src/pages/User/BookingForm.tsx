@@ -23,13 +23,14 @@ import { toastError } from "@/lib/utils";
 import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 import { CustomForm } from "@/components/ui/bookingForm";
 import { useMasterAvailableTimeSlots } from "@/hooks/useMasterAvailableTimeSlots";
+import type { UpdateBookingType } from "@/core/models/booking";
 
 type Inputs = {
   master_id: number;
   master_style_type_id: number;
   date: string;
   time: string;
-  description: string;
+  description?: string;
 };
 
 const formSchema = z.object({
@@ -37,7 +38,7 @@ const formSchema = z.object({
   master_style_type_id: z.number(),
   date: z.string(),
   time: z.string().min(1),
-  description: z.string()
+  description: z.string().optional()
 });
 
 export function BookingForm() {
@@ -62,8 +63,8 @@ export function BookingForm() {
   const { dateMathcer, loading: loadingMasterSchedule } = useMasterUnavailableSchedule(masterIdValueChange);
   const { timeSlots, loading: loadingTimeSlots } = useMasterAvailableTimeSlots(masterIdValueChange, dateValueChange);
   const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
-  const [pendingMstStyleTypeId, setPendingMstStyleTypeId] = useState<number>();
-
+  const [booking, setBooking] = useState<UpdateBookingType>();
+  
   useEffect(() => {
     if (masters.length && bookingId) {
       getBooking(bookingId);
@@ -71,19 +72,20 @@ export function BookingForm() {
   }, [bookingId, masters]);
 
   useEffect(() => {
-    if (styleTypes && pendingMstStyleTypeId) {
-      form.setValue("master_style_type_id", pendingMstStyleTypeId);
+    if (styleTypes && booking) {
+      form.setValue("master_style_type_id", booking.master_style_type_id);
     }
   }, [styleTypes]);
 
   const getBooking = async (id: number) => {
     setLoadingBookingInfo(true);
     try {
-      const { data: {time, date, master_style_type_id, description} } = await getBookingById(id);
+      const { data: {time, date, master_style_type_id, description, ...rest} } = await getBookingById(id);
       const { data: masterStyleType } = await getMasterStyleTypeById(master_style_type_id);
 
+      setBooking({time, date, master_style_type_id, description, ...rest});
+      
       form.setValue("master_id", masterStyleType.master_id);
-      setPendingMstStyleTypeId(masterStyleType.id);
       form.setValue("time", time);
       form.setValue("date", date);
       form.setValue("description", description);
@@ -106,7 +108,7 @@ export function BookingForm() {
 
   const _updateBooking = (values: Inputs) => {
     const { id: user_id } = getUserInfo();
-    const payload = { id: bookingId, user_id: +user_id, ...values};
+    const payload = { id: bookingId, user_id: +user_id, ...values, created_at: booking?.created_at};
 
     updateBooking(payload)
       .then(() => setOpenAlertDialog(true))
