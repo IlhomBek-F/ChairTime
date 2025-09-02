@@ -4,7 +4,12 @@ import (
 	"chairTime/internal/app"
 	"chairTime/internal/auth"
 	"chairTime/internal/domain"
+	"context"
+	"fmt"
+	"log"
 	"net/http"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -53,7 +58,7 @@ func Mount(app *app.Application) http.Handler {
 	return e
 }
 
-func Run(app *app.Application, routeHandler http.Handler) error {
+func Run(app *app.Application, routeHandler http.Handler) {
 	serverConfig := http.Server{
 		Addr:         app.Config.Addr,
 		Handler:      routeHandler,
@@ -62,15 +67,19 @@ func Run(app *app.Application, routeHandler http.Handler) error {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	done := make(chan bool)
+
+	go gracefullyShutDown(&serverConfig, done)
+
 	app.Logger.Infow("server has started", "addr", app.Config.Addr, "env", app.Config.Env)
 
 	err := serverConfig.ListenAndServe()
 
 	if err != nil {
-		return err
+		panic(fmt.Sprintf("http server error: %s", err))
 	}
 
-	return nil
+	<-done
 }
 
 func configureCORS() echo.MiddlewareFunc {
@@ -81,4 +90,25 @@ func configureCORS() echo.MiddlewareFunc {
 		AllowCredentials: true,
 		MaxAge:           30,
 	})
+}
+
+func gracefullyShutDown(apiServer *http.Server, done chan bool) {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	<-ctx.Done()
+
+	log.Println("shutting down gracefully, press Ctrl+C again to force")
+	stop() // Allow Ctrl+C to force shutdown
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := apiServer.Shutdown(ctx); err != nil {
+		log.Printf("Server forced to shutdown with error: %v", err)
+	}
+
+	log.Println("Server exiting")
+
+	done <- true
 }

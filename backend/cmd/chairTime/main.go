@@ -79,6 +79,5 @@ func main() {
 		Repository:    repository,
 	}
 
-	echoRoute := routes.Mount(app)
-	logger.Fatal(routes.Run(app, echoRoute))
+	routes.Run(app, routes.Mount(app))
 }
