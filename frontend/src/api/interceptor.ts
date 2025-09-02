@@ -4,8 +4,7 @@ import { privateHttp, publicHttp } from "./http";
 publicHttp.interceptors.response.use((response) => response.data, (error) => Promise.reject(error.response.data));
 
 privateHttp.interceptors.request.use(async function (config) {
-        await pending()
-
+    await pending()
     const token = getToken();
 
     if(!token) {
@@ -28,6 +27,6 @@ const pending = async () => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(true)
-        }, 2000)
+        }, 1000)
     })
 }

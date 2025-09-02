@@ -3,14 +3,16 @@ import { useAuth } from "@/context/Auth";
 import type { Roles } from "@/core/enums/roles";
 import type { PUBLIC_ROUTES, ROUTE_CONFIGS } from "./route";
 import { AuthLayout } from "@/components/ui/layouts/authLayout";
+import { Navigate } from "react-router";
+import { clearToken } from "@/lib/token";
 
 function PrivateRoute({children, roles}: {children: React.ReactNode, roles: Roles[]}) {
     const { isAuthenticated , getUserInfo, logOut} = useAuth();
     const user = getUserInfo()
 
     if (!isAuthenticated() || !roles.includes(user.role)) {
-        logOut()
-        return;
+        clearToken()
+        return <Navigate to="/login" replace/>;
     }
 
     return children

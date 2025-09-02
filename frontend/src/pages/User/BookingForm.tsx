@@ -49,7 +49,9 @@ export function BookingForm() {
   const { getUserInfo } = useAuth();
   const { masters, loading } = useMaster();
   const [upsertLoading, setUpsertLoading] = useState(false);
+  const [booking, setBooking] = useState<UpdateBookingType>();
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
 
   const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),
@@ -62,8 +64,6 @@ export function BookingForm() {
   const { styleTypes, loading: loadingStyleTypes } = useMasterStylesOffer(masterIdValueChange);
   const { dateMathcer, loading: loadingMasterSchedule } = useMasterUnavailableSchedule(masterIdValueChange);
   const { timeSlots, loading: loadingTimeSlots } = useMasterAvailableTimeSlots(masterIdValueChange, dateValueChange);
-  const [loadingBookingInfo, setLoadingBookingInfo] = useState(false);
-  const [booking, setBooking] = useState<UpdateBookingType>();
   
   useEffect(() => {
     if (masters.length && bookingId) {
