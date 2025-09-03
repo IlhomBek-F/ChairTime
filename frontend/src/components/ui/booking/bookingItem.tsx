@@ -1,19 +1,20 @@
-import { Card, CardContent, CardHeader } from "./card";
-import { Button } from "./button";
 import {
   CalendarDays,
   Loader2Icon,
   Pencil,
   Phone,
+  Scissors,
   ShieldUser,
-  Star,
   Timer,
   Trash,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import type { BookingViewType } from "@/core/models/booking";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Card, CardContent, CardHeader } from "../card";
+import { Popover } from "@radix-ui/react-popover";
+import { PopoverContent, PopoverTrigger } from "../popover";
+import { Button } from "../button";
 
 type BookingItemPropsType = BookingViewType & {
   deleteingBookingId: number,
@@ -57,8 +58,7 @@ export function BookingItem({
             <span>{time}</span>
           </span>
           <span className="flex items-center gap-2 text-sm">
-            <Star size={18} className="text-yellow-500" />
-            <span>{style_type}</span>
+             <Scissors size={16} className="text-pink-500" /> {style_type}
           </span>
         </div>
 
@@ -69,7 +69,7 @@ export function BookingItem({
               <Button
                 variant="destructive"
                 size="icon"
-                className="rounded-full shadow-md"
+                className="rounded-full shadow-md cursor-pointer"
                 onClick={() => setOpenPopover(true)}
               >
                 <Trash />
@@ -83,6 +83,7 @@ export function BookingItem({
                 <Button
                   variant="outline"
                   size="sm"
+                  className="cursor-pointer"
                   onClick={() => handleDeleteBooking(id)}>
                   {deleteingBookingId === id && <Loader2Icon className="animate-spin mr-2" />}
                   Yes
@@ -90,6 +91,7 @@ export function BookingItem({
                 <Button
                   variant="outline"
                   size="sm"
+                  className="cursor-pointer"
                   onClick={() => setOpenPopover(false)}
                 >
                   No
@@ -101,7 +103,7 @@ export function BookingItem({
           <Button
             variant="success"
             size="icon"
-            className="rounded-full shadow-md"
+            className="rounded-full shadow-md cursor-pointer"
             onClick={() => navigate(`/booking/edit/${id}`)}
           >
             <Pencil />

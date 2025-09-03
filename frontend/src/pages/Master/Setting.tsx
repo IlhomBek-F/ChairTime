@@ -1,21 +1,44 @@
-import { updateMasterWorkingTime } from "@/api/master";
+import { scheduleMasterUnavailableDays, updateMasterWorkingTime } from "@/api/master";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { CustomForm } from "@/components/ui/booking/bookingForm";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { useAuth } from "@/context/Auth";
+import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 import { toastError } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {  ChevronsUpDown, Loader2Icon, PhoneOff, Settings } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
+
+type Inputs = {
+  days_off: string[];
+}
+
+const formSchema = z.object({
+  days_off: z.array(z.string()),
+});
 
 export function Setting() {
   const [workingTime, setWorkingTime] = useState({start_working_time: "08:00", end_working_time: "18:00"})
   const [loading, setLoading] = useState(false)
+  const [daysOffLoading, setDaysoffLoading] = useState(false)
   const {getUserInfo} = useAuth()
+  const {id} = getUserInfo()
+  const { unavailableSchedules} = useMasterUnavailableSchedule(id)
+  const form = useForm<Inputs>({
+      resolver: zodResolver(formSchema),
+      mode: "onChange",
+  });
+
   const saveWorkingTime = () => {
     setLoading(true)
     updateMasterWorkingTime({...workingTime, id: getUserInfo().id})
@@ -23,6 +46,25 @@ export function Setting() {
      .catch(toastError)
      .finally(() => setLoading(false))
   }
+
+  useEffect(() => {
+      if(unavailableSchedules.length) {
+        form.setValue("days_off", unavailableSchedules.map(sch => sch.date))
+      }
+  }, [unavailableSchedules])
+  
+  
+
+   const onSubmit = ({days_off}: Inputs) => {
+       const requests = days_off.map((date: string) => scheduleMasterUnavailableDays({day_of_week: 1, start_time: "", end_time: "", date, master_id: id}))
+       
+       setDaysoffLoading(true)
+       Promise.all(requests)
+       .then(() => {
+         toast.success("days off saved successfullv  y")
+       }).catch(toastError)
+       .finally(() => setDaysoffLoading(false))
+    }
 
   return (
     <>
@@ -103,18 +145,25 @@ export function Setting() {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="flex flex-col gap-2 min-h-52 ">
-          <p className="text-black text-[13px] ">
-            Add dates when you won't be available for bookings
-          </p>
-          <div className="border-2  rounded-md border-dashed flex flex-col items-center justify-center h-full text-gray-500 ">
-            <PhoneOff size={40} className="mb-2 opacity-50" />
-            <p className="text-sm mb-3">No days off yet</p>
-            <Button type="submit" className="py-5 
-                                             font-semibold 
+            <CustomForm form={form} 
+                        handleSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-4 items-end"
+                        >
+               <CustomForm.Date name="days_off" 
+                                label="" 
+                                mode="multiple"
+                                formControl={form.control} 
+                                popover={false}></CustomForm.Date>
+                                <Button type="submit" disabled={daysOffLoading} className="py-5 
+                                             font-semibold
                                              bg-gradient-to-r 
-                                             from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">
+                                             w-max
+                                             from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer"
+                                             >
+                                             {daysOffLoading && <Loader2Icon className="animate-spin mr-2" />}
                                              Schedule days off</Button>
-          </div>
+            </CustomForm>
+            
         </CollapsibleContent>
       </Collapsible>
     </>

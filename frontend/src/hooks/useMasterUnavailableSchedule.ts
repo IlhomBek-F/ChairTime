@@ -1,10 +1,12 @@
 import { getMasterUnavailableSchedules } from "@/api/master";
+import type { MasterUnavailableScheduleType } from "@/core/models/master";
 import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import type { Matcher } from "react-day-picker";
 
 export function useMasterUnavailableSchedule(masterId: number) {
     const [dateMathcer, setDateMatcher] = useState<Matcher[]>([]);
+    const [unavailableSchedules, setUnavailableSchedules] = useState<MasterUnavailableScheduleType[]>([]);
 
     const [loading, setLoading] = useState(false);
 
@@ -18,6 +20,7 @@ export function useMasterUnavailableSchedule(masterId: number) {
         setLoading(true)
         getMasterUnavailableSchedules(masterId)
         .then((res) => {
+            setUnavailableSchedules(res.data)
             const matcher = res.data.reduce((matchers, sch) => {
                 if(sch.date) {
                     const [day, month, year] = sch.date.split("-");
@@ -31,5 +34,5 @@ export function useMasterUnavailableSchedule(masterId: number) {
         .finally(() => setLoading(false))
     }
 
-    return {dateMathcer, loading}
+    return {dateMathcer, loading, unavailableSchedules}
 }

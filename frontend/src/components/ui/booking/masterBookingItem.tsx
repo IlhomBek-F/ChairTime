@@ -1,7 +1,7 @@
 import type { MasterBookingType } from "@/core/models/booking";
-import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import { Clock, MessageSquare, Phone, Scissors, User } from "lucide-react";
-import { Button } from "./button";
+import { Card, CardContent, CardHeader, CardTitle } from "../card";
+import { Button } from "../button";
 
 export function MasterBookingItem({username, date, time, description, phone, style_type}: MasterBookingType) {
   return (

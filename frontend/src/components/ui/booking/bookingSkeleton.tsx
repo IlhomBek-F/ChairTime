@@ -1,4 +1,4 @@
-import { Skeleton } from "./skeleton";
+import { Skeleton } from "../skeleton";
 
 export function BookingSkeleton() {
   return [1, 2, 3].map((key) => (

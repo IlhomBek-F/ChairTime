@@ -5,20 +5,20 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "./form";
-import { Input } from "./input";
+} from "../form/form";
+import { Input } from "../form/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./select";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Button } from "./button";
+} from "../form/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
+import { Button } from "../button";
 import { ChevronDownIcon, Loader2Icon } from "lucide-react";
-import { Calendar } from "./calendar";
-import { Textarea } from "./textarea";
+import { Calendar } from "../form/calendar";
+import { Textarea } from "../form/textarea";
 import { format } from "date-fns";
 import type { Matcher, Mode } from "react-day-picker";
 
@@ -89,10 +89,30 @@ const select = ({ formControl, options, name, label, optionValue, optionLabel, l
 
 const date = ({ formControl, loading, label, matcher, name, mode, popover }: FormFieldDateProps) => {
   const [open, setOpen] = useState(false);
-  const decodeValueToDate = (value: string = "") => {
+
+  const decodeValueToDate = (value: string = "03-09-2025") => {
       const [day, month, year] = value.split("-");
       return new Date(+year, +month - 1, +day);
   }
+
+  const formatMultipleModeDateValues = (date: unknown, onChangeFc: (evt: any[]) => void) => {
+     if (Array.isArray(date)) {
+       const formatedDates = date.map((d) => {
+         if (d instanceof Date) {
+          return format(d, "dd-MM-yyyy")
+         }
+       })
+
+       onChangeFc(formatedDates)
+     }
+  }
+
+  const formatSingleModeDateValue = (date: unknown, onChangeFc: (evt: any) => void) => {
+     if (date instanceof Date) {
+       onChangeFc(format(date, "dd-MM-yyyy"))
+     }
+  }
+
   return (
     <FormField
       control={formControl}
@@ -103,15 +123,10 @@ const date = ({ formControl, loading, label, matcher, name, mode, popover }: For
           {!popover ?  <Calendar
                 mode={mode}
                 disabled={matcher}
-                selected={decodeValueToDate(field.value)}
+                selected={mode === "multiple" ? field.value?.map((value: string) => decodeValueToDate(value)) : decodeValueToDate(field.value)}
                 className="w-full"
                 captionLayout="dropdown"
-                onSelect={(date: unknown) => {
-                  if(date instanceof Date) {
-                    field.onChange(format(date, "dd-MM-yyyy"));
-                    setOpen(false);
-                  }
-                }}
+                onSelect={(date: unknown) => mode === "multiple" ? formatMultipleModeDateValues(date, field.onChange) : formatSingleModeDateValue(date, field.onChange)}
                 required={mode !== "range"}
               /> : <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -135,7 +150,7 @@ const date = ({ formControl, loading, label, matcher, name, mode, popover }: For
               <Calendar
                 mode={mode}
                 disabled={matcher}
-                selected={decodeValueToDate(field.value)}
+                selected={mode === "multiple" ? [decodeValueToDate(field.value)] : decodeValueToDate(field.value)}
                 className="w-full"
                 captionLayout="dropdown"
                 onSelect={(date: unknown) => {

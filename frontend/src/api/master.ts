@@ -1,6 +1,6 @@
 import type { ResponseSuccessWithData, ResponseWitMetaType } from "@/core/models/base";
 import { privateHttp } from "./http";
-import type { MasterStylesOfferType, MasterType, MasterUnavailableScheduleType, WorkingTime } from "@/core/models/master";
+import type { CreateMasterUnavailableScheduleType, MasterStylesOfferType, MasterType, MasterUnavailableScheduleType, WorkingTime } from "@/core/models/master";
 import type { MasterBookingType } from "@/core/models/booking";
 
 export function getMasters(): Promise<ResponseWitMetaType<MasterType[]>> {
@@ -29,4 +29,8 @@ export function getMasterById(masterId: number): Promise<ResponseSuccessWithData
 
 export function updateMasterWorkingTime(payload: WorkingTime): Promise<ResponseSuccessWithData<WorkingTime>> {
     return privateHttp.put("/master/working-times", payload)
+}
+
+export function scheduleMasterUnavailableDays(payload: CreateMasterUnavailableScheduleType): Promise<MasterUnavailableScheduleType> {
+    return privateHttp.post("/master/unavailable", payload)
 }

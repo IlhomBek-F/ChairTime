@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/form/input";
+import { Label } from "@/components/ui/form/label";
 import { PAGE_BY_ROLE } from "@/config/route";
 import { setToken } from "@/lib/token";
 import { toastError } from "@/lib/utils";

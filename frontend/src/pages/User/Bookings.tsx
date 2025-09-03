@@ -1,6 +1,6 @@
 import { deleteBooking, getBooking } from "@/api/booking";
-import { BookingItem } from "@/components/ui/bookingItem";
-import { BookingSkeleton } from "@/components/ui/bookingSkeleton";
+import { BookingItem } from "@/components/ui/booking/bookingItem";
+import { BookingSkeleton } from "@/components/ui/booking/bookingSkeleton";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { ScrollArea } from "@/components/ui/scroll-area";

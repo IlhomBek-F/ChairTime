@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "./card";
+import { Card, CardContent, CardHeader } from "../card";
 
 export function MasterBookingSkeleton() {
   return [1, 2, 3].map((key) => (

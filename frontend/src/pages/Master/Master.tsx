@@ -1,6 +1,6 @@
 import { getMasterBookings } from "@/api/master";
-import { MasterBookingItem } from "@/components/ui/masterBookingItem";
-import { MasterBookingSkeleton } from "@/components/ui/masterBookingSkeleton";
+import { MasterBookingItem } from "@/components/ui/booking/masterBookingItem";
+import { MasterBookingSkeleton } from "@/components/ui/booking/masterBookingSkeleton";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/Auth";
@@ -27,7 +27,6 @@ export function Master() {
   return (
     <>
       <PageTitle title="My Bookings" icon={ <BookUser size={20} className="text-purple-600" />}/>
-      <ScrollArea className="pr-2 h-[84%]">
         {loading ? <MasterBookingSkeleton /> : bookings.length > 0 ? (
           bookings.map((booking: MasterBookingType) => <MasterBookingItem {...booking} key={booking.id}/>)
         ) : (
@@ -36,7 +35,6 @@ export function Master() {
             <p className="text-sm">No bookings yet</p>
           </div>
         )}
-      </ScrollArea>
     </>
   );
 }

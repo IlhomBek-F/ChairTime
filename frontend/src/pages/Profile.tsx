@@ -1,7 +1,7 @@
 import { deleteAccount, getUserInfo as _getUserInfo } from "@/api/auth";
 import { getMasterById } from "@/api/master";
-import AvatarUploader from "@/components/ui/avatarUpload";
-import { CustomForm } from "@/components/ui/bookingForm";
+import AvatarUploader from "@/components/ui/form/avatarUpload";
+import { CustomForm } from "@/components/ui/booking/bookingForm";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,

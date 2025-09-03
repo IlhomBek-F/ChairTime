@@ -21,7 +21,7 @@ import { getMasterStyleTypeById } from "@/api/masterStyleType";
 import { toast } from "sonner";
 import { toastError } from "@/lib/utils";
 import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
-import { CustomForm } from "@/components/ui/bookingForm";
+import { CustomForm } from "@/components/ui/booking/bookingForm";
 import { useMasterAvailableTimeSlots } from "@/hooks/useMasterAvailableTimeSlots";
 import type { UpdateBookingType } from "@/core/models/booking";
 

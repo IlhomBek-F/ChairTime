@@ -10,7 +10,8 @@ export type MasterUnavailableScheduleType = BaseType & {
   day_of_week: WeekDays,
   start_time: string,
   end_time: string,
-  date: string
+  date: string,
+  master_id: number
 }
 
 export type WorkingTime = {
