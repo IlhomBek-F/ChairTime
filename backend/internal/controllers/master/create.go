@@ -6,6 +6,7 @@ import (
 	"chairTime/internal/domain"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -73,19 +74,26 @@ func CreateMaster(app *app.Application, e echo.Context) error {
 //	@Accept			json
 //	@Security       JWT
 //	@Produce		json
-//	@Param			payload	body		domain.CreateMasterUnavailablePayload	true "Master unavailable schedule payload"
+//	@Param			payload	body		[]domain.CreateMasterUnavailablePayload	true "Master unavailable schedule payload"
+//	@Param			master_id	path	int		true "master_id"
 //	@Success		201		{object}	domain.SuccessRes		"Created new unavailable schedule"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
-//	@Router			/master/unavailable [post]
+//	@Router			/master/{master_id}/unavailable [post]
 func CreateMasterUnavailableSchedule(app *app.Application, e echo.Context) error {
-	var payload domain.CreateMasterUnavailablePayload
+	master_id, cnvErr := strconv.Atoi(e.Param("master_id"))
+
+	if cnvErr != nil {
+		return app.BadRequestResponse(e, cnvErr)
+	}
+
+	var payload []domain.CreateMasterUnavailablePayload
 
 	if err := e.Bind(&payload); err != nil {
 		return app.BadRequestResponse(e, err)
 	}
 
-	if err := app.Repository.Master.CreateMasterUnavailableSchedule(payload); err != nil {
+	if err := app.Repository.Master.CreateMasterUnavailableSchedule(payload, master_id); err != nil {
 		return app.InternalServerError(e, err)
 	}
 

@@ -20,11 +20,11 @@ import { toast } from "sonner";
 import z from "zod";
 
 type Inputs = {
-  days_off: string[];
+  days_off: any[];
 }
 
 const formSchema = z.object({
-  days_off: z.array(z.string()),
+  days_off: z.array(z.string().optional()),
 });
 
 export function Setting() {
@@ -56,12 +56,12 @@ export function Setting() {
   
 
    const onSubmit = ({days_off}: Inputs) => {
-       const requests = days_off.map((date: string) => scheduleMasterUnavailableDays({day_of_week: 1, start_time: "", end_time: "", date, master_id: id}))
+       const requests = days_off.map((date: string) => ({day_of_week: 1, start_time: "", end_time: "", date, master_id: id}))
        
        setDaysoffLoading(true)
-       Promise.all(requests)
+       scheduleMasterUnavailableDays(requests, id)
        .then(() => {
-         toast.success("days off saved successfullv  y")
+         toast.success("days off saved successfully")
        }).catch(toastError)
        .finally(() => setDaysoffLoading(false))
     }
@@ -161,7 +161,7 @@ export function Setting() {
                                              from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer"
                                              >
                                              {daysOffLoading && <Loader2Icon className="animate-spin mr-2" />}
-                                             Schedule days off</Button>
+                                             Save</Button>
             </CustomForm>
             
         </CollapsibleContent>

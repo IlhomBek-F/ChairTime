@@ -26,7 +26,7 @@ type masterRepo interface {
 	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
 	UpdateMasterWorkingTime(workingTimePayload domain.MasterWorkingTimePayload) error
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-	CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error
+	CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, master_id int) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 	DeleteMasterUnavailableSchedule(id int) error
 	GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
@@ -284,21 +284,65 @@ func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterU
 	return masterUnavailableSchedules, result.Error
 }
 
-func (mr masterDB) CreateMasterUnavailableSchedule(payload domain.CreateMasterUnavailablePayload) error {
+func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, master_id int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var schedule = domain.MasterUnavailableSchedule{
-		MasterId:  payload.MasterId,
-		DayOfWeek: payload.DayOfWeek,
-		Date:      payload.Date,
-		StartTime: payload.StartTime,
-		EndTime:   payload.EndTime,
-	}
+	trxError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
+		currentMasterSchedules, err := mr.GetMasterUnavailableSchedules(master_id)
+		currentMasterSchedulesMap := make(map[string]domain.MasterUnavailableSchedule)
+		updatedOfferSet := make(map[string]int)
 
-	result := mr.db.WithContext(ctx).Create(&schedule)
+		if err != nil {
+			return err
+		}
 
-	return result.Error
+		for _, sch := range currentMasterSchedules {
+			currentMasterSchedulesMap[sch.Date] = sch
+		}
+
+		for _, updatedSch := range payload {
+			updatedOfferSet[updatedSch.Date] = updatedSch.MasterId
+		}
+
+		var removedSchedules []int
+		var addNewSchedules []domain.MasterUnavailableSchedule
+
+		for _, schedule := range payload {
+			if _, ok := currentMasterSchedulesMap[schedule.Date]; !ok {
+				newSchedule := domain.MasterUnavailableSchedule{
+					MasterId:  schedule.MasterId,
+					DayOfWeek: schedule.DayOfWeek,
+					Date:      schedule.Date,
+					StartTime: schedule.StartTime,
+					EndTime:   schedule.EndTime,
+				}
+				addNewSchedules = append(addNewSchedules, newSchedule)
+			}
+		}
+
+		for _, schedule := range currentMasterSchedules {
+			if _, ok := updatedOfferSet[schedule.Date]; !ok {
+				removedSchedules = append(removedSchedules, schedule.ID)
+			}
+		}
+
+		if len(removedSchedules) > 0 {
+			if err := tx.Delete(&domain.MasterUnavailableSchedule{}, removedSchedules).Error; err != nil {
+				return err
+			}
+		}
+
+		if len(addNewSchedules) > 0 {
+			if err := tx.Create(&addNewSchedules).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	return trxError
 }
 
 func (mr masterDB) DeleteMasterUnavailableSchedule(id int) error {

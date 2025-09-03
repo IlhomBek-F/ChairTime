@@ -125,6 +125,7 @@ const date = ({ formControl, loading, label, matcher, name, mode, popover }: For
                 disabled={matcher}
                 selected={mode === "multiple" ? field.value?.map((value: string) => decodeValueToDate(value)) : decodeValueToDate(field.value)}
                 className="w-full"
+                onDayClick={(date) => console.log(date)}
                 captionLayout="dropdown"
                 onSelect={(date: unknown) => mode === "multiple" ? formatMultipleModeDateValues(date, field.onChange) : formatSingleModeDateValue(date, field.onChange)}
                 required={mode !== "range"}
