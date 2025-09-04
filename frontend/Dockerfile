@@ -21,8 +21,7 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 ENV NODE_ENV=production
-ENV PORT=3000
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["npm", "run", "dev"]

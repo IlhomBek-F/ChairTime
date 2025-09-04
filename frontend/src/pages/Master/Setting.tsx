@@ -1,5 +1,4 @@
 import { scheduleMasterUnavailableDays, updateMasterWorkingTime } from "@/api/master";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CustomForm } from "@/components/ui/booking/bookingForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,13 +6,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { useAuth } from "@/context/Auth";
 import { useMasterUnavailableSchedule } from "@/hooks/useMasterUnavailableSchedule";
 import { toastError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  ChevronsUpDown, Loader2Icon, PhoneOff, Settings } from "lucide-react";
+import {  ChevronsUpDown, Loader2Icon, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -92,7 +90,7 @@ export function Setting() {
             <input 
               type="time" 
               value={workingTime.start_working_time}
-              onInput={(e) => {
+              onInput={(e: any) => {
                   if (!e.target.value) {
                     setWorkingTime({...workingTime, start_working_time: "08:00"})
                   } else {
@@ -108,7 +106,7 @@ export function Setting() {
               type="time" 
               inputMode="text"
               value={workingTime.end_working_time}
-              onInput={(e) => {
+              onInput={(e: any) => {
                   if (!e.target.value) {
                     setWorkingTime({...workingTime, end_working_time: "18:00"})
                   } else {
