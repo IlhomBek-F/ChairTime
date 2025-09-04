@@ -1,13 +1,13 @@
 import { Login } from "@/pages/Login";
-import { Bookings } from "@/pages/User/Bookings";
+import { Bookings } from "@/pages/user/Bookings";
 import { createBrowserRouter } from "react-router";
 import { createProtectedRoute, createPublicRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
-import { Master } from "@/pages/Master/Master";
 import { Roles } from "@/core/enums/roles";
 import { IndexRoute } from "./IndexRoute";
-import { BookingForm } from "@/pages/User/BookingForm";
-import { Setting } from "@/pages/Master/Setting";
+import { BookingForm } from "@/pages/user/BookingForm";
+import { MasterBooking } from "@/pages/master/Booking";
+import { Setting } from "@/pages/master/Setting";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -36,7 +36,7 @@ export const ROUTE_CONFIGS = [
   },
   {
     path: "/master",
-    element: <Master />,
+    element: <MasterBooking />,
     roles: [Roles.MASTER],
     title: "Master Dashboard"
   },
