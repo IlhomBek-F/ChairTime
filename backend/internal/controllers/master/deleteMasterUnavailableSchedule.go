@@ -21,7 +21,7 @@ import (
 //	@Success		201		{object}	domain.SuccessRes "Deleted master unavailable schedule"
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
-//	@Router			/master/{unavailable_schedule_id} [delete]
+//	@Router			/master/unavailable-schedule/{unavailable_schedule_id} [delete]
 func DeleteMasterUnavailableSchedule(app *app.Application, e echo.Context) error {
 	unavailable_schedule_id, err := strconv.Atoi(e.Param("unavailable_schedule_id"))
 

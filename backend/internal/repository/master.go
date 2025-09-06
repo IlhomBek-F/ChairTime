@@ -28,6 +28,7 @@ type masterRepo interface {
 	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
 	CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, master_id int) error
 	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
+	DeleteMaster(id int) error
 	DeleteMasterUnavailableSchedule(id int) error
 	GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
 }
@@ -343,6 +344,15 @@ func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMaster
 	})
 
 	return trxError
+}
+
+func (mr masterDB) DeleteMaster(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	result := mr.db.WithContext(ctx).Delete(domain.Master{}, id)
+
+	return result.Error
 }
 
 func (mr masterDB) DeleteMasterUnavailableSchedule(id int) error {

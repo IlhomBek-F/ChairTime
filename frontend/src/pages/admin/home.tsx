@@ -1,4 +1,4 @@
-import MastersTable from "@/components/ui/admin/mastersTable";
+import MastersTable from "@/components/ui/admin/masterList";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { ScrollArea } from "@/components/ui/scroll-area";

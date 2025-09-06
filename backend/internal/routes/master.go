@@ -22,5 +22,6 @@ func MasterRoute(app *app.Application, groupRoute echo.Group) {
 	groupRoute.PUT("/master/unavailable/update", app.RouteHandler(masterController.UpdateMasterUnavailableSchedule))
 	groupRoute.POST("/master/create", app.RouteHandler(masterController.CreateMaster), app.Authorization([]int{adminRoleId}))
 	groupRoute.POST("/master/:master_id/unavailable", app.RouteHandler(masterController.CreateMasterUnavailableSchedule))
-	groupRoute.DELETE("/master/:unavailable_schedule_id", app.RouteHandler(masterController.DeleteMasterUnavailableSchedule))
+	groupRoute.DELETE("/master/:master_id", app.RouteHandler(masterController.DeleteMaster), app.Authorization([]int{adminRoleId}))
+	groupRoute.DELETE("/master/unavailable-schedule/:unavailable_schedule_id", app.RouteHandler(masterController.DeleteMasterUnavailableSchedule))
 }

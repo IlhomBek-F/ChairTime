@@ -831,6 +831,34 @@ paths:
       tags:
       - MasterStyleType
   /master/{master_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete master
+      parameters:
+      - description: master_id
+        in: path
+        name: master_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted master
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Delete master
+      tags:
+      - Master
     get:
       consumes:
       - application/json
@@ -996,35 +1024,6 @@ paths:
       summary: Create unavailable schedule
       tags:
       - Master
-  /master/{unavailable_schedule_id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete master unavailable schedule
-      parameters:
-      - description: unavailable_schedule_id
-        in: path
-        name: unavailable_schedule_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Deleted master unavailable schedule
-          schema:
-            $ref: '#/definitions/domain.SuccessRes'
-        "400":
-          description: Bad Request
-          schema: {}
-        "500":
-          description: Internal Server Error
-          schema: {}
-      security:
-      - JWT: []
-      summary: Delete master unavailable schedule
-      tags:
-      - Master
   /master/create:
     post:
       consumes:
@@ -1053,6 +1052,35 @@ paths:
       security:
       - JWT: []
       summary: Create master
+      tags:
+      - Master
+  /master/unavailable-schedule/{unavailable_schedule_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete master unavailable schedule
+      parameters:
+      - description: unavailable_schedule_id
+        in: path
+        name: unavailable_schedule_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted master unavailable schedule
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Delete master unavailable schedule
       tags:
       - Master
   /master/unavailable/update:

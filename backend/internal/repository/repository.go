@@ -25,6 +25,7 @@ type Repository struct {
 		UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
 		GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
 		UpdateMasterWorkingTime(workingTimePayload domain.MasterWorkingTimePayload) error
+		DeleteMaster(id int) error
 		DeleteMasterUnavailableSchedule(id int) error
 	}
 

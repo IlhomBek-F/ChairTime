@@ -34,3 +34,7 @@ export function updateMasterWorkingTime(payload: WorkingTime): Promise<ResponseS
 export function scheduleMasterUnavailableDays(payload: CreateMasterUnavailableScheduleType[], master_id: number): Promise<ResponseSuccess> {
     return privateHttp.post(`/master/${master_id}/unavailable`, payload)
 }
+
+export function deleteMaster(masterId: number): Promise<ResponseSuccess> {
+    return privateHttp.delete(`/master/${masterId}`)
+}
