@@ -7,13 +7,16 @@ import { toast } from "sonner";
 import { toastError } from "@/lib/utils";
 
 export function StyleTypeList() {
- const {styleTypes, loadingStyleTypes} = useStyleType()
+ const {styleTypes, loadingStyleTypes, getStyleTypes} = useStyleType()
  const [deletingItemId, setDeletingItemId] = useState(-1)
 
  const handleDeleteStyleType = (id: number) => {
     setDeletingItemId(id);
     deleteStyleType(id)
-    .then(() => toast.success("style type deleted successfully"))
+    .then(() => {
+      toast.success("style type deleted successfully")
+      getStyleTypes()
+    })
     .catch(toastError)
     .finally(() => setDeletingItemId(-1))
   }

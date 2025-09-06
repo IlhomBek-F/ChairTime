@@ -1,4 +1,4 @@
-import { getMasters } from "@/api/master";
+import { getMasters as _getMasters } from "@/api/master";
 import type { MasterType } from "@/core/models/master";
 import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -8,12 +8,16 @@ export function useMaster() {
     const [loadingMaster, setLoading] = useState(false);
 
     useEffect(() => {
-       setLoading(true)
        getMasters()
+    }, [])
+
+   const getMasters = () => {
+      setLoading(true)
+       _getMasters()
        .then((res) => setMasters(res.data))
        .catch(toastError)
        .finally(() => setLoading(false))
-    }, [])
+   }
 
-    return {masters, loadingMaster}
+    return {masters, loadingMaster, getMasters}
 }

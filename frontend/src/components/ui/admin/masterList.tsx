@@ -7,13 +7,16 @@ import { toast } from "sonner";
 import { toastError } from "@/lib/utils";
 
 export default function MasterList() {
-  const { masters, loadingMaster } = useMaster();
+  const { masters, loadingMaster , getMasters} = useMaster();
   const [deletingItemId, setDeletingItemId] = useState(-1);
   
   const handleDeleteMaster = (masterId: number) => {
     setDeletingItemId(masterId);
     deleteMaster(masterId)
-    .then(() => toast.success("Master deleted successfully"))
+    .then(() => {
+      toast.success("Master deleted successfully")
+      getMasters()
+    })
     .catch(toastError)
     .finally(() => setDeletingItemId(-1))
   }
