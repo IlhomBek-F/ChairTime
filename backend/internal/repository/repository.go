@@ -56,6 +56,7 @@ type Repository struct {
 
 	Admin interface {
 		GetAdminByName(name string) (domain.Admin, error)
+		GetAdminById(id int) (domain.Admin, error)
 	}
 }
 

@@ -18,6 +18,51 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/{admin_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get admin by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get admin by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "admin_id",
+                        "name": "admin_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Admin info",
+                        "schema": {
+                            "$ref": "#/definitions/domain.AdminRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/auth/sign-in": {
             "post": {
                 "description": "Sign in to account",
@@ -504,53 +549,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/master/unavailable": {
-            "post": {
-                "security": [
-                    {
-                        "JWT": []
-                    }
-                ],
-                "description": "Create unavailable schedule",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Master"
-                ],
-                "summary": "Create unavailable schedule",
-                "parameters": [
-                    {
-                        "description": "Master unavailable schedule payload",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created new unavailable schedule",
-                        "schema": {
-                            "$ref": "#/definitions/domain.SuccessRes"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
         "/master/unavailable/update": {
             "put": {
                 "security": [
@@ -871,6 +869,63 @@ const docTemplate = `{
                         "description": "Master style offer list",
                         "schema": {
                             "$ref": "#/definitions/domain.MasterStyleOfferRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/master/{master_id}/unavailable": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Create unavailable schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Master"
+                ],
+                "summary": "Create unavailable schedule",
+                "parameters": [
+                    {
+                        "description": "Master unavailable schedule payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.CreateMasterUnavailablePayload"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "master_id",
+                        "name": "master_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created new unavailable schedule",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
                         }
                     },
                     "400": {
@@ -1254,6 +1309,43 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.Admin": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.AdminRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.Admin"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.Booking": {
             "type": "object",
             "properties": {
@@ -1800,6 +1892,9 @@ const docTemplate = `{
         },
         "domain.MasterWorkingTimePayload": {
             "type": "object",
+            "required": [
+                "id"
+            ],
             "properties": {
                 "end_working_time": {
                     "type": "string"

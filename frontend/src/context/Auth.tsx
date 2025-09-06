@@ -1,3 +1,4 @@
+import type { AuthResType } from "@/core/models/auth";
 import { clearToken, getToken } from "@/lib/token";
 import {
   createContext,
@@ -8,15 +9,11 @@ import { Toaster } from "sonner";
 
 type AuthContextType = {
   isAuthenticated: () => boolean;
-  getUserInfo: () => any;
+  getUserInfo: () => AuthResType;
   logOut: VoidFunction;
 };
 
-const authContext = createContext<AuthContextType>({
-  isAuthenticated: () => false,
-  getUserInfo: () => {},
-  logOut: () => {},
-});
+const authContext = createContext<AuthContextType>({} as AuthContextType);
 
 function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = () => !!getToken();

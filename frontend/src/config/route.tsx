@@ -8,6 +8,7 @@ import { IndexRoute } from "./IndexRoute";
 import { BookingForm } from "@/pages/user/BookingForm";
 import { MasterBooking } from "@/pages/master/Booking";
 import { Setting } from "@/pages/master/Setting";
+import { Home } from "@/pages/admin/home";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -45,6 +46,12 @@ export const ROUTE_CONFIGS = [
     element: <Setting />,
     roles: [Roles.MASTER],
     title: "Master Dashboard"
+  },
+   {
+    path: "/admin",
+    element: <Home />,
+    roles: [Roles.ADMIN],
+    title: "Admin Dashboard"
   },
   {
     path: "/profile",

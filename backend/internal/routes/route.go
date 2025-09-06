@@ -54,6 +54,7 @@ func Mount(app *app.Application) http.Handler {
 	UserRoute(app, *protectedRoute)
 	NewMasterStyleTypeRoute(app, *protectedRoute)
 	NewFileRoute(app, *protectedRoute, *publicRoute)
+	NewAdminRoute(app, *protectedRoute)
 
 	return e
 }

@@ -1,5 +1,29 @@
 basePath: /api/
 definitions:
+  domain.Admin:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  domain.AdminRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.Admin'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   domain.Booking:
     properties:
       created_at:
@@ -368,6 +392,8 @@ definitions:
         type: integer
       start_working_time:
         type: string
+    required:
+    - id
     type: object
   domain.MasterWorkingTimeRes:
     properties:
@@ -491,6 +517,35 @@ info:
   title: ChairTime API
   version: "1.0"
 paths:
+  /admin/{admin_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get admin by id
+      parameters:
+      - description: admin_id
+        in: path
+        name: admin_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Admin info
+          schema:
+            $ref: '#/definitions/domain.AdminRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get admin by id
+      tags:
+      - Admin
   /auth/sign-in:
     post:
       consumes:
@@ -904,6 +959,43 @@ paths:
       summary: Get master styles offer
       tags:
       - Master
+  /master/{master_id}/unavailable:
+    post:
+      consumes:
+      - application/json
+      description: Create unavailable schedule
+      parameters:
+      - description: Master unavailable schedule payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
+          type: array
+      - description: master_id
+        in: path
+        name: master_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created new unavailable schedule
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Create unavailable schedule
+      tags:
+      - Master
   /master/{unavailable_schedule_id}:
     delete:
       consumes:
@@ -961,36 +1053,6 @@ paths:
       security:
       - JWT: []
       summary: Create master
-      tags:
-      - Master
-  /master/unavailable:
-    post:
-      consumes:
-      - application/json
-      description: Create unavailable schedule
-      parameters:
-      - description: Master unavailable schedule payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateMasterUnavailablePayload'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created new unavailable schedule
-          schema:
-            $ref: '#/definitions/domain.SuccessRes'
-        "400":
-          description: Bad Request
-          schema: {}
-        "500":
-          description: Internal Server Error
-          schema: {}
-      security:
-      - JWT: []
-      summary: Create unavailable schedule
       tags:
       - Master
   /master/unavailable/update:

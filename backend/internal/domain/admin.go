@@ -7,3 +7,5 @@ type Admin struct {
 	Phone    string `json:"phone"`
 	RoleId   int    `json:"role_id"`
 }
+
+type AdminRes = SuccessResWithData[Admin]

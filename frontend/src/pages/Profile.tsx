@@ -19,6 +19,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import z from "zod";
+import { getAdminById } from "@/api/admin";
+import type { ResponseSuccessWithData } from "@/core/models/base";
+import type { MasterType } from "@/core/models/master";
+import type { AdminType } from "@/core/models/admin";
+import type { User } from "@/core/models/user";
 
 const formSchema = z.object({
   username: z.string().min(3),
@@ -35,8 +40,13 @@ export function Profile() {
 
   useEffect(() => {
     if (user_id) {
-      const action = role === Roles.USER ? _getUserInfo(user_id) : getMasterById(user_id)
-        action.then(({ data }) => {
+      const actionMap: Record<Roles, any> = {
+        [Roles.USER]: _getUserInfo(user_id),
+        [Roles.MASTER]: getMasterById(user_id),
+        [Roles.ADMIN]: getAdminById(user_id)
+      }
+
+        actionMap[role].then(({ data }: ResponseSuccessWithData<User | MasterType | AdminType>) => {
           form.setValue("username", data.username);
           form.setValue("phone", data.phone);
         })
