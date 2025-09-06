@@ -19,7 +19,41 @@ services:
         - path: ./frontend
           target: /usr/src/app
           action: sync
-  # PostgreSQL Database
+  
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chairtime-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: postgres
+      DB_SSLMODE: disable
+      
+      PORT: 8080
+      GIN_MODE: release
+      LOG_LEVEL: info
+    ports:
+      - "8080:8080"
+    networks:
+      - chairtime-network
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "./binary", "--health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   db:
     image: postgres:15-alpine
     container_name: chairtime-postgres
@@ -56,45 +90,8 @@ services:
       - ./backend/migrations:/migrations
     entrypoint: [
       "sh", "-c",
-      "until nc -z db 5432; do echo '⏳ waiting for db'; sleep 2; done; \
-       migrate -path=/migrations -database postgres://postgres:1234@db:5432/postgres?sslmode=disable up"
+       "migrate -path=/migrations -database postgres://postgres:1234@db:5432/postgres?sslmode=disable up"
     ]
-
-
-  # Go Application
-  backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: chairtime-app
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: 1234
-      DB_NAME: postgres
-      DB_SSLMODE: disable
-      
-      PORT: 8080
-      GIN_MODE: release
-      LOG_LEVEL: info
-    ports:
-      - "8080:8080"
-    networks:
-      - chairtime-network
-    volumes:
-      - ./logs:/app/logs
-      - ./config:/app/config:ro
-    healthcheck:
-      test: ["CMD", "./binary", "--health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
 volumes:
   postgres_data:
