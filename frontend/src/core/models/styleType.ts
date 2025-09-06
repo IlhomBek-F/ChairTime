@@ -5,3 +5,5 @@ export type StyleType = BaseType & {
     duration: number,
     description: string
 }
+
+export type CreateStyleType = Omit<StyleType, "id" | "created_at" | "updated_at">

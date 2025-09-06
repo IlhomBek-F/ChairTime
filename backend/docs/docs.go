@@ -1176,6 +1176,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/style-type/{style_type_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Delete style type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StyleType"
+                ],
+                "summary": "Delete style type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "style_type_id",
+                        "name": "style_type_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Deleted style type",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/style-types": {
             "get": {
                 "security": [

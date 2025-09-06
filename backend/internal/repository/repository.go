@@ -33,6 +33,7 @@ type Repository struct {
 		GetStyleTypeByName(name string) (domain.StyleType, error)
 		CreateStyleType(styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
 		GetStyleTypes() ([]domain.StyleType, error)
+		DeleteStyleType(id int) error
 	}
 
 	MasterStyleType interface {

@@ -1,27 +1,27 @@
-import { Loader2Icon, Pencil, PhoneIcon, Trash2, UserIcon } from "lucide-react";
+import type { StyleType } from "@/core/models/styleType";
+import { Loader2Icon, Pencil, Scissors, TimerIcon, Trash2 } from "lucide-react";
 import { Button } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
-import type { MasterType } from "@/core/models/master";
 import { useState } from "react";
 
-type MasterListItemProps = MasterType & {
-  deleteLoading: boolean,
-  handleDeleteMaster: (id: number) => void
+type StyleTypeProps = StyleType & {
+  handleDeleteStyleType: (id: number) => void,
+  deleteLoading: boolean
 }
 
-export function MasterListItem({ username, phone, id, handleDeleteMaster, deleteLoading }: MasterListItemProps) {
+export function StyleTypeItem({ name, duration , id, handleDeleteStyleType, deleteLoading}: StyleTypeProps) {
   const [openPopover, setOpenPopover] = useState(false);
   
   return (
     <li className="flex items-center justify-between p-4">
       <div>
         <div className="font-semibold flex items-center gap-2">
-          <UserIcon className="w-4 h-4 text-pink-600" />
-          {username}
+          <Scissors className="w-4 h-4 text-pink-600" />
+          {name}
         </div>
         <div className="text-sm text-gray-500 flex items-center gap-1">
-          <PhoneIcon className="w-3 h-3" />
-          {phone}
+          <TimerIcon className="w-3 h-3" />
+          {duration}
         </div>
       </div>
       <div className="flex gap-2">
@@ -33,7 +33,7 @@ export function MasterListItem({ username, phone, id, handleDeleteMaster, delete
             <Button
               variant="destructive"
               size="sm"
-              className=" shadow-md cursor-pointer"
+              className="shadow-md cursor-pointer"
               onClick={() => setOpenPopover(true)}
             >
               <Trash2 />
@@ -48,11 +48,9 @@ export function MasterListItem({ username, phone, id, handleDeleteMaster, delete
                 variant="outline"
                 size="sm"
                 className="cursor-pointer"
-                onClick={() => handleDeleteMaster(id)}
+                onClick={() => handleDeleteStyleType(id)}
               >
-                {deleteLoading && (
-                  <Loader2Icon className="animate-spin mr-2" />
-                )}
+                {deleteLoading && <Loader2Icon className="animate-spin mr-2" />}
                 Yes
               </Button>
               <Button

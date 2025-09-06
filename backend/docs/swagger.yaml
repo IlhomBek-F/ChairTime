@@ -1234,6 +1234,35 @@ paths:
       summary: Get masters
       tags:
       - Master
+  /style-type/{style_type_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete style type
+      parameters:
+      - description: style_type_id
+        in: path
+        name: style_type_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Deleted style type
+          schema:
+            $ref: '#/definitions/domain.SuccessRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Delete style type
+      tags:
+      - StyleType
   /style-type/create:
     post:
       consumes:
