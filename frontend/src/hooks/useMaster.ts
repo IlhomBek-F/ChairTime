@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export function useMaster() {
     const [masters, setMasters] = useState<MasterType[]>([])
-    const [loading, setLoading] = useState(false);
+    const [loadingMaster, setLoading] = useState(false);
 
     useEffect(() => {
        setLoading(true)
@@ -15,5 +15,5 @@ export function useMaster() {
        .finally(() => setLoading(false))
     }, [])
 
-    return {masters, loading}
+    return {masters, loadingMaster}
 }

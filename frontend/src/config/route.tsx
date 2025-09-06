@@ -1,13 +1,13 @@
 import { Login } from "@/pages/Login";
-import { Bookings } from "@/pages/user/Bookings";
+import { Bookings } from "@/pages/user/BookingList";
 import { createBrowserRouter } from "react-router";
 import { createProtectedRoute, createPublicRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
 import { Roles } from "@/core/enums/roles";
 import { IndexRoute } from "./IndexRoute";
-import { BookingForm } from "@/pages/user/BookingForm";
-import { MasterBooking } from "@/pages/master/Booking";
+import { MasterBooking } from "@/pages/master/BookingList";
 import { Setting } from "@/pages/master/Setting";
+import { Booking } from "@/pages/user/Booking";
 import { Home } from "@/pages/admin/home";
 
 export const PAGE_BY_ROLE = {
@@ -25,13 +25,13 @@ export const ROUTE_CONFIGS = [
   },
   {
     path: "/booking/new",
-    element: <BookingForm />,
+    element: <Booking />,
     roles: [Roles.USER],
     title: "New Booking"
   },
   {
     path: "/booking/edit/:id",
-    element: <BookingForm />,
+    element: <Booking />,
     roles: [Roles.USER],
     title: "Edit Booking"
   },

@@ -20,7 +20,7 @@ export function Header() {
   };
 
   return (
-    <header className="w-full h-16 shadow-md flex justify-between items-center px-6 bg-white">
+    <header className="w-full h-[50px] shadow-md flex justify-between items-center px-6 bg-white">
       <h1
         className="font-bold text-xl text-purple-600 tracking-wide cursor-pointer hover:text-purple-700 transition"
         onClick={() => navigate("/")}
