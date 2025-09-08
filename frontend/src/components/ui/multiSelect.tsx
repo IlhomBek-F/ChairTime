@@ -2,7 +2,11 @@ import { Check, ChevronsUpDown, X, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -26,13 +30,13 @@ export type MultiSelectOption = {
 
 export type MultiSelectProps = {
   options: MultiSelectOption[];
-  value?: number[]; 
+  value?: number[];
   defaultValue?: number[];
   onChange?: (values: number[]) => void;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
-  maxVisibleBadges?: number; 
+  maxVisibleBadges?: number;
   className?: string;
   popoverClassName?: string;
   disabled?: boolean;
@@ -40,7 +44,7 @@ export type MultiSelectProps = {
   maxHeight?: number;
   label?: string;
   labelClassName?: string;
-  showSelectedBar?: boolean
+  showSelectedBar?: boolean;
 };
 
 export function MultiSelect({
@@ -59,7 +63,7 @@ export function MultiSelect({
   maxHeight = 260,
   labelClassName,
   label,
-  showSelectedBar
+  showSelectedBar,
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false);
   const isControlled = value !== undefined;
@@ -67,23 +71,34 @@ export function MultiSelect({
 
   const selected = isControlled ? value! : internal;
 
-  const setSelected = useCallback((vals: number[]) => {
+  const setSelected = useCallback(
+    (vals: number[]) => {
       if (!isControlled) setInternal(vals);
       onChange?.(vals);
     },
     [isControlled, onChange]
   );
 
-  const toggle = useCallback((v: number) => {
-      const next = selected.includes(v) ? selected.filter((x) => x !== v) : [...selected, v];
+  const toggle = useCallback(
+    (v: number) => {
+      const next = selected.includes(v)
+        ? selected.filter((x) => x !== v)
+        : [...selected, v];
       setSelected(next);
-    }, [selected, setSelected]);
+    },
+    [selected, setSelected]
+  );
 
   const clearAll = useCallback(() => setSelected([]), [setSelected]);
 
-  const allSelectable = useMemo(() => options.filter((o) => !o.disabled).map((o) => o.value), [options]);
+  const allSelectable = useMemo(
+    () => options.filter((o) => !o.disabled).map((o) => o.value),
+    [options]
+  );
 
-  const allSelected = allSelectable.length > 0 && allSelectable.every((v) => selected.includes(v));
+  const allSelected =
+    allSelectable.length > 0 &&
+    allSelectable.every((v) => selected.includes(v));
 
   const selectAll = useCallback(() => {
     if (allSelected) {
@@ -99,12 +114,16 @@ export function MultiSelect({
 
   const selectedOptions = useMemo(() => {
     const map = new Map(options.map((o) => [o.value, o] as const));
-    return selected.map((v) => map.get(v)).filter(Boolean) as MultiSelectOption[];
+    return selected
+      .map((v) => map.get(v))
+      .filter(Boolean) as MultiSelectOption[];
   }, [selected, options]);
 
   return (
     <div className={cn("w-full", className)}>
-    <Label className={cn("text-sm font-medium mb-1", labelClassName)}>{label}</Label>
+      <Label className={cn("text-sm font-medium mb-1", labelClassName)}>
+        {label}
+      </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -123,28 +142,31 @@ export function MultiSelect({
                 <span className="truncate">{placeholder}</span>
               ) : (
                 <div className="flex items-center gap-1 flex-wrap">
-                  {visibleBadges.map((v) => {
+                  {visibleBadges.map((v, ind) => {
                     const opt = options.find((o) => o.value === v);
                     if (!opt) return null;
                     return (
-                      <Badge key={v} variant="secondary" className="rounded-xl">
-                        {opt.label}
-                        <button
-                          type="button"
-                          aria-label={`Remove ${opt.label}`}
-                          className="ml-1 inline-flex"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggle(v);
-                          }}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
+                      <Badge
+                        key={ind}
+                        variant="secondary"
+                        className="rounded-xl"
+                         onClick={(e) => {
+                              e.stopPropagation();
+                              toggle(opt.value);
+                            }}
+                        asChild
+                      >
+                        <div className="flex items-center">
+                          {opt.label}
+                            <X className="h-3 w-3" />
+                        </div>
                       </Badge>
                     );
                   })}
                   {hiddenCount > 0 && (
-                    <Badge variant="outline" className="rounded-xl">+{hiddenCount}</Badge>
+                    <Badge variant="outline" className="rounded-xl">
+                      +{hiddenCount}
+                    </Badge>
                   )}
                 </div>
               )}
@@ -152,7 +174,10 @@ export function MultiSelect({
             <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className={cn("p-0 w-[320px]", popoverClassName)}>
+        <PopoverContent
+          align="start"
+          className={cn("p-0 w-[320px]", popoverClassName)}
+        >
           <Command loop>
             <div className="px-2 pt-2">
               <CommandInput placeholder={searchPlaceholder} className="h-9" />
@@ -169,10 +194,16 @@ export function MultiSelect({
                       onSelect={selectAll}
                       className={cn("gap-2 px-3 py-2")}
                     >
-                      <Checkbox checked={allSelected} className="pointer-events-none" />
+                      <Checkbox
+                        checked={allSelected}
+                        className="pointer-events-none"
+                      />
                       <span>{allSelected ? "Unselect all" : "Select all"}</span>
                     </CommandItem>
-                    <CommandItem onSelect={clearAll} className="gap-2 px-3 py-2">
+                    <CommandItem
+                      onSelect={clearAll}
+                      className="gap-2 px-3 py-2"
+                    >
                       <X className="h-4 w-4" />
                       <span>Clear</span>
                     </CommandItem>
@@ -192,11 +223,16 @@ export function MultiSelect({
                         onSelect={() => !opt.disabled && toggle(opt.value)}
                         className="gap-2 px-3 py-2"
                       >
-                        <Checkbox checked={isSelected} className="pointer-events-none" />
+                        <Checkbox
+                          checked={isSelected}
+                          className="pointer-events-none"
+                        />
                         <div className="flex flex-col">
                           <span>{opt.label}</span>
                           {opt.description && (
-                            <span className="text-xs text-muted-foreground">{opt.description}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {opt.description}
+                            </span>
                           )}
                         </div>
                         <Check
@@ -217,20 +253,30 @@ export function MultiSelect({
 
       {showSelectedBar && selectedOptions.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-2">
-          {selectedOptions.map((opt) => (
-            <Badge key={opt.value} variant="secondary" className="rounded-xl">
-              {opt.label}
-              <button
-                type="button"
-                aria-label={`Remove ${opt.label}`}
-                className="ml-1 inline-flex"
-                onClick={() => toggle(opt.value)}
-              >
-                <X className="h-3 w-3" />
-              </button>
+          {selectedOptions.map((opt, ind) => (
+            <Badge key={ind} variant="secondary" className="rounded-xl" asChild>
+              <div className="flex items-center">
+                {opt.label}
+                <button
+                  type="button"
+                  aria-label={`Remove ${opt.label}`}
+                  className="ml-1 inline-flex"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggle(opt.value);
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
             </Badge>
           ))}
-          <Button variant="ghost" size="sm" className="h-7 px-2" onClick={clearAll}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 px-2"
+            onClick={clearAll}
+          >
             Clear all
           </Button>
         </div>

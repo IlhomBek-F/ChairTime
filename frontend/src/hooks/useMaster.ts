@@ -1,14 +1,19 @@
-import { getMasters as _getMasters } from "@/api/master";
+import { getMasters as _getMasters , getMasterById as _getMasterById} from "@/api/master";
 import type { MasterType } from "@/core/models/master";
 import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-export function useMaster() {
+export function useMaster(masterId?: number) {
     const [masters, setMasters] = useState<MasterType[]>([])
     const [loadingMaster, setLoading] = useState(false);
+    const [master, setMaster] = useState<MasterType>();
 
     useEffect(() => {
-       getMasters()
+        if(masterId) {
+           getMasterById(masterId)
+        } else {
+            getMasters()
+        }
     }, [])
 
    const getMasters = () => {
@@ -19,5 +24,13 @@ export function useMaster() {
        .finally(() => setLoading(false))
    }
 
-    return {masters, loadingMaster, getMasters}
+   const getMasterById = (id: number) => {
+      setLoading(true)
+      _getMasterById(id) 
+       .then((res) => setMaster(res.data))
+       .catch(toastError)
+       .finally(() => setLoading(false))
+   }
+
+    return {masters, loadingMaster, getMasters, master}
 }

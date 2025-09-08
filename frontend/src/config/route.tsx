@@ -11,6 +11,7 @@ import { Booking } from "@/pages/user/Booking";
 import { Home } from "@/pages/admin/home";
 import { AddNewMaster } from "@/pages/admin/addNewMaster";
 import { AddNewStyleType } from "@/pages/admin/AddNewStyleType";
+import { MasterSetting } from "@/pages/admin/MasterSetting";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -60,6 +61,12 @@ export const ROUTE_CONFIGS = [
     element: <AddNewMaster />,
     roles: [Roles.ADMIN],
     title: "Add new master"
+  },
+  {
+    path: "/master/setting/:id",
+    element: <MasterSetting />,
+    roles: [Roles.ADMIN],
+    title: "Master setting"
   },
   {
     path: "/style-type/add",

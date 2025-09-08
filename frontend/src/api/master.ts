@@ -42,3 +42,7 @@ export function deleteMaster(masterId: number): Promise<ResponseSuccess> {
 export function createMaster(masterPayload: CreateMaster): Promise<ResponseSuccessWithData<MasterType>> {
     return privateHttp.post("master/create", masterPayload)
 }
+
+export function updateMaster(masterPayload: MasterType): Promise<ResponseSuccessWithData<MasterType>> {
+    return privateHttp.put("/master/update", masterPayload)
+}

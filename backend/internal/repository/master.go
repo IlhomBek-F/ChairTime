@@ -135,6 +135,20 @@ func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
 
 	result := mr.db.WithContext(ctx).Where("id = ?", masterId).First(&master)
 
+	masterStyleOffers, err := mr.GetMasterStylesOffer(masterId)
+
+	if err != nil {
+		return domain.Master{}, err
+	}
+
+	var offerStyleIds []int
+
+	for _, offer := range masterStyleOffers {
+		offerStyleIds = append(offerStyleIds, offer.StyleTypeId)
+	}
+
+	master.OfferStyleIds = offerStyleIds
+
 	return master, result.Error
 }
 

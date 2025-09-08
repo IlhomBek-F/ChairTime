@@ -1,8 +1,9 @@
-import { Loader2Icon, Pencil, PhoneIcon, Settings, Trash2, UserIcon } from "lucide-react";
+import { Loader2Icon, PhoneIcon, Settings, Trash2, UserIcon } from "lucide-react";
 import { Button } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import type { MasterType } from "@/core/models/master";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 type MasterListItemProps = MasterType & {
   deleteLoading: boolean,
@@ -11,7 +12,8 @@ type MasterListItemProps = MasterType & {
 
 export function MasterListItem({ username, phone, id, handleDeleteMaster, deleteLoading }: MasterListItemProps) {
   const [openPopover, setOpenPopover] = useState(false);
-  
+  const navigate = useNavigate()
+
   return (
     <li className="flex items-center justify-between p-4">
       <div>
@@ -25,7 +27,7 @@ export function MasterListItem({ username, phone, id, handleDeleteMaster, delete
         </div>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" className="cursor-pointer">
+        <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => navigate(`/master/setting/${id}`)}>
           <Settings className="w-4 h-4" />
         </Button>
         <Popover open={openPopover}>
