@@ -5,7 +5,6 @@ import (
 	"chairTime/internal/auth"
 	"chairTime/internal/domain"
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -124,24 +123,24 @@ func userCheckMiddleWare(app *app.Application) echo.MiddlewareFunc {
 			tokenInterface := c.Get("user")
 
 			if tokenInterface == nil {
-				return app.UnauthorizedErrorResponse(c, errors.New("token missing"))
+				return echo.NewHTTPError(http.StatusUnauthorized, "token missing")
 			}
 
 			token, ok := tokenInterface.(*jwt.Token)
 			if !ok {
-				return app.UnauthorizedErrorResponse(c, errors.New("invalid token"))
+				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token type")
 			}
 
 			claims, ok := token.Claims.(*auth.CustomClaims)
 
 			if !ok {
-				return app.UnauthorizedErrorResponse(c, errors.New("invalid claims"))
+				return echo.NewHTTPError(http.StatusUnauthorized, "invalid claims")
 			}
 
 			userId, err := strconv.Atoi(claims.Subject)
 
 			if err != nil {
-				return app.UnauthorizedErrorResponse(c, err)
+				return echo.NewHTTPError(http.StatusUnauthorized, "invalid user id")
 			}
 
 			_, clientErr := app.Repository.User.GetUserById(userId)
@@ -149,7 +148,7 @@ func userCheckMiddleWare(app *app.Application) echo.MiddlewareFunc {
 			_, adErr := app.Repository.Admin.GetAdminById(userId)
 
 			if clientErr != nil && masterErr != nil && adErr != nil {
-				return app.UnauthorizedErrorResponse(c, err)
+				return echo.NewHTTPError(http.StatusUnauthorized, "user not found")
 			}
 
 			return next(c)
