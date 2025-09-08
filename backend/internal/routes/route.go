@@ -5,10 +5,12 @@ import (
 	"chairTime/internal/auth"
 	"chairTime/internal/domain"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -40,12 +42,14 @@ func Mount(app *app.Application) http.Handler {
 	protectedRoute.Static("/", "../public")
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	protectedRoute.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte(app.Config.Auth.Secret),
-		NewClaimsFunc: func(e echo.Context) jwt.Claims {
-			return new(auth.CustomClaims)
-		},
-	}))
+	jwtConfig := echojwt.Config{
+		SigningKey:    []byte(app.Config.Auth.Secret),
+		NewClaimsFunc: func(e echo.Context) jwt.Claims { return new(auth.CustomClaims) },
+	}
+
+	protectedRoute.Use(echojwt.WithConfig(jwtConfig), userCheckMiddleWare(app))
+
+	protectedRoute.Use()
 
 	AuthRoute(app, *publicRoute)
 	MasterRoute(app, *protectedRoute)
@@ -112,4 +116,43 @@ func gracefullyShutDown(apiServer *http.Server, done chan bool) {
 	log.Println("Server exiting")
 
 	done <- true
+}
+
+func userCheckMiddleWare(app *app.Application) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			tokenInterface := c.Get("user")
+
+			if tokenInterface == nil {
+				return app.UnauthorizedErrorResponse(c, errors.New("token missing"))
+			}
+
+			token, ok := tokenInterface.(*jwt.Token)
+			if !ok {
+				return app.UnauthorizedErrorResponse(c, errors.New("invalid token"))
+			}
+
+			claims, ok := token.Claims.(*auth.CustomClaims)
+
+			if !ok {
+				return app.UnauthorizedErrorResponse(c, errors.New("invalid claims"))
+			}
+
+			userId, err := strconv.Atoi(claims.Subject)
+
+			if err != nil {
+				return app.UnauthorizedErrorResponse(c, err)
+			}
+
+			_, clientErr := app.Repository.User.GetUserById(userId)
+			_, masterErr := app.Repository.Master.GetMasterById(userId)
+			_, adErr := app.Repository.Admin.GetAdminById(userId)
+
+			if clientErr != nil && masterErr != nil && adErr != nil {
+				return app.UnauthorizedErrorResponse(c, err)
+			}
+
+			return next(c)
+		}
+	}
 }

@@ -1,4 +1,4 @@
-import { Loader2Icon, Pencil, PhoneIcon, Trash2, UserIcon } from "lucide-react";
+import { Loader2Icon, Pencil, PhoneIcon, Settings, Trash2, UserIcon } from "lucide-react";
 import { Button } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import type { MasterType } from "@/core/models/master";
@@ -25,8 +25,8 @@ export function MasterListItem({ username, phone, id, handleDeleteMaster, delete
         </div>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm">
-          <Pencil className="w-4 h-4" />
+        <Button variant="outline" size="sm" className="cursor-pointer">
+          <Settings className="w-4 h-4" />
         </Button>
         <Popover open={openPopover}>
           <PopoverTrigger asChild>

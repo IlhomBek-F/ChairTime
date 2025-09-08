@@ -3,7 +3,8 @@ import type { BaseType } from "./base";
 import type { User } from "./user";
 
 export type MasterType = User & {
-  offer_style_ids: number[]
+  offer_style_ids: number[],
+  role_id: number
 }
 
 export type MasterUnavailableScheduleType = BaseType & {
@@ -12,6 +13,15 @@ export type MasterUnavailableScheduleType = BaseType & {
   end_time: string,
   date: string,
   master_id: number
+}
+
+export type CreateMaster = {
+  username: string;
+  phone: string;
+  offer_style_ids: number[],
+  password: string;
+  start_working_time: string;
+  end_working_time: string
 }
 
 export type WorkingTime = {

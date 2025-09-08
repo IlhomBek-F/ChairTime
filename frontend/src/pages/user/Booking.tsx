@@ -13,7 +13,7 @@ import { useAuth } from "@/context/Auth";
 import { createBooking, updateBooking } from "@/api/booking";
 import { toastError } from "@/lib/utils";
 import { PageTitle } from "@/components/ui/pageTitle";
-import { BookingForm, type Inputs } from "@/components/ui/form/bookingForm";
+import { BookingForm, type Inputs } from "@/components/ui/booking/bookingForm";
 import type { UpdateBookingType } from "@/core/models/booking";
 
 export function Booking() {

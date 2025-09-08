@@ -6,11 +6,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserStar } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 type TabType = "masters" | "style_types";
 
 export function Home() {
   const [tab, setTab] = useState<TabType>("masters")
+  const navigate = useNavigate()
 
   return (
     <>
@@ -32,8 +34,8 @@ export function Home() {
           </TabsContent>
         </ScrollArea>
       </Tabs>
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg">
-        <Button className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg">
+        <Button onClick={() => navigate(tab === "masters" ? "/new-master" : "/new-style-type")} className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">
           {tab === "masters" ? "Add New Master" : "Add New Style Type"}
         </Button>
       </div>

@@ -9,6 +9,8 @@ import { MasterBooking } from "@/pages/master/BookingList";
 import { Setting } from "@/pages/master/Setting";
 import { Booking } from "@/pages/user/Booking";
 import { Home } from "@/pages/admin/home";
+import { AddNewMaster } from "@/pages/admin/addNewMaster";
+import { AddNewStyleType } from "@/pages/admin/AddNewStyleType";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
@@ -47,11 +49,23 @@ export const ROUTE_CONFIGS = [
     roles: [Roles.MASTER],
     title: "Master Dashboard"
   },
-   {
+  {
     path: "/admin",
     element: <Home />,
     roles: [Roles.ADMIN],
     title: "Admin Dashboard"
+  },
+  {
+    path: "/new-master",
+    element: <AddNewMaster />,
+    roles: [Roles.ADMIN],
+    title: "Add new master"
+  },
+   {
+    path: "/new-style-type",
+    element: <AddNewStyleType />,
+    roles: [Roles.ADMIN],
+    title: "Add new style type"
   },
   {
     path: "/profile",

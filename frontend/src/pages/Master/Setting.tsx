@@ -1,5 +1,5 @@
 import { scheduleMasterUnavailableDays, updateMasterWorkingTime } from "@/api/master";
-import { CustomForm } from "@/components/ui/booking/bookingForm";
+import { CustomForm } from "@/components/ui/form/bookingForm";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
