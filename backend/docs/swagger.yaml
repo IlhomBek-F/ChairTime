@@ -438,6 +438,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  domain.StyleTypeByIdRes:
+    properties:
+      data:
+        $ref: '#/definitions/domain.StyleType'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   domain.StyleTypeListRes:
     properties:
       data:
@@ -1263,6 +1272,34 @@ paths:
       summary: Delete style type
       tags:
       - StyleType
+    get:
+      consumes:
+      - application/json
+      description: Get style type by id
+      parameters:
+      - description: style type id
+        in: path
+        name: style_type_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Master info
+          schema:
+            $ref: '#/definitions/domain.StyleTypeByIdRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Get style type by id
+      tags:
+      - StyleType
   /style-type/create:
     post:
       consumes:
@@ -1291,6 +1328,36 @@ paths:
       security:
       - JWT: []
       summary: Create new style type
+      tags:
+      - StyleType
+  /style-type/update:
+    put:
+      consumes:
+      - application/json
+      description: Update style type
+      parameters:
+      - description: style type payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.StyleType'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update style type
+          schema:
+            $ref: '#/definitions/domain.CreateStyleTypeRes'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - JWT: []
+      summary: Update style type
       tags:
       - StyleType
   /style-types:

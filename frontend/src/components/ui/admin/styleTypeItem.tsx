@@ -3,6 +3,7 @@ import { Loader2Icon, Pencil, Scissors, TimerIcon, Trash2 } from "lucide-react";
 import { Button } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 type StyleTypeProps = StyleType & {
   handleDeleteStyleType: (id: number) => void,
@@ -11,7 +12,8 @@ type StyleTypeProps = StyleType & {
 
 export function StyleTypeItem({ name, duration , id, handleDeleteStyleType, deleteLoading}: StyleTypeProps) {
   const [openPopover, setOpenPopover] = useState(false);
-  
+  const navigate = useNavigate();
+
   return (
     <li className="flex items-center justify-between p-4">
       <div>
@@ -25,7 +27,7 @@ export function StyleTypeItem({ name, duration , id, handleDeleteStyleType, dele
         </div>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => navigate(`/style-type/edit/${id}`)} className="cursor-pointer">
           <Pencil className="w-4 h-4" />
         </Button>
         <Popover open={openPopover}>

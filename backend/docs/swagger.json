@@ -1174,7 +1174,97 @@
                 }
             }
         },
+        "/style-type/update": {
+            "put": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Update style type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StyleType"
+                ],
+                "summary": "Update style type",
+                "parameters": [
+                    {
+                        "description": "style type payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.StyleType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Update style type",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateStyleTypeRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/style-type/{style_type_id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get style type by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StyleType"
+                ],
+                "summary": "Get style type by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "style type id",
+                        "name": "style_type_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Master info",
+                        "schema": {
+                            "$ref": "#/definitions/domain.StyleTypeByIdRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -2056,6 +2146,20 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.StyleTypeByIdRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/domain.StyleType"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },

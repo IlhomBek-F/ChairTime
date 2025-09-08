@@ -1,14 +1,19 @@
-import { getStyleTypes as _getStyleTypes } from "@/api/styleType";
+import { getStyleTypes as _getStyleTypes , getStyleTypeById as _getStyleTypeById} from "@/api/styleType";
 import type { StyleType } from "@/core/models/styleType";
 import { toastError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-export function useStyleType() {
+export function useStyleType(id?: number) {
   const [styleTypes, setStyleTypes] = useState<StyleType[]>([]);
   const [loadingStyleTypes, setLoading] = useState(false);
+  const [styleType, setStyleType] = useState<StyleType>()
 
   useEffect(() => {
-    getStyleTypes();
+    if(id) {
+      getStyleTypeById(id)
+    } else {
+      getStyleTypes();
+    }
   }, []);
 
   const getStyleTypes = () => {
@@ -19,5 +24,11 @@ export function useStyleType() {
       .finally(() => setLoading(false));
   };
 
-  return { styleTypes, loadingStyleTypes, getStyleTypes };
+  const getStyleTypeById = (id: number) => {
+     _getStyleTypeById(id)
+      .then((res) => setStyleType(res.data))
+      .catch(toastError)
+  }
+
+  return { styleTypes, loadingStyleTypes, getStyleTypes, getStyleTypeById, styleType };
 }

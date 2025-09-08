@@ -35,7 +35,7 @@ export function Home() {
         </ScrollArea>
       </Tabs>
       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg">
-        <Button onClick={() => navigate(tab === "masters" ? "/new-master" : "/new-style-type")} className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">
+        <Button onClick={() => navigate(tab === "masters" ? "/new-master" : "/style-type/add")} className="w-full py-5 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition text-white shadow-lg cursor-pointer">
           {tab === "masters" ? "Add New Master" : "Add New Style Type"}
         </Button>
       </div>

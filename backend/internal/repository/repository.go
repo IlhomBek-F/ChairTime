@@ -34,6 +34,8 @@ type Repository struct {
 		CreateStyleType(styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
 		GetStyleTypes() ([]domain.StyleType, error)
 		DeleteStyleType(id int) error
+		GetStyleTypeById(id int) (domain.StyleType, error)
+		UpdateStyleType(updatedStyleType domain.StyleType) (domain.StyleType, error)
 	}
 
 	MasterStyleType interface {

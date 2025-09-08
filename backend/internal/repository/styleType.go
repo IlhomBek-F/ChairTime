@@ -17,6 +17,8 @@ type styleTypeRepo interface {
 	CreateStyleType(styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
 	GetStyleTypes() ([]domain.StyleType, error)
 	DeleteStyleType(id int) error
+	GetStyleTypeById(id int) (domain.StyleType, error)
+	UpdateStyleType(updatedStyleType domain.StyleType) (domain.StyleType, error)
 }
 
 func NewStyleTypeRepo(db *gorm.DB) styleTypeRepo {
@@ -63,4 +65,22 @@ func (mr styleTypeDB) DeleteStyleType(id int) error {
 	result := mr.db.WithContext(ctx).Delete(domain.StyleType{}, id)
 
 	return result.Error
+}
+
+func (mr styleTypeDB) GetStyleTypeById(id int) (domain.StyleType, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var styleType domain.StyleType
+
+	result := mr.db.WithContext(ctx).First(&styleType, id)
+	return styleType, result.Error
+}
+
+func (mr styleTypeDB) UpdateStyleType(styleType domain.StyleType) (domain.StyleType, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	result := mr.db.WithContext(ctx).Updates(&styleType)
+	return styleType, result.Error
 }

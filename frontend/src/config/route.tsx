@@ -61,8 +61,14 @@ export const ROUTE_CONFIGS = [
     roles: [Roles.ADMIN],
     title: "Add new master"
   },
-   {
-    path: "/new-style-type",
+  {
+    path: "/style-type/add",
+    element: <AddNewStyleType />,
+    roles: [Roles.ADMIN],
+    title: "Add new style type"
+  },
+  {
+    path: "/style-type/edit/:id",
     element: <AddNewStyleType />,
     roles: [Roles.ADMIN],
     title: "Add new style type"

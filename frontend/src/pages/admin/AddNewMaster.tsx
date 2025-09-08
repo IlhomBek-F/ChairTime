@@ -1,7 +1,7 @@
 import { createMaster } from "@/api/master";
 import { Button } from "@/components/ui/button";
 import { CustomForm } from "@/components/ui/form/bookingForm";
-import { MultiSelect, type MultiSelectOption } from "@/components/ui/multiSelect";
+import { MultiSelect } from "@/components/ui/multiSelect";
 import { PageTitle } from "@/components/ui/pageTitle";
 import { Separator } from "@/components/ui/separator";
 import { useStyleType } from "@/hooks/useStyleType";
@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -26,21 +27,11 @@ const formSchema = z.object({
 
 type Inputs = z.infer<typeof formSchema>;
 
-const sampleOptions: MultiSelectOption[] = [
-  { label: "Haircut", value: 1, description: "30–45 min" },
-  { label: "Coloring", value: 2, description: "1–2 hours" },
-  { label: "Manicure", value: 3 },
-  { label: "Makeup", value: 4 },
-  { label: "Massage", value: 5 },
-  { label: "Shave", value: 6 },
-  { label: "Brow Styling", value: 7},
-  { label: "Hair Treatment", value: 8 },
-];
-
 export function AddNewMaster() {
     const [offerStyleIds, setOfferStyleIds] = useState<number[]>([]);
     const [saving, setSaving] = useState(false);
     const {styleTypes} = useStyleType();
+    const navigate = useNavigate();
     const styleTypeOptions = styleTypes.map(({name, duration, id}) => ({label: name, value: id, description: `${duration}`}));
 
     const form = useForm<Inputs>({resolver: zodResolver(formSchema), mode: "onChange", defaultValues: {
@@ -59,6 +50,7 @@ export function AddNewMaster() {
       createMaster(newMaster)
        .then(() => {
           toast.success("Created new master successfully")
+          navigate("/")
        }).catch(toastError)
        .finally(() => setSaving(false))
     }
