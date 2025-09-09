@@ -8,10 +8,10 @@ import { IndexRoute } from "./IndexRoute";
 import { MasterBooking } from "@/pages/master/BookingList";
 import { Setting } from "@/pages/master/Setting";
 import { Booking } from "@/pages/user/Booking";
-import { Home } from "@/pages/admin/home";
-import { AddNewMaster } from "@/pages/admin/addNewMaster";
 import { AddNewStyleType } from "@/pages/admin/AddNewStyleType";
 import { MasterSetting } from "@/pages/admin/MasterSetting";
+import { Home } from "@/pages/admin/Home";
+import { AddNewMaster } from "@/pages/admin/AddNewMaster";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
