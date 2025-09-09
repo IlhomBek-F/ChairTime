@@ -5,7 +5,7 @@ import { createProtectedRoute, createPublicRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
 import { Roles } from "@/core/enums/roles";
 import { IndexRoute } from "./IndexRoute";
-import { MasterBooking } from "@/pages/master/BookingList";
+import { MasterBooking } from "@/pages/master/Bookings";
 import { Setting } from "@/pages/master/Setting";
 import { Booking } from "@/pages/user/Booking";
 import { AddNewStyleType } from "@/pages/admin/AddNewStyleType";
