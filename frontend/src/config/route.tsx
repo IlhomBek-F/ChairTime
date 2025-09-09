@@ -5,13 +5,13 @@ import { createProtectedRoute, createPublicRoute } from "./PrivateRoute";
 import { Profile } from "@/pages/Profile";
 import { Roles } from "@/core/enums/roles";
 import { IndexRoute } from "./IndexRoute";
-import { MasterBooking } from "@/pages/master/Bookings";
 import { Setting } from "@/pages/master/Setting";
 import { Booking } from "@/pages/user/Booking";
 import { AddNewStyleType } from "@/pages/admin/AddNewStyleType";
 import { MasterSetting } from "@/pages/admin/MasterSetting";
 import { Home } from "@/pages/admin/Home";
 import { AddNewMaster } from "@/pages/admin/AddNewMaster";
+import { MasterBooking } from "@/pages/master/BookingList";
 
 export const PAGE_BY_ROLE = {
     [Roles.USER]: "/bookings",
