@@ -56,7 +56,7 @@ func UploadFile(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, errors.New("failed decode file"))
 	}
 
-	uploadDir := filepath.Join("..", "public")
+	uploadDir := filepath.Join("../..", "public")
 	os.MkdirAll(uploadDir, os.ModePerm)
 
 	claims, err := app.GetCustomClaims(e)

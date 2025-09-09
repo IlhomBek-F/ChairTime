@@ -1,0 +1,16 @@
+{
+  "builds": [
+    {
+      "type": "go",
+      "path": "backend",
+      "buildCommand": "go build -o server .",
+      "startCommand": "./server"
+    },
+    {
+      "type": "npm",
+      "path": "frontend",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "echo 'frontend built'"
+    }
+  ]
+}

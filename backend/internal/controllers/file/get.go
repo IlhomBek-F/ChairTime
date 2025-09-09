@@ -15,5 +15,5 @@ func ServeImage(app *app.Application, e echo.Context) error {
 		return app.UnauthorizedErrorResponse(e, err)
 	}
 
-	return e.File("../public/" + claims.RegisteredClaims.Subject + ".jpg")
+	return e.File("../../public/" + claims.RegisteredClaims.Subject + ".jpg")
 }
