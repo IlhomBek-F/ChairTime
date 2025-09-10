@@ -27,20 +27,32 @@ export function Login() {
   const [credential, setCredential] = useState({username: "", password: "", phone: ""})
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    if(signUpMode) {
-        signUp(credential)
-         .then(() => {
-           setSignUpMode(!signUpMode)
-         }).catch(toastError)
-    } else {
-        signIn(credential.username, credential.password)
-         .then((res) => {
-            const {access_token, ...user_info} = res.data;
-            localStorage.setItem("user", JSON.stringify(user_info));
-            setToken(access_token)
-            navigate(PAGE_BY_ROLE[user_info.role])
-         }).catch(toastError)
+  const handleSubmit = async () => {
+      if(signUpMode) {
+        _signUp()
+      } else {
+        _signIn()
+      }
+  }
+
+  const _signUp = async () => {
+    try {
+      await signUp(credential)
+      setSignUpMode(!signUpMode)
+    } catch(err) {
+        toastError(err)
+    }
+  }
+
+  const _signIn = async () => {
+    try {
+      const res = await signIn(credential.username, credential.password)
+      const {access_token, ...user_info} = res.data;
+      localStorage.setItem("user", JSON.stringify(user_info));
+      setToken(access_token)
+      navigate(PAGE_BY_ROLE[user_info.role])
+    } catch(err) {
+        toastError(err)
     }
   }
 
