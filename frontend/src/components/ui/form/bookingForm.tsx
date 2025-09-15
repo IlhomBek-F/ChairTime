@@ -25,9 +25,10 @@ import type { Matcher, Mode } from "react-day-picker";
 type FormFieldProps = {
   formControl: any,
   name: string,
-  label: string
+  label: string | ReactNode
   loading?: boolean,
-  placeholder?: string
+  placeholder?: string,
+  className?: string
 }
 
 type FormFieldDateProps = FormFieldProps & {
@@ -43,13 +44,13 @@ type FormFieldSelectProps = FormFieldProps & {
   optionValue?: string,
 }
 
-const inputField = ({ formControl, name, label }: FormFieldProps) => {
+const inputField = ({ formControl, name, label , className = ''}: FormFieldProps) => {
   return (
     <FormField
       name={name}
       control={formControl}
       render={({ field }) => (
-        <FormItem className="mb-4">
+        <FormItem className={`${className} mb-4`}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input placeholder="shadcn" {...field} />
