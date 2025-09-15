@@ -40,7 +40,7 @@ export function Login() {
       await signUp(credential)
       setSignUpMode(!signUpMode)
     } catch(err) {
-        toastError(err)
+        toastError(err)()
     }
   }
 
@@ -52,7 +52,7 @@ export function Login() {
       setToken(access_token)
       navigate(PAGE_BY_ROLE[user_info.role])
     } catch(err) {
-        toastError(err)
+        toastError(err)()
     }
   }
 

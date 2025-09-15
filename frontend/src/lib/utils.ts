@@ -6,10 +6,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function toastError(error: unknown) {
+export function toastError(error: any) {
   return () => {
-    if (error instanceof Error) {
       toast.error(error.message)
-    }
   }
 }
