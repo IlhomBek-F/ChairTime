@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type Inputs = {
   days_off: any[];
@@ -70,7 +71,8 @@ export function Setting() {
         title="Setting"
         icon={<Settings size={20} className="text-purple-600" />}
       />
-      <Collapsible className="border-t pt-4 flex w-full flex-col gap-3" open>
+      <ScrollArea className="pr-2 h-[94%]">
+         <Collapsible className="border-t pt-4 flex w-full flex-col gap-3" open>
         <div className="flex items-center justify-between gap-4">
           <h4 className=" font-semibold text-gray-800">Working hours</h4>
           <CollapsibleTrigger asChild>
@@ -164,6 +166,7 @@ export function Setting() {
             
         </CollapsibleContent>
       </Collapsible>
+      </ScrollArea>
     </>
   );
 }
