@@ -44,7 +44,7 @@ type FormFieldSelectProps = FormFieldProps & {
   optionValue?: string,
 }
 
-const inputField = ({ formControl, name, label , className = ''}: FormFieldProps) => {
+const inputField = ({ formControl, name, label ,placeholder, className = ''}: FormFieldProps) => {
   return (
     <FormField
       name={name}
@@ -53,7 +53,7 @@ const inputField = ({ formControl, name, label , className = ''}: FormFieldProps
         <FormItem className={`${className} mb-4`}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder="shadcn" {...field} />
+            <Input placeholder={placeholder} {...field} />
           </FormControl>
         </FormItem>
       )}

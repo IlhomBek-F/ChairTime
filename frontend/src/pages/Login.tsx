@@ -102,6 +102,7 @@ export function Login() {
           <CustomForm.InputField
             formControl={form.control}
             className="!mb-0"
+            placeholder="username"
             name="username"
             label="Username"
           />
@@ -110,6 +111,7 @@ export function Login() {
             <CustomForm.InputField
               formControl={form.control}
               className="!mb-2"
+              placeholder="phone"
               name="phone"
               label="Phone"
             />
@@ -118,6 +120,7 @@ export function Login() {
             formControl={form.control}
             className="!mb-2"
             name="password"
+            placeholder="password"
             label={
               <div className="flex justify-between items-center w-full">
                 Password
