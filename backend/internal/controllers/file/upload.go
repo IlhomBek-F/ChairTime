@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"chairTime/constant"
 	_ "chairTime/docs"
 	"chairTime/internal/app"
 	"chairTime/internal/domain"
@@ -65,7 +66,7 @@ func UploadFile(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	dst, err := os.Create(filepath.Join(uploadDir, claims.RegisteredClaims.Subject+".jpg"))
+	dst, err := os.Create(filepath.Join(uploadDir, constant.RoleNames[claims.Role]+"_"+claims.RegisteredClaims.Subject+".jpg"))
 
 	if err != nil {
 		return err

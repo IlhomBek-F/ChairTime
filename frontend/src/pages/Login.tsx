@@ -40,7 +40,7 @@ export function Login() {
   username: z.string().min(6).max(20),
   phone: z.string().min(6).optional(),
   password: z.string().min(4),
-  }).refine(() => !signUpMode, {path: ["phone"]});
+  }).refine((data) => signUpMode && !!data.phone || true, {path: ["phone"]});
 
   const form = useForm<Inputs>({
     resolver: zodResolver(formSchema),

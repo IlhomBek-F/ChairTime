@@ -5,3 +5,9 @@ const (
 	MasterRoleId = 2
 	AdminRoleId  = 3
 )
+
+var RoleNames = map[int]string{
+	MasterRoleId: "master",
+	AdminRoleId:  "admin",
+	UserRoleId:   "user",
+}

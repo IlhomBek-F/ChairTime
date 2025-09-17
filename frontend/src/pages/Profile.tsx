@@ -41,12 +41,12 @@ export function Profile() {
   useEffect(() => {
     if (user_id) {
       const actionMap: Record<Roles, any> = {
-        [Roles.USER]: _getUserInfo(user_id),
-        [Roles.MASTER]: getMasterById(user_id),
-        [Roles.ADMIN]: getAdminById(user_id)
+        [Roles.USER]: _getUserInfo,
+        [Roles.MASTER]: getMasterById,
+        [Roles.ADMIN]: getAdminById
       }
 
-        actionMap[role].then(({ data }: ResponseSuccessWithData<User | MasterType | AdminType>) => {
+        actionMap[role](user_id).then(({ data }: ResponseSuccessWithData<User | MasterType | AdminType>) => {
           form.setValue("username", data.username);
           form.setValue("phone", data.phone);
         })
@@ -98,7 +98,7 @@ export function Profile() {
     </Button>
   </div>
 
-  <Collapsible  className="mt-auto border-t pt-4 flex w-full flex-col gap-3">
+  <Collapsible  className=" border-t pt-4 flex w-full flex-col gap-3">
     <div className="flex items-center justify-between gap-4">
       <h4 className="text-sm font-semibold text-red-500">Danger Zone</h4>
       <CollapsibleTrigger asChild>
