@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { Button } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { useState } from "react";
-import { getToken } from "@/lib/token";
+import { getToken, TokenTypeEnum } from "@/lib/token";
 import { useAuth } from "@/context/Auth";
 import { Roles } from "@/core/enums/roles";
 
@@ -34,7 +34,7 @@ export function Header() {
           <Avatar className="border-2 border-purple-200 shadow-sm">
             <AvatarImage
               className="cursor-pointer"
-              src={`http://localhost:8080/api/file/${getToken()}`}
+              src={`http://localhost:8080/api/file/${getToken(TokenTypeEnum.ACCESS_TOKEN)}`}
               onClick={() => setOpenPopover(!openPopover)}
             />
             <AvatarFallback

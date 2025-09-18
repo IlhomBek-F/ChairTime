@@ -7,7 +7,7 @@ import { Navigate } from "react-router";
 import { clearToken } from "@/lib/token";
 
 function PrivateRoute({children, roles}: {children: React.ReactNode, roles: Roles[]}) {
-    const { isAuthenticated , getUserInfo, logOut} = useAuth();
+    const { isAuthenticated , getUserInfo} = useAuth();
     const user = getUserInfo()
 
     if (!isAuthenticated() || !roles.includes(user.role)) {

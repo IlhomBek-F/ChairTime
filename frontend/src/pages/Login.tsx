@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { CustomForm } from "@/components/ui/form/bookingForm";
 import { PAGE_BY_ROLE } from "@/config/route";
-import { setToken } from "@/lib/token";
+import { setToken, TokenTypeEnum } from "@/lib/token";
 import { toastError } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
@@ -71,9 +71,10 @@ export function Login() {
     try {
       const { username, password } = form.getValues();
       const res = await signIn(username, password);
-      const { access_token, ...user_info } = res.data;
+      const { access_token, refresh_token, ...user_info } = res.data;
       localStorage.setItem("user", JSON.stringify(user_info));
-      setToken(access_token);
+      setToken(TokenTypeEnum.ACCESS_TOKEN, access_token);
+      setToken(TokenTypeEnum.REFRESH_TOKEN, refresh_token);
       navigate(PAGE_BY_ROLE[user_info.role]);
     } catch (err) {
       toastError(err)();

@@ -18,3 +18,7 @@ export async function deleteAccount(userId: number): Promise<ResponseSuccess> {
 export async function getUserInfo(userId: number): Promise<ResponseSuccessWithData<User>> {
     return privateHttp.get(`/user/${userId}`)
 } 
+
+export async function refreshToken(token: string): Promise<ResponseSuccessWithData<AuthResType>> {
+    return publicHttp.post('/auth/refresh_token', {refresh_token: token})
+} 

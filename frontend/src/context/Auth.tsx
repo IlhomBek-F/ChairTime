@@ -1,5 +1,5 @@
 import type { AuthResType } from "@/core/models/auth";
-import { clearToken, getToken } from "@/lib/token";
+import { clearToken, getToken, TokenTypeEnum } from "@/lib/token";
 import {
   createContext,
   useContext,
@@ -16,7 +16,7 @@ type AuthContextType = {
 const authContext = createContext<AuthContextType>({} as AuthContextType);
 
 function AuthProvider({ children }: { children: ReactNode }) {
-  const isAuthenticated = () => !!getToken();
+  const isAuthenticated = () => !!getToken(TokenTypeEnum.ACCESS_TOKEN);
 
   const getUserInfo = () => {
     const userInfoStr = localStorage.getItem("user");

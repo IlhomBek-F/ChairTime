@@ -8,5 +8,6 @@ export type AuthType = {
 export type AuthResType = {
     id: number,
     role: Roles,
-    access_token: string
+    access_token: string,
+    refresh_token: string
 }
