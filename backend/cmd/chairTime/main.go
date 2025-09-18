@@ -40,7 +40,7 @@ func main() {
 		Auth: domain.AuthConfig{
 			AccessTokenSecret:  env.GetString("ACCESS_TOKEN_SECRET", "example"),
 			RefreshTokenSecret: env.GetString("REFRESH_TOKEN_SECRET", "example"),
-			AccessTokenExp:     time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 1)) * time.Minute,
+			AccessTokenExp:     time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 15)) * time.Minute,
 			RefreshTokenExp:    time.Duration(env.GetInt("REFRESH_TOKEN_EXP_HOUR", 1)) * time.Hour,
 			Iss:                "chairtime",
 		},
