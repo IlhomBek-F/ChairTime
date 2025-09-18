@@ -42,7 +42,7 @@ func Mount(app *app.Application) http.Handler {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	jwtConfig := echojwt.Config{
-		SigningKey:    []byte(app.Config.Auth.Secret),
+		SigningKey:    []byte(app.Config.Auth.AccessTokenSecret),
 		NewClaimsFunc: func(e echo.Context) jwt.Claims { return new(auth.CustomClaims) },
 	}
 

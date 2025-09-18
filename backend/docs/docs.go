@@ -63,6 +63,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/refresh_token": {
+            "post": {
+                "description": "Refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh token",
+                "parameters": [
+                    {
+                        "description": "Refresh token",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RefreshTokenPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Refresh token",
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/auth/sign-in": {
             "post": {
                 "description": "Sign in to account",
@@ -1784,6 +1826,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "refresh_token": {
+                    "type": "string"
+                },
                 "role": {
                     "type": "integer"
                 }
@@ -2110,6 +2155,14 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "domain.RefreshTokenPayload": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
                 }
             }
         },

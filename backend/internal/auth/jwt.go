@@ -7,9 +7,10 @@ import (
 )
 
 type JwtAuthenticator struct {
-	secret string
-	aud    string
-	iss    string
+	AccessTokenSecret  string
+	RefreshTokenSecret string
+	aud                string
+	iss                string
 }
 
 type CustomClaims struct {
@@ -17,18 +18,19 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func NewJwtAuthenticator(secret, aud, iss string) *JwtAuthenticator {
+func NewJwtAuthenticator(accessTokenSecret, refreshTokenSecret, aud, iss string) *JwtAuthenticator {
 	return &JwtAuthenticator{
-		secret: secret,
-		aud:    aud,
-		iss:    iss,
+		AccessTokenSecret:  accessTokenSecret,
+		RefreshTokenSecret: refreshTokenSecret,
+		aud:                aud,
+		iss:                iss,
 	}
 }
 
 func (a *JwtAuthenticator) GenerateToken(claims CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString([]byte(a.secret))
+	tokenString, err := token.SignedString([]byte(a.AccessTokenSecret))
 
 	if err != nil {
 		return "", err
@@ -43,7 +45,7 @@ func (a JwtAuthenticator) ParseToken(tokenStr, secretKey string) (*CustomClaims,
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("error parsing token")
 	}
 
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
@@ -51,4 +53,16 @@ func (a JwtAuthenticator) ParseToken(tokenStr, secretKey string) (*CustomClaims,
 	}
 
 	return nil, errors.New("error parsing token")
+}
+
+func (a JwtAuthenticator) GenerateRefreshToken(claims CustomClaims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString([]byte(a.RefreshTokenSecret))
+
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }

@@ -38,9 +38,11 @@ func main() {
 		},
 		Env: env.GetString("ENV", "development"),
 		Auth: domain.AuthConfig{
-			Secret: env.GetString("ACCESS_TOKEN_SECRET", "example"),
-			Exp:    time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 2)) * time.Hour,
-			Iss:    "chairtime",
+			AccessTokenSecret:  env.GetString("ACCESS_TOKEN_SECRET", "example"),
+			RefreshTokenSecret: env.GetString("REFRESH_TOKEN_SECRET", "example"),
+			AccessTokenExp:     time.Duration(env.GetInt("ACCESS_TOKEN_EXPIRY_HOUR", 1)) * time.Minute,
+			RefreshTokenExp:    time.Duration(env.GetInt("REFRESH_TOKEN_EXP_HOUR", 1)) * time.Hour,
+			Iss:                "chairtime",
 		},
 	}
 
@@ -64,7 +66,8 @@ func main() {
 
 	// Authentcator
 	jwtAuthenticator := auth.NewJwtAuthenticator(
-		cfg.Auth.Secret,
+		cfg.Auth.AccessTokenSecret,
+		cfg.Auth.RefreshTokenSecret,
 		cfg.Auth.Iss,
 		cfg.Auth.Iss,
 	)

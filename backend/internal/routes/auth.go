@@ -10,4 +10,5 @@ import (
 func AuthRoute(app *app.Application, groupRoute echo.Group) {
 	groupRoute.POST("/auth/sign-in", app.RouteHandler(authController.SignIn))
 	groupRoute.POST("/auth/sign-up", app.RouteHandler(authController.SignUp))
+	groupRoute.POST("/auth/refresh_token", app.RouteHandler(authController.GenerateRefreshToken))
 }

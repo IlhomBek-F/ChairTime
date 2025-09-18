@@ -84,20 +84,32 @@ func SignIn(app *app.Application, e echo.Context) error {
 		user.RoleId = admin.RoleId
 	}
 
-	claims := auth.CustomClaims{
+	claimsAccessToken := auth.CustomClaims{
 		Role: user.RoleId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   strconv.Itoa(user.ID),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.Exp)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.AccessTokenExp)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
 		},
 	}
 
-	token, err := app.Authenticator.GenerateToken(claims)
+	claimsRefreshToken := auth.CustomClaims{
+		Role: user.RoleId,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   strconv.Itoa(user.ID),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.RefreshTokenExp)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
+		},
+	}
 
-	if err != nil {
+	accessToken, accessTokenErr := app.Authenticator.GenerateToken(claimsAccessToken)
+	refreshToken, refreshTokenErr := app.Authenticator.GenerateRefreshToken(claimsRefreshToken)
+
+	if accessTokenErr != nil || refreshTokenErr != nil {
 		return app.InternalServerError(e, err)
 	}
 
@@ -105,9 +117,10 @@ func SignIn(app *app.Application, e echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data: domain.Credential{
-			Role:        user.RoleId,
-			ID:          user.ID,
-			AccessToken: token,
+			Role:         user.RoleId,
+			ID:           user.ID,
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
 		},
 	}
 

@@ -19,7 +19,9 @@ type DbConfig struct {
 }
 
 type AuthConfig struct {
-	Secret string
-	Exp    time.Duration
-	Iss    string
+	AccessTokenSecret  string
+	RefreshTokenSecret string
+	AccessTokenExp     time.Duration
+	RefreshTokenExp    time.Duration
+	Iss                string
 }

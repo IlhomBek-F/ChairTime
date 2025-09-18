@@ -10,7 +10,7 @@ import (
 func ServeImage(app *app.Application, e echo.Context) error {
 	token := e.Param("token")
 
-	claims, err := app.Authenticator.ParseToken(token, app.Config.Auth.Secret)
+	claims, err := app.Authenticator.ParseToken(token, app.Config.Auth.AccessTokenSecret)
 
 	if err != nil {
 		return app.UnauthorizedErrorResponse(e, err)
