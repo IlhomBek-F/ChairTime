@@ -11,3 +11,5 @@ var RoleNames = map[int]string{
 	AdminRoleId:  "admin",
 	UserRoleId:   "user",
 }
+
+const DATE_FORMAT_LAYOUT = "02-01-2006"

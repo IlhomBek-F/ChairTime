@@ -50,6 +50,7 @@ type Repository struct {
 		DeleteBooking(bookingId int) error
 		GetBookingById(bookingId int) (domain.Booking, error)
 		UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
+		DailyCleanUpBookingScheduler() error
 	}
 
 	User interface {

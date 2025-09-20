@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"chairTime/constant"
 	"chairTime/internal/domain"
 	"context"
 	"time"
@@ -15,6 +16,7 @@ type bookingRepo interface {
 	DeleteBooking(bookingId int) error
 	GetBookingById(bookingId int) (domain.Booking, error)
 	UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
+	DailyCleanUpBookingScheduler() error
 }
 
 type bookingDB struct {
@@ -94,4 +96,19 @@ func (br bookingDB) UpdateBooking(updatedBookingPayload domain.Booking) (domain.
 	result := br.db.WithContext(ctx).Updates(&updatedBookingPayload)
 
 	return updatedBookingPayload, result.Error
+}
+
+func (br bookingDB) DailyCleanUpBookingScheduler() error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	yesterday := time.Now().AddDate(0, 0, -1)
+	start := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 0, 0, 0, 0, yesterday.Location())
+	end := start.Add(24 * time.Hour).Format(constant.DATE_FORMAT_LAYOUT)
+
+	result := br.db.WithContext(ctx).
+		Where("date >= ? AND date < ?", start.Format(constant.DATE_FORMAT_LAYOUT), end).
+		Delete(&domain.Booking{})
+
+	return result.Error
 }
