@@ -74,6 +74,10 @@ func (app *Application) CheckForeignKeyViolationErr(e echo.Context, err error, e
 	return app.InternalServerError(e, err)
 }
 
+func TimeoutExceededError(err error, e echo.Context) error {
+	return writeJSONError(e, http.StatusRequestTimeout, "The request took too long - please try again later.")
+}
+
 func writeJSONError(e echo.Context, status int, message string) error {
 	err := domain.ErrorRes{
 		Status:  status,

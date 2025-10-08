@@ -10,12 +10,12 @@ import (
 )
 
 type bookingRepo interface {
-	CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
-	CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
-	GetUserBookings(userId int) ([]domain.BookingResponse, error)
-	DeleteBooking(bookingId int) error
-	GetBookingById(bookingId int) (domain.Booking, error)
-	UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
+	CreateBooking(ctx context.Context, bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
+	CheckBookingExist(ctx context.Context, userId int, masterStyleTypeId int) (domain.Booking, error)
+	GetUserBookings(ctx context.Context, userId int) ([]domain.BookingResponse, error)
+	DeleteBooking(ctx context.Context, bookingId int) error
+	GetBookingById(ctx context.Context, bookingId int) (domain.Booking, error)
+	UpdateBooking(ctx context.Context, updatedPayload domain.Booking) (domain.Booking, error)
 	DailyCleanUpBookingScheduler() error
 }
 
@@ -27,10 +27,7 @@ func NewBookingRepo(db *gorm.DB) bookingRepo {
 	return bookingDB{db: db}
 }
 
-func (br bookingDB) CreateBooking(payload domain.CreateBookingPayload) (domain.Booking, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (br bookingDB) CreateBooking(ctx context.Context, payload domain.CreateBookingPayload) (domain.Booking, error) {
 	booking := domain.Booking{
 		UserId:            payload.UserId,
 		MasterStyleTypeId: payload.MasterStyleTypeId,
@@ -44,14 +41,11 @@ func (br bookingDB) CreateBooking(payload domain.CreateBookingPayload) (domain.B
 	return booking, result.Error
 }
 
-func (br bookingDB) CheckBookingExist(userId int, masterStyleTYpeId int) (domain.Booking, error) {
+func (br bookingDB) CheckBookingExist(ctx context.Context, userId int, masterStyleTYpeId int) (domain.Booking, error) {
 	return domain.Booking{}, nil
 }
 
-func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (br bookingDB) GetUserBookings(ctx context.Context, userId int) ([]domain.BookingResponse, error) {
 	var bookings []domain.BookingResponse
 
 	result := br.db.WithContext(ctx).Table("bookings AS bk").
@@ -71,17 +65,11 @@ func (br bookingDB) GetUserBookings(userId int) ([]domain.BookingResponse, error
 	return bookings, result.Error
 }
 
-func (br bookingDB) DeleteBooking(bookingId int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (br bookingDB) DeleteBooking(ctx context.Context, bookingId int) error {
 	return br.db.WithContext(ctx).Delete(domain.Booking{}, bookingId).Error
 }
 
-func (br bookingDB) GetBookingById(bookingId int) (domain.Booking, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (br bookingDB) GetBookingById(ctx context.Context, bookingId int) (domain.Booking, error) {
 	var booking domain.Booking
 
 	result := br.db.WithContext(ctx).First(&booking, bookingId)
@@ -89,10 +77,7 @@ func (br bookingDB) GetBookingById(bookingId int) (domain.Booking, error) {
 	return booking, result.Error
 }
 
-func (br bookingDB) UpdateBooking(updatedBookingPayload domain.Booking) (domain.Booking, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (br bookingDB) UpdateBooking(ctx context.Context, updatedBookingPayload domain.Booking) (domain.Booking, error) {
 	result := br.db.WithContext(ctx).Updates(&updatedBookingPayload)
 
 	return updatedBookingPayload, result.Error

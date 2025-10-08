@@ -30,7 +30,7 @@ func GetMasterBookings(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	masters, err := app.Repository.Master.GetMasterBooking(masterId)
+	masters, err := app.Repository.Master.GetMasterBooking(e.Request().Context(), masterId)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

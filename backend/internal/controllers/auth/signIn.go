@@ -39,9 +39,9 @@ func SignIn(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	client, err := app.Repository.Auth.GetUserByName(userCredential.Username)
-	master, masterErr := app.Repository.Master.GetMasterByName(userCredential.Username)
-	admin, adErr := app.Repository.Admin.GetAdminByName(userCredential.Username)
+	client, err := app.Repository.Auth.GetUserByName(e.Request().Context(), userCredential.Username)
+	master, masterErr := app.Repository.Master.GetMasterByName(e.Request().Context(), userCredential.Username)
+	admin, adErr := app.Repository.Admin.GetAdminByName(e.Request().Context(), userCredential.Username)
 
 	if isUnexpectedError(err, masterErr, adErr) {
 		return app.InternalServerError(e, err)

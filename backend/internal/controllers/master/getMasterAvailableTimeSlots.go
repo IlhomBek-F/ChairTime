@@ -31,7 +31,7 @@ func GetMasterAvailableTimeSlots(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	timeSlots, err := app.Repository.Master.GetMasterAvailableTimeSlots(master_id, date)
+	timeSlots, err := app.Repository.Master.GetMasterAvailableTimeSlots(e.Request().Context(), master_id, date)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

@@ -31,7 +31,7 @@ func DeleteBooking(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	booking, err := app.Repository.Booking.GetBookingById(bookingId)
+	booking, err := app.Repository.Booking.GetBookingById(e.Request().Context(), bookingId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -41,7 +41,7 @@ func DeleteBooking(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	err = app.Repository.Booking.DeleteBooking(booking.ID)
+	err = app.Repository.Booking.DeleteBooking(e.Request().Context(), booking.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

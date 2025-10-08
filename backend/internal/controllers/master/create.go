@@ -33,7 +33,7 @@ func CreateMaster(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.Master.GetMasterByName(masterPayload.Username)
+	master, err := app.Repository.Master.GetMasterByName(e.Request().Context(), masterPayload.Username)
 
 	if master.ID != 0 {
 		return app.ConflictResponse(e, errors.New("master with this name exists"))
@@ -51,7 +51,7 @@ func CreateMaster(app *app.Application, e echo.Context) error {
 
 	masterPayload.Password = string(hashMasterPassword)
 
-	createdMaster, err := app.Repository.Master.CreateMaster(masterPayload)
+	createdMaster, err := app.Repository.Master.CreateMaster(e.Request().Context(), masterPayload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)
@@ -93,7 +93,7 @@ func CreateMasterUnavailableSchedule(app *app.Application, e echo.Context) error
 		return app.BadRequestResponse(e, err)
 	}
 
-	if err := app.Repository.Master.CreateMasterUnavailableSchedule(payload, master_id); err != nil {
+	if err := app.Repository.Master.CreateMasterUnavailableSchedule(e.Request().Context(), payload, master_id); err != nil {
 		return app.InternalServerError(e, err)
 	}
 

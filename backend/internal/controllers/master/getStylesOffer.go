@@ -33,7 +33,7 @@ func GetMasterStylesOffer(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.Master.GetMasterById(master_id)
+	master, err := app.Repository.Master.GetMasterById(e.Request().Context(), master_id)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -43,7 +43,7 @@ func GetMasterStylesOffer(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	stylesOffer, err := app.Repository.Master.GetMasterStylesOffer(master.ID)
+	stylesOffer, err := app.Repository.Master.GetMasterStylesOffer(e.Request().Context(), master.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

@@ -24,7 +24,7 @@ import (
 //	@Failure		500		{object}	error
 //	@Router			/masters [get]
 func GetMasters(app *app.Application, e echo.Context) error {
-	masters, err := app.Repository.Master.GetMasters()
+	masters, err := app.Repository.Master.GetMasters(e.Request().Context())
 
 	if err != nil {
 		return app.InternalServerError(e, err)

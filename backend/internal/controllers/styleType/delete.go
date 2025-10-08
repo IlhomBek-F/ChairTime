@@ -29,7 +29,7 @@ func DeleteStyleType(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	err = app.Repository.StyleType.DeleteStyleType(style_type_id)
+	err = app.Repository.StyleType.DeleteStyleType(e.Request().Context(), style_type_id)
 
 	if err != nil {
 		return app.CheckForeignKeyViolationErr(e, err, "this style type connected with appointments and cannot be deleted")

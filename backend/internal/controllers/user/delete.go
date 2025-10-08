@@ -31,7 +31,7 @@ func DeleteUser(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	user, err := app.Repository.User.GetUserById(user_id)
+	user, err := app.Repository.User.GetUserById(e.Request().Context(), user_id)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -41,7 +41,7 @@ func DeleteUser(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	err = app.Repository.User.DeleteUser(user.ID)
+	err = app.Repository.User.DeleteUser(e.Request().Context(), user.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

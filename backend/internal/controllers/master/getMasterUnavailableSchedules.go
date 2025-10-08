@@ -31,7 +31,7 @@ func GetMasterUnavailableSchedules(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.Master.GetMasterById(masterId)
+	master, err := app.Repository.Master.GetMasterById(e.Request().Context(), masterId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -41,7 +41,7 @@ func GetMasterUnavailableSchedules(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	masterUnavailableSchedules, err := app.Repository.Master.GetMasterUnavailableSchedules(master.ID)
+	masterUnavailableSchedules, err := app.Repository.Master.GetMasterUnavailableSchedules(e.Request().Context(), master.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

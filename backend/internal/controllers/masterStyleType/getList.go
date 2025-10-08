@@ -23,7 +23,7 @@ import (
 func GetMasterStyleTypes(app *app.Application, e echo.Context) error {
 	var mstStyleTypes []domain.MasterStyleType
 
-	mstStyleTypes, err := app.Repository.MasterStyleType.GetMasterStyleTypes()
+	mstStyleTypes, err := app.Repository.MasterStyleType.GetMasterStyleTypes(e.Request().Context())
 
 	if err != nil {
 		return app.InternalServerError(e, err)

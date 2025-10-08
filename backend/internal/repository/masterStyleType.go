@@ -3,7 +3,6 @@ package repository
 import (
 	"chairTime/internal/domain"
 	"context"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -13,18 +12,15 @@ type masterStyleTypeDB struct {
 }
 
 type masterStyleTypeRepo interface {
-	GetMasterStyleTypes() ([]domain.MasterStyleType, error)
-	GetMasterStyleTypeById(id int) (domain.MasterStyleType, error)
+	GetMasterStyleTypes(ctx context.Context) ([]domain.MasterStyleType, error)
+	GetMasterStyleTypeById(ctx context.Context, id int) (domain.MasterStyleType, error)
 }
 
 func NewMasterStyleTypeRepo(db *gorm.DB) masterStyleTypeRepo {
 	return masterStyleTypeDB{db: db}
 }
 
-func (mst masterStyleTypeDB) GetMasterStyleTypes() ([]domain.MasterStyleType, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mst masterStyleTypeDB) GetMasterStyleTypes(ctx context.Context) ([]domain.MasterStyleType, error) {
 	var masterStyleTypes []domain.MasterStyleType
 
 	result := mst.db.WithContext(ctx).Find(&masterStyleTypes)
@@ -32,10 +28,7 @@ func (mst masterStyleTypeDB) GetMasterStyleTypes() ([]domain.MasterStyleType, er
 	return masterStyleTypes, result.Error
 }
 
-func (mst masterStyleTypeDB) GetMasterStyleTypeById(id int) (domain.MasterStyleType, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mst masterStyleTypeDB) GetMasterStyleTypeById(ctx context.Context, id int) (domain.MasterStyleType, error) {
 	var masterStyleType domain.MasterStyleType
 
 	result := mst.db.WithContext(ctx).First(&masterStyleType, id)

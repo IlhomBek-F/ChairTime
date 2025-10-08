@@ -30,7 +30,7 @@ func UpdateStyleType(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	_, err := app.Repository.StyleType.GetStyleTypeById(updatedStyleType.ID)
+	_, err := app.Repository.StyleType.GetStyleTypeById(e.Request().Context(), updatedStyleType.ID)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -40,7 +40,7 @@ func UpdateStyleType(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	updatedStyleT, err := app.Repository.StyleType.UpdateStyleType(updatedStyleType)
+	updatedStyleT, err := app.Repository.StyleType.UpdateStyleType(e.Request().Context(), updatedStyleType)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

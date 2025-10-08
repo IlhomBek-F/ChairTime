@@ -31,7 +31,7 @@ func GetAdminId(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	admin, err := app.Repository.Admin.GetAdminById(adminId)
+	admin, err := app.Repository.Admin.GetAdminById(e.Request().Context(), adminId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

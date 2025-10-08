@@ -35,9 +35,9 @@ func SignUp(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	user, err := app.Repository.Auth.GetUserByName(userPayload.Username)
-	master, msErr := app.Repository.Master.GetMasterByName(userPayload.Username)
-	admin, adErr := app.Repository.Admin.GetAdminByName(userPayload.Username)
+	user, err := app.Repository.Auth.GetUserByName(e.Request().Context(), userPayload.Username)
+	master, msErr := app.Repository.Master.GetMasterByName(e.Request().Context(), userPayload.Username)
+	admin, adErr := app.Repository.Admin.GetAdminByName(e.Request().Context(), userPayload.Username)
 
 	if user.ID != 0 || master.ID != 0 || admin.ID != 0 {
 		return app.ConflictResponse(e, errors.New("username already exists"))
@@ -53,7 +53,7 @@ func SignUp(app *app.Application, e echo.Context) error {
 		return app.InternalServerError(e, err)
 	}
 
-	createdNewUser, err := app.Repository.Auth.SignUp(userPayload.Username, string(hashUserPassword), userPayload.Phone)
+	createdNewUser, err := app.Repository.Auth.SignUp(e.Request().Context(), userPayload.Username, string(hashUserPassword), userPayload.Phone)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

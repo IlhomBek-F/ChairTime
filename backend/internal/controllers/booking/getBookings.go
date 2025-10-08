@@ -31,7 +31,7 @@ func GetBookings(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	user, err := app.Repository.User.GetUserById(userId)
+	user, err := app.Repository.User.GetUserById(e.Request().Context(), userId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -41,7 +41,7 @@ func GetBookings(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	bookings, err := app.Repository.Booking.GetUserBookings(user.ID)
+	bookings, err := app.Repository.Booking.GetUserBookings(e.Request().Context(), user.ID)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

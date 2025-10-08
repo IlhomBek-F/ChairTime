@@ -22,7 +22,7 @@ import (
 //	@Router			/users [get]
 func GetUsers(app *app.Application, e echo.Context) error {
 
-	users, err := app.Repository.User.GetUsers()
+	users, err := app.Repository.User.GetUsers(e.Request().Context())
 
 	if err != nil {
 		return app.InternalServerError(e, err)

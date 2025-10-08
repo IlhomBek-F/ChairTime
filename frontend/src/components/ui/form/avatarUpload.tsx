@@ -1,5 +1,5 @@
 import { upload } from "@/api/user";
-import { getToken } from "@/lib/token";
+import { getToken, TokenTypeEnum } from "@/lib/token";
 import { useRef, useState } from "react";
 
 export default function AvatarUploader() {
@@ -38,7 +38,7 @@ export default function AvatarUploader() {
         onClick={handleClick}
       >
         <img
-          src={image || `http://localhost:8080/api/file/${getToken()}`}
+          src={image || `http://localhost:8080/api/file/${getToken(TokenTypeEnum.ACCESS_TOKEN)}`}
           alt="Avatar"
           className="w-full h-full object-cover"
         />

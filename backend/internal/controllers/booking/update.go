@@ -30,7 +30,7 @@ func UpdateBooking(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	_, err := app.Repository.Booking.GetBookingById(bookingPayload.ID)
+	_, err := app.Repository.Booking.GetBookingById(e.Request().Context(), bookingPayload.ID)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -40,7 +40,7 @@ func UpdateBooking(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	updatedBooking, err := app.Repository.Booking.UpdateBooking(bookingPayload)
+	updatedBooking, err := app.Repository.Booking.UpdateBooking(e.Request().Context(), bookingPayload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

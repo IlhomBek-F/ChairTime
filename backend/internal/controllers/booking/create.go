@@ -29,7 +29,7 @@ func CreateBooking(app *app.Application, e echo.Context) error {
 	}
 
 	// bookingExist, err := app.Repository.Booking.CheckBookingExist(user.user_id, 2)
-	_, err := app.Repository.Booking.CreateBooking(bookingPayload)
+	_, err := app.Repository.Booking.CreateBooking(e.Request().Context(), bookingPayload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

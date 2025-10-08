@@ -31,7 +31,7 @@ func GetBookingById(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	booking, err := app.Repository.Booking.GetBookingById(bookingId)
+	booking, err := app.Repository.Booking.GetBookingById(e.Request().Context(), bookingId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

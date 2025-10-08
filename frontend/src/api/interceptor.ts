@@ -2,11 +2,9 @@ import { getToken, setToken, TokenTypeEnum } from "@/lib/token";
 import { privateHttp, publicHttp } from "./http";
 import { refreshToken } from "./auth";
 
-let isTokenRefreshed = false;
-
 publicHttp.interceptors.response.use(
   (response) => response.data,
-  (error) => Promise.reject(error.response.data)
+  (error) => Promise.reject(error.response?.data || error)
 );
 
 privateHttp.interceptors.request.use(
@@ -40,7 +38,7 @@ privateHttp.interceptors.response.use(
       window.location.replace("/login")
     }
     
-    return Promise.reject(error.response.data);
+    return Promise.reject(error.response?.data);
   }
 );
 

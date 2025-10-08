@@ -29,7 +29,7 @@ func DeleteMaster(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	err = app.Repository.Master.DeleteMaster(master_id)
+	err = app.Repository.Master.DeleteMaster(e.Request().Context(), master_id)
 
 	if err != nil {
 		return app.CheckForeignKeyViolationErr(e, err, "this master has appointments and cannot be deleted")

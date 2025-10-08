@@ -30,7 +30,7 @@ func UpdateMaster(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	_, err := app.Repository.Master.GetMasterById(masterPayload.ID)
+	_, err := app.Repository.Master.GetMasterById(e.Request().Context(), masterPayload.ID)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -40,7 +40,7 @@ func UpdateMaster(app *app.Application, e echo.Context) error {
 		}
 	}
 
-	updatedMaster, err := app.Repository.Master.UpdateMaster(masterPayload)
+	updatedMaster, err := app.Repository.Master.UpdateMaster(e.Request().Context(), masterPayload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)
@@ -75,7 +75,7 @@ func UpdateMasterUnavailableSchedule(app *app.Application, e echo.Context) error
 		return app.BadRequestResponse(e, err)
 	}
 
-	updatedMasterUnavailableSchedule, err := app.Repository.Master.UpdateMasterUnavailableSchedule(payload)
+	updatedMasterUnavailableSchedule, err := app.Repository.Master.UpdateMasterUnavailableSchedule(e.Request().Context(), payload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)
@@ -110,7 +110,7 @@ func UpdateWorkingTime(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	if err := app.Repository.Master.UpdateMasterWorkingTime(payload); err != nil {
+	if err := app.Repository.Master.UpdateMasterWorkingTime(e.Request().Context(), payload); err != nil {
 		return app.InternalServerError(e, err)
 	}
 

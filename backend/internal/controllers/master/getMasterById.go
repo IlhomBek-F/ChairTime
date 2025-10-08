@@ -31,7 +31,7 @@ func GetMasterById(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.Master.GetMasterById(masterId)
+	master, err := app.Repository.Master.GetMasterById(e.Request().Context(), masterId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

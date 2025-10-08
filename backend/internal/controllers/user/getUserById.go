@@ -31,7 +31,7 @@ func GetUserById(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	user, err := app.Repository.User.GetUserById(user_id)
+	user, err := app.Repository.User.GetUserById(e.Request().Context(), user_id)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

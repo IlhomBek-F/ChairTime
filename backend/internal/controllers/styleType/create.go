@@ -31,7 +31,7 @@ func CreateStyleType(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	styleType, err := app.Repository.StyleType.GetStyleTypeByName(styleTypePayload.Name)
+	styleType, err := app.Repository.StyleType.GetStyleTypeByName(e.Request().Context(), styleTypePayload.Name)
 
 	if styleType.ID != 0 {
 		return app.ConflictResponse(e, errors.New("style with this name exists"))
@@ -41,7 +41,7 @@ func CreateStyleType(app *app.Application, e echo.Context) error {
 		return app.InternalServerError(e, err)
 	}
 
-	createdStyleType, err := app.Repository.StyleType.CreateStyleType(styleTypePayload)
+	createdStyleType, err := app.Repository.StyleType.CreateStyleType(e.Request().Context(), styleTypePayload)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

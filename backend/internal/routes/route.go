@@ -29,11 +29,8 @@ func Mount(app *app.Application) http.Handler {
 	e.Use(middleware.Logger())
 	e.Use(configureCORS())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(10))))
-	e.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
-		Skipper:      middleware.DefaultSkipper,
-		ErrorMessage: "custom timeout error message returns to client",
-		Timeout:      2 * time.Second,
-	}))
+
+	e.Use(TimeoutMiddleware(5 * time.Second))
 
 	e.Validator = &domain.CustomValidator{Validator: validator.New()}
 	publicRoute := e.Group("/api")
@@ -149,9 +146,9 @@ func userCheckMiddleWare(app *app.Application) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid user id")
 			}
 
-			_, clientErr := app.Repository.User.GetUserById(userId)
-			_, masterErr := app.Repository.Master.GetMasterById(userId)
-			_, adErr := app.Repository.Admin.GetAdminById(userId)
+			_, clientErr := app.Repository.User.GetUserById(c.Request().Context(), userId)
+			_, masterErr := app.Repository.Master.GetMasterById(c.Request().Context(), userId)
+			_, adErr := app.Repository.Admin.GetAdminById(c.Request().Context(), userId)
 
 			if clientErr != nil && masterErr != nil && adErr != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "user not found")
@@ -187,4 +184,36 @@ func mountJobCronScheduler(a *app.Application) gocron.Scheduler {
 	s.Start()
 
 	return s
+}
+
+func TimeoutMiddleware(d time.Duration) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			ctx, cancel := context.WithTimeout(c.Request().Context(), d)
+			defer cancel()
+
+			req := c.Request().WithContext(ctx)
+			c.SetRequest(req)
+
+			errCh := make(chan error, 1)
+
+			go func() {
+				errCh <- next(c)
+			}()
+
+			select {
+			case <-ctx.Done():
+				// If the context timed out, respond directly
+				if ctx.Err() == context.DeadlineExceeded {
+					if !c.Response().Committed {
+						return app.TimeoutExceededError(ctx.Err(), c)
+					}
+					return ctx.Err()
+				}
+				return ctx.Err()
+			case err := <-errCh:
+				return err
+			}
+		}
+	}
 }

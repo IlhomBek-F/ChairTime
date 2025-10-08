@@ -27,7 +27,7 @@ import (
 //	@Failure		500		{object}	error
 //	@Router			/style-types [get]
 func GetStyleTypes(app *app.Application, e echo.Context) error {
-	styleTypes, err := app.Repository.StyleType.GetStyleTypes()
+	styleTypes, err := app.Repository.StyleType.GetStyleTypes(e.Request().Context())
 
 	if err != nil {
 		return app.InternalServerError(e, err)
@@ -62,7 +62,7 @@ func GetStyleTypeById(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	master, err := app.Repository.StyleType.GetStyleTypeById(styleTypeId)
+	master, err := app.Repository.StyleType.GetStyleTypeById(e.Request().Context(), styleTypeId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

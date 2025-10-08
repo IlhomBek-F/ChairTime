@@ -2,66 +2,67 @@ package repository
 
 import (
 	"chairTime/internal/domain"
+	"context"
 
 	"gorm.io/gorm"
 )
 
 type Repository struct {
 	Auth interface {
-		GetUserByName(username string) (domain.User, error)
-		SignUp(username, password, phone string) (domain.User, error)
+		GetUserByName(ctx context.Context, username string) (domain.User, error)
+		SignUp(ctx context.Context, username, password, phone string) (domain.User, error)
 	}
 
 	Master interface {
-		GetMasterByName(name string) (domain.Master, error)
-		GetMasters() ([]domain.Master, error)
-		CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
-		GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
-		GetMasterById(masterId int) (domain.Master, error)
-		GetMasterBooking(masterId int) ([]domain.MasterBooking, error)
-		UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
-		GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-		CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, masterId int) error
-		UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
-		GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
-		UpdateMasterWorkingTime(workingTimePayload domain.MasterWorkingTimePayload) error
-		DeleteMaster(id int) error
-		DeleteMasterUnavailableSchedule(id int) error
+		GetMasterByName(ctx context.Context, name string) (domain.Master, error)
+		GetMasters(ctx context.Context) ([]domain.Master, error)
+		CreateMaster(ctx context.Context, masterPayload domain.CreateMasterPayload) (domain.Master, error)
+		GetMasterStylesOffer(ctx context.Context, masterId int) ([]domain.MasterStyleOffer, error)
+		GetMasterById(ctx context.Context, masterId int) (domain.Master, error)
+		GetMasterBooking(ctx context.Context, masterId int) ([]domain.MasterBooking, error)
+		UpdateMaster(ctx context.Context, updatedMasterPayload domain.Master) (domain.Master, error)
+		GetMasterUnavailableSchedules(ctx context.Context, masterId int) ([]domain.MasterUnavailableSchedule, error)
+		CreateMasterUnavailableSchedule(ctx context.Context, payload []domain.CreateMasterUnavailablePayload, masterId int) error
+		UpdateMasterUnavailableSchedule(ctx context.Context, payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
+		GetMasterAvailableTimeSlots(ctx context.Context, masterId int, date string) ([]string, error)
+		UpdateMasterWorkingTime(ctx context.Context, workingTimePayload domain.MasterWorkingTimePayload) error
+		DeleteMaster(ctx context.Context, id int) error
+		DeleteMasterUnavailableSchedule(ctx context.Context, id int) error
 	}
 
 	StyleType interface {
-		GetStyleTypeByName(name string) (domain.StyleType, error)
-		CreateStyleType(styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
-		GetStyleTypes() ([]domain.StyleType, error)
-		DeleteStyleType(id int) error
-		GetStyleTypeById(id int) (domain.StyleType, error)
-		UpdateStyleType(updatedStyleType domain.StyleType) (domain.StyleType, error)
+		GetStyleTypeByName(ctx context.Context, name string) (domain.StyleType, error)
+		CreateStyleType(ctx context.Context, styleTypePayload domain.CreateStyleTypePayload) (domain.StyleType, error)
+		GetStyleTypes(ctx context.Context) ([]domain.StyleType, error)
+		DeleteStyleType(ctx context.Context, id int) error
+		GetStyleTypeById(ctx context.Context, id int) (domain.StyleType, error)
+		UpdateStyleType(ctx context.Context, updatedStyleType domain.StyleType) (domain.StyleType, error)
 	}
 
 	MasterStyleType interface {
-		GetMasterStyleTypes() ([]domain.MasterStyleType, error)
-		GetMasterStyleTypeById(id int) (domain.MasterStyleType, error)
+		GetMasterStyleTypes(ctx context.Context) ([]domain.MasterStyleType, error)
+		GetMasterStyleTypeById(ctx context.Context, id int) (domain.MasterStyleType, error)
 	}
 
 	Booking interface {
-		CreateBooking(bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
-		CheckBookingExist(userId int, masterStyleTypeId int) (domain.Booking, error)
-		GetUserBookings(userId int) ([]domain.BookingResponse, error)
-		DeleteBooking(bookingId int) error
-		GetBookingById(bookingId int) (domain.Booking, error)
-		UpdateBooking(updatedPayload domain.Booking) (domain.Booking, error)
+		CreateBooking(ctx context.Context, bookingPayload domain.CreateBookingPayload) (domain.Booking, error)
+		CheckBookingExist(ctx context.Context, userId int, masterStyleTypeId int) (domain.Booking, error)
+		GetUserBookings(ctx context.Context, userId int) ([]domain.BookingResponse, error)
+		DeleteBooking(ctx context.Context, bookingId int) error
+		GetBookingById(ctx context.Context, bookingId int) (domain.Booking, error)
+		UpdateBooking(ctx context.Context, updatedPayload domain.Booking) (domain.Booking, error)
 		DailyCleanUpBookingScheduler() error
 	}
 
 	User interface {
-		GetUsers() ([]domain.User, error)
-		GetUserById(masterId int) (domain.User, error)
-		DeleteUser(userId int) error
+		GetUsers(ctx context.Context) ([]domain.User, error)
+		GetUserById(ctx context.Context, masterId int) (domain.User, error)
+		DeleteUser(ctx context.Context, userId int) error
 	}
 
 	Admin interface {
-		GetAdminByName(name string) (domain.Admin, error)
-		GetAdminById(id int) (domain.Admin, error)
+		GetAdminByName(ctx context.Context, name string) (domain.Admin, error)
+		GetAdminById(ctx context.Context, id int) (domain.Admin, error)
 	}
 }
 

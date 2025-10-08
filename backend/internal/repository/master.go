@@ -17,30 +17,27 @@ type masterDB struct {
 }
 
 type masterRepo interface {
-	GetMasterByName(name string) (domain.Master, error)
-	GetMasters() ([]domain.Master, error)
-	CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error)
-	GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error)
-	GetMasterBooking(masterId int) ([]domain.MasterBooking, error)
-	GetMasterById(masterId int) (domain.Master, error)
-	UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error)
-	UpdateMasterWorkingTime(workingTimePayload domain.MasterWorkingTimePayload) error
-	GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error)
-	CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, master_id int) error
-	UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
-	DeleteMaster(id int) error
-	DeleteMasterUnavailableSchedule(id int) error
-	GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error)
+	GetMasterByName(ctx context.Context, name string) (domain.Master, error)
+	GetMasters(ctx context.Context) ([]domain.Master, error)
+	CreateMaster(ctx context.Context, masterPayload domain.CreateMasterPayload) (domain.Master, error)
+	GetMasterStylesOffer(ctx context.Context, masterId int) ([]domain.MasterStyleOffer, error)
+	GetMasterBooking(ctx context.Context, masterId int) ([]domain.MasterBooking, error)
+	GetMasterById(ctx context.Context, masterId int) (domain.Master, error)
+	UpdateMaster(ctx context.Context, updatedMasterPayload domain.Master) (domain.Master, error)
+	UpdateMasterWorkingTime(ctx context.Context, workingTimePayload domain.MasterWorkingTimePayload) error
+	GetMasterUnavailableSchedules(ctx context.Context, masterId int) ([]domain.MasterUnavailableSchedule, error)
+	CreateMasterUnavailableSchedule(ctx context.Context, payload []domain.CreateMasterUnavailablePayload, master_id int) error
+	UpdateMasterUnavailableSchedule(ctx context.Context, payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error)
+	DeleteMaster(ctx context.Context, id int) error
+	DeleteMasterUnavailableSchedule(ctx context.Context, id int) error
+	GetMasterAvailableTimeSlots(ctx context.Context, masterId int, date string) ([]string, error)
 }
 
 func NewMasterRepo(db *gorm.DB) masterRepo {
 	return masterDB{db: db}
 }
 
-func (mr masterDB) GetMasterByName(name string) (domain.Master, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterByName(ctx context.Context, name string) (domain.Master, error) {
 	var master domain.Master
 
 	result := mr.db.WithContext(ctx).Where("username = ?", name).First(&master)
@@ -48,10 +45,7 @@ func (mr masterDB) GetMasterByName(name string) (domain.Master, error) {
 	return master, result.Error
 }
 
-func (mr masterDB) GetMasters() ([]domain.Master, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasters(ctx context.Context) ([]domain.Master, error) {
 	var masters []domain.Master
 
 	result := mr.db.WithContext(ctx).Find(&masters)
@@ -77,10 +71,7 @@ func (mr masterDB) GetMasters() ([]domain.Master, error) {
 	return masters, result.Error
 }
 
-func (mr masterDB) CreateMaster(masterPayload domain.CreateMasterPayload) (domain.Master, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) CreateMaster(ctx context.Context, masterPayload domain.CreateMasterPayload) (domain.Master, error) {
 	master := domain.Master{}
 	master.RoleId = constant.MasterRoleId
 	master.Password = masterPayload.Password
@@ -113,10 +104,7 @@ func (mr masterDB) CreateMaster(masterPayload domain.CreateMasterPayload) (domai
 	return master, transactionError
 }
 
-func (mr masterDB) GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterStylesOffer(ctx context.Context, masterId int) ([]domain.MasterStyleOffer, error) {
 	var styleOffers []domain.MasterStyleOffer
 
 	result := mr.db.WithContext(ctx).Table("master_style_types AS mst").
@@ -127,15 +115,12 @@ func (mr masterDB) GetMasterStylesOffer(masterId int) ([]domain.MasterStyleOffer
 	return styleOffers, result.Error
 }
 
-func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterById(ctx context.Context, masterId int) (domain.Master, error) {
 	var master domain.Master
 
 	result := mr.db.WithContext(ctx).Where("id = ?", masterId).First(&master)
 
-	masterStyleOffers, err := mr.GetMasterStylesOffer(masterId)
+	masterStyleOffers, err := mr.GetMasterStylesOffer(ctx, masterId)
 
 	if err != nil {
 		return domain.Master{}, err
@@ -152,10 +137,7 @@ func (mr masterDB) GetMasterById(masterId int) (domain.Master, error) {
 	return master, result.Error
 }
 
-func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Master, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*152)
-	defer cancel()
-
+func (mr masterDB) UpdateMaster(ctx context.Context, updatedMasterPayload domain.Master) (domain.Master, error) {
 	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
 		var currentMasterStylesOffer []domain.MasterStyleType
 		var masterStyleOfferMap = make(map[int]domain.MasterStyleType)
@@ -218,10 +200,7 @@ func (mr masterDB) UpdateMaster(updatedMasterPayload domain.Master) (domain.Mast
 	return updatedMasterPayload, transactionError
 }
 
-func (mr masterDB) GetMasterBooking(masterId int) ([]domain.MasterBooking, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterBooking(ctx context.Context, masterId int) ([]domain.MasterBooking, error) {
 	var bookings []domain.MasterBooking
 
 	result := mr.db.WithContext(ctx).Table("users AS us").
@@ -233,10 +212,7 @@ func (mr masterDB) GetMasterBooking(masterId int) ([]domain.MasterBooking, error
 	return bookings, result.Error
 }
 
-func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterAvailableTimeSlots(ctx context.Context, masterId int, date string) ([]string, error) {
 	var bookings []domain.Booking
 
 	result := mr.db.WithContext(ctx).Table("bookings AS bk").
@@ -248,7 +224,7 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 		return []string{}, result.Error
 	}
 
-	master, err := mr.GetMasterById(masterId)
+	master, err := mr.GetMasterById(ctx, masterId)
 
 	if err != nil {
 		return []string{}, err
@@ -289,22 +265,16 @@ func (mr masterDB) GetMasterAvailableTimeSlots(masterId int, date string) ([]str
 	return availableBookingTimes, nil
 }
 
-func (mr masterDB) GetMasterUnavailableSchedules(masterId int) ([]domain.MasterUnavailableSchedule, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) GetMasterUnavailableSchedules(ctx context.Context, masterId int) ([]domain.MasterUnavailableSchedule, error) {
 	var masterUnavailableSchedules []domain.MasterUnavailableSchedule
 	result := mr.db.WithContext(ctx).Where("master_id = ?", masterId).Find(&masterUnavailableSchedules)
 
 	return masterUnavailableSchedules, result.Error
 }
 
-func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMasterUnavailablePayload, master_id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) CreateMasterUnavailableSchedule(ctx context.Context, payload []domain.CreateMasterUnavailablePayload, master_id int) error {
 	trxError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
-		currentMasterSchedules, err := mr.GetMasterUnavailableSchedules(master_id)
+		currentMasterSchedules, err := mr.GetMasterUnavailableSchedules(ctx, master_id)
 		currentMasterSchedulesMap := make(map[string]domain.MasterUnavailableSchedule)
 		updatedOfferSet := make(map[string]int)
 
@@ -360,34 +330,23 @@ func (mr masterDB) CreateMasterUnavailableSchedule(payload []domain.CreateMaster
 	return trxError
 }
 
-func (mr masterDB) DeleteMaster(id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) DeleteMaster(ctx context.Context, id int) error {
 	result := mr.db.WithContext(ctx).Delete(domain.Master{}, id)
 
 	return result.Error
 }
 
-func (mr masterDB) DeleteMasterUnavailableSchedule(id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) DeleteMasterUnavailableSchedule(ctx context.Context, id int) error {
 	return mr.db.WithContext(ctx).Delete(domain.MasterUnavailableSchedule{}, id).Error
 }
 
-func (mr masterDB) UpdateMasterUnavailableSchedule(payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
+func (mr masterDB) UpdateMasterUnavailableSchedule(ctx context.Context, payload domain.MasterUnavailableSchedule) (domain.MasterUnavailableSchedule, error) {
 	result := mr.db.WithContext(ctx).Updates(&payload)
 
 	return payload, result.Error
 }
 
-func (mr masterDB) UpdateMasterWorkingTime(payload domain.MasterWorkingTimePayload) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
+func (mr masterDB) UpdateMasterWorkingTime(ctx context.Context, payload domain.MasterWorkingTimePayload) error {
 	result := mr.db.WithContext(ctx).Model(&domain.Master{}).Select("start_working_time", "end_working_time").Where("id = ?", payload.ID).Updates(payload)
 
 	return result.Error

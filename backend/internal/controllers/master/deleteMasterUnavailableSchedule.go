@@ -29,7 +29,7 @@ func DeleteMasterUnavailableSchedule(app *app.Application, e echo.Context) error
 		return app.BadRequestResponse(e, err)
 	}
 
-	err = app.Repository.Master.DeleteMasterUnavailableSchedule(unavailable_schedule_id)
+	err = app.Repository.Master.DeleteMasterUnavailableSchedule(e.Request().Context(), unavailable_schedule_id)
 
 	if err != nil {
 		return app.InternalServerError(e, err)

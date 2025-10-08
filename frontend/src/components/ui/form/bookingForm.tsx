@@ -151,7 +151,7 @@ const date = ({ formControl, loading, label, matcher, name, mode, popover }: For
             >
               <Calendar
                 mode={mode}
-                disabled={matcher}
+                // disabled={matcher}
                 selected={mode === "multiple" ? [decodeValueToDate(field.value)] : decodeValueToDate(field.value)}
                 className="w-full"
                 captionLayout="dropdown"

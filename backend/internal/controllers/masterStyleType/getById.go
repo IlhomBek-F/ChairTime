@@ -31,7 +31,7 @@ func GetMstStyleTypeById(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	mstStyleType, err := app.Repository.MasterStyleType.GetMasterStyleTypeById(mstStyleTypeId)
+	mstStyleType, err := app.Repository.MasterStyleType.GetMasterStyleTypeById(e.Request().Context(), mstStyleTypeId)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
