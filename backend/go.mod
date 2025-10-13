@@ -32,6 +32,7 @@ require (
 )
 
 require (
+	github.com/IlhomBek-F/sliceutils v0.0.0-20251013092441-e51af3d51173
 	github.com/go-co-op/gocron v1.37.0
 	github.com/go-co-op/gocron/v2 v2.16.5
 	github.com/go-playground/validator v9.31.0+incompatible

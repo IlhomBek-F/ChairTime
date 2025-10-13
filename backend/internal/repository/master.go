@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/IlhomBek-F/sliceutils"
 	"gorm.io/gorm"
 )
 
@@ -140,8 +141,6 @@ func (mr masterDB) GetMasterById(ctx context.Context, masterId int) (domain.Mast
 func (mr masterDB) UpdateMaster(ctx context.Context, updatedMasterPayload domain.Master) (domain.Master, error) {
 	transactionError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
 		var currentMasterStylesOffer []domain.MasterStyleType
-		var masterStyleOfferMap = make(map[int]domain.MasterStyleType)
-		var updatedOfferSet = make(map[int]int)
 
 		result := tx.Model(&domain.MasterStyleType{}).Where("master_id = ?", updatedMasterPayload.ID).Find(&currentMasterStylesOffer)
 
@@ -149,32 +148,29 @@ func (mr masterDB) UpdateMaster(ctx context.Context, updatedMasterPayload domain
 			return result.Error
 		}
 
-		// Build lookup maps
-		for _, styleOffer := range currentMasterStylesOffer {
-			masterStyleOfferMap[styleOffer.ID] = styleOffer
-		}
-
-		for _, styleOfferId := range updatedMasterPayload.OfferStyleIds {
-			updatedOfferSet[styleOfferId] = 1
-		}
-
 		// Track changes
 		newAddedOffer := []domain.MasterStyleType{}
 		removedOfferIds := []int{}
 
-		// New additions
-		for _, id := range updatedMasterPayload.OfferStyleIds {
-			if _, ok := masterStyleOfferMap[id]; !ok {
+		sliceutils.ForEach(updatedMasterPayload.OfferStyleIds, func(id int, _ int, _ []int) {
+			_, ok := sliceutils.Find(currentMasterStylesOffer, func(styleOffer domain.MasterStyleType, _ int, _ []domain.MasterStyleType) bool {
+				return styleOffer.ID == id
+			})
+
+			if !ok {
 				newAddedOffer = append(newAddedOffer, domain.MasterStyleType{MasterId: updatedMasterPayload.ID, StyleTypeId: id})
 			}
-		}
+		})
 
-		// Removed ones
-		for _, styleOffer := range currentMasterStylesOffer {
-			if _, ok := updatedOfferSet[styleOffer.ID]; !ok {
+		sliceutils.ForEach(currentMasterStylesOffer, func(styleOffer domain.MasterStyleType, _ int, _ []domain.MasterStyleType) {
+			_, ok := sliceutils.Find(updatedMasterPayload.OfferStyleIds, func(id int, _ int, _ []int) bool {
+				return styleOffer.ID == id
+			})
+
+			if !ok {
 				removedOfferIds = append(removedOfferIds, styleOffer.ID)
 			}
-		}
+		})
 
 		//Apply changes
 		if len(newAddedOffer) > 0 {
@@ -235,13 +231,11 @@ func (mr masterDB) GetMasterAvailableTimeSlots(ctx context.Context, masterId int
 	slotDuration := 30 * time.Minute
 	slots := []string{}
 
-	availableBookingTimes := []string{}
-
 	for t := workStart; t.Before(workEnd); t = t.Add(slotDuration) {
 		slots = append(slots, t.Format("15:04"))
 	}
 
-	for _, slot := range slots {
+	availableBookingTimes := sliceutils.Filter(slots, func(slot string, _ int, _ []string) bool {
 		slotStart := parseToMinutes(slot)
 		slotEnd := slotStart + int(slotDuration)
 
@@ -256,11 +250,8 @@ func (mr masterDB) GetMasterAvailableTimeSlots(ctx context.Context, masterId int
 				break
 			}
 		}
-
-		if !isBooked {
-			availableBookingTimes = append(availableBookingTimes, slot)
-		}
-	}
+		return !isBooked
+	})
 
 	return availableBookingTimes, nil
 }
@@ -275,42 +266,40 @@ func (mr masterDB) GetMasterUnavailableSchedules(ctx context.Context, masterId i
 func (mr masterDB) CreateMasterUnavailableSchedule(ctx context.Context, payload []domain.CreateMasterUnavailablePayload, master_id int) error {
 	trxError := db.WithTransaction(ctx, mr.db, func(tx *gorm.DB) error {
 		currentMasterSchedules, err := mr.GetMasterUnavailableSchedules(ctx, master_id)
-		currentMasterSchedulesMap := make(map[string]domain.MasterUnavailableSchedule)
-		updatedOfferSet := make(map[string]int)
 
 		if err != nil {
 			return err
 		}
 
-		for _, sch := range currentMasterSchedules {
-			currentMasterSchedulesMap[sch.Date] = sch
-		}
-
-		for _, updatedSch := range payload {
-			updatedOfferSet[updatedSch.Date] = updatedSch.MasterId
-		}
-
 		var removedSchedules []int
 		var addNewSchedules []domain.MasterUnavailableSchedule
 
-		for _, schedule := range payload {
-			if _, ok := currentMasterSchedulesMap[schedule.Date]; !ok {
+		sliceutils.ForEach(payload, func(item domain.CreateMasterUnavailablePayload, _ int, _ []domain.CreateMasterUnavailablePayload) {
+			_, ok := sliceutils.Find(currentMasterSchedules, func(schedule domain.MasterUnavailableSchedule, _ int, _ []domain.MasterUnavailableSchedule) bool {
+				return schedule.Date == item.Date
+			})
+
+			if !ok {
 				newSchedule := domain.MasterUnavailableSchedule{
-					MasterId:  schedule.MasterId,
-					DayOfWeek: schedule.DayOfWeek,
-					Date:      schedule.Date,
-					StartTime: schedule.StartTime,
-					EndTime:   schedule.EndTime,
+					MasterId:  item.MasterId,
+					DayOfWeek: item.DayOfWeek,
+					Date:      item.Date,
+					StartTime: item.StartTime,
+					EndTime:   item.EndTime,
 				}
 				addNewSchedules = append(addNewSchedules, newSchedule)
 			}
-		}
+		})
 
-		for _, schedule := range currentMasterSchedules {
-			if _, ok := updatedOfferSet[schedule.Date]; !ok {
+		sliceutils.ForEach(currentMasterSchedules, func(schedule domain.MasterUnavailableSchedule, _ int, _ []domain.MasterUnavailableSchedule) {
+			_, ok := sliceutils.Find(payload, func(item domain.CreateMasterUnavailablePayload, _ int, _ []domain.CreateMasterUnavailablePayload) bool {
+				return schedule.Date == item.Date
+			})
+
+			if !ok {
 				removedSchedules = append(removedSchedules, schedule.ID)
 			}
-		}
+		})
 
 		if len(removedSchedules) > 0 {
 			if err := tx.Delete(&domain.MasterUnavailableSchedule{}, removedSchedules).Error; err != nil {
