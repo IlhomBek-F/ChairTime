@@ -37,7 +37,7 @@ export function Login() {
   const navigate = useNavigate();
   
   const formSchema = z.object({
-  username: z.string().min(6).max(20),
+  username: z.string().min(4).max(20),
   phone: z.string().min(6).optional(),
   password: z.string().min(4),
   }).refine((data) => signUpMode && !!data.phone || true, {path: ["phone"]});

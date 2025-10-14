@@ -55,19 +55,30 @@ func (mr masterDB) GetMasters(ctx context.Context) ([]domain.Master, error) {
 		return nil, result.Error
 	}
 
-	for i, master := range masters {
-		var offerStyleIds []int
-		offerStyleResult := mr.db.WithContext(ctx).
-			Model(&domain.MasterStyleType{}).Where("master_id = ?", master.ID).
-			Select("id").
-			Find(&offerStyleIds)
+	masterIds := sliceutils.Map(masters, func(master domain.Master, _ int, _ []domain.Master) int {
+		return master.ID
+	})
 
-		if offerStyleResult.Error != nil {
-			return nil, offerStyleResult.Error
-		}
+	var offerStyles []domain.MasterStyleType
+	resultMasterStyle := mr.db.WithContext(ctx).Model(&domain.MasterStyleType{}).Where("master_id IN ?", masterIds).Find(&offerStyles)
 
-		masters[i].OfferStyleIds = offerStyleIds
+	if resultMasterStyle.Error != nil {
+		return nil, resultMasterStyle.Error
 	}
+
+	masterMap := sliceutils.Reduce(masterIds, func(prev map[int][]int, curr int, _ int, _ []int) map[int][]int {
+		prev[curr] = []int{}
+		return prev
+	}, make(map[int][]int))
+
+	sliceutils.ForEach(offerStyles, func(styleOffer domain.MasterStyleType, _ int, _ []domain.MasterStyleType) {
+		masterMap[styleOffer.MasterId] = append(masterMap[styleOffer.MasterId], styleOffer.ID)
+	})
+
+	masters = sliceutils.Map(masters, func(master domain.Master, _ int, _ []domain.Master) domain.Master {
+		master.OfferStyleIds = masterMap[master.ID]
+		return master
+	})
 
 	return masters, result.Error
 }
