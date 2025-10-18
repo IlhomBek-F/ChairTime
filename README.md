@@ -39,11 +39,3 @@ ChairTime is a fullstack web application that allows customers to browse hairsty
 
 ### Tools
 - Swagger / OpenAPI for API docs  
-
----
-
-## 🗄️ Database Design
-
-The following diagram shows the main entities and relationships in the ChairTime app:
-
-![Database Design](./backend/docs/db_design.png)
