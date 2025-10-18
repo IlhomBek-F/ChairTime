@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"chairTime/constant"
 	_ "chairTime/docs"
 	"chairTime/internal/app"
 	"chairTime/internal/auth"
 	"chairTime/internal/domain"
+	"context"
 	"errors"
 	"net/http"
 	"strconv"
@@ -13,6 +15,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
@@ -39,55 +42,24 @@ func SignIn(app *app.Application, e echo.Context) error {
 		return app.BadRequestResponse(e, err)
 	}
 
-	client, err := app.Repository.Auth.GetUserByName(e.Request().Context(), userCredential.Username)
-	master, masterErr := app.Repository.Master.GetMasterByName(e.Request().Context(), userCredential.Username)
-	admin, adErr := app.Repository.Admin.GetAdminByName(e.Request().Context(), userCredential.Username)
+	result, err := checkUserExistence(app, e.Request().Context(), userCredential.Username)
 
-	if isUnexpectedError(err, masterErr, adErr) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return app.UnauthorizedErrorResponse(e, err)
+	} else if err != nil {
 		return app.InternalServerError(e, err)
 	}
 
-	if errors.Is(err, gorm.ErrRecordNotFound) && errors.Is(masterErr, gorm.ErrRecordNotFound) && errors.Is(adErr, gorm.ErrRecordNotFound) {
-		return app.UnauthorizedErrorResponse(e, err)
-	}
+	passwordErr := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(userCredential.Password))
 
-	var user struct {
-		ID     int
-		RoleId int
-	}
-
-	if client.ID != 0 {
-		passwordErr := bcrypt.CompareHashAndPassword([]byte(client.Password), []byte(userCredential.Password))
-		if passwordErr != nil {
-			return app.UnauthorizedErrorResponse(e, passwordErr)
-		}
-
-		user.ID = client.ID
-		user.RoleId = client.RoleId
-	} else if master.ID != 0 {
-		passwordErr := bcrypt.CompareHashAndPassword([]byte(master.Password), []byte(userCredential.Password))
-
-		if passwordErr != nil {
-			return app.UnauthorizedErrorResponse(e, passwordErr)
-		}
-
-		user.ID = master.ID
-		user.RoleId = master.RoleId
-	} else {
-		passwordErr := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(userCredential.Password))
-
-		if passwordErr != nil {
-			return app.UnauthorizedErrorResponse(e, passwordErr)
-		}
-
-		user.ID = admin.ID
-		user.RoleId = admin.RoleId
+	if passwordErr != nil {
+		return app.UnauthorizedErrorResponse(e, passwordErr)
 	}
 
 	claimsAccessToken := auth.CustomClaims{
-		Role: user.RoleId,
+		Role: result.RoleId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(user.ID),
+			Subject:   strconv.Itoa(result.Id),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.AccessTokenExp)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
@@ -96,9 +68,9 @@ func SignIn(app *app.Application, e echo.Context) error {
 	}
 
 	claimsRefreshToken := auth.CustomClaims{
-		Role: user.RoleId,
+		Role: result.RoleId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(user.ID),
+			Subject:   strconv.Itoa(result.Id),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.RefreshTokenExp)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
@@ -117,8 +89,8 @@ func SignIn(app *app.Application, e echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data: domain.Credential{
-			Role:         user.RoleId,
-			ID:           user.ID,
+			Role:         result.RoleId,
+			ID:           result.Id,
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
 		},
@@ -127,14 +99,81 @@ func SignIn(app *app.Application, e echo.Context) error {
 	return e.JSON(http.StatusOK, successRes)
 }
 
-func isUnexpectedError(errs ...error) bool {
-	var err error
+type UserInfo struct {
+	Id       int
+	Password string
+	RoleId   int
+}
 
-	for _, e := range errs {
-		if e != nil && !errors.Is(e, gorm.ErrRecordNotFound) {
-			err = e
+func checkUserExistence(app *app.Application, rCtx context.Context, userName string) (UserInfo, error) {
+	ctx, cancel := context.WithCancel(rCtx)
+	defer cancel()
+
+	g, ctx := errgroup.WithContext(ctx)
+	resultChan := make(chan interface{}, 1)
+
+	g.Go(func() error {
+		user, err := app.Repository.Auth.GetUserByName(ctx, userName)
+		if user.ID != 0 && err == nil {
+			select {
+			case resultChan <- user:
+				cancel() // stop others
+			default:
+			}
 		}
+
+		return nil
+	})
+
+	g.Go(func() error {
+		master, err := app.Repository.Master.GetMasterByName(ctx, userName)
+		if master.ID != 0 && err == nil {
+			select {
+			case resultChan <- master:
+				cancel() // stop others
+			default:
+			}
+		}
+
+		return nil
+	})
+
+	g.Go(func() error {
+		admin, err := app.Repository.Admin.GetAdminByName(ctx, userName)
+
+		if admin.ID != 0 && err == nil {
+			select {
+			case resultChan <- admin:
+				cancel() // stop others
+			default:
+			}
+		}
+
+		return nil
+	})
+
+	var result interface{}
+
+	select {
+	case result = <-resultChan:
+	case <-ctx.Done():
 	}
 
-	return err != nil
+	_ = g.Wait()
+
+	if result == nil {
+		return UserInfo{}, nil
+	}
+
+	switch v := result.(type) {
+	case domain.User:
+		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.UserRoleId}, nil
+	case domain.Master:
+		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.MasterRoleId}, nil
+	case domain.Admin:
+		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.AdminRoleId}, nil
+	}
+
+	// return the found result (could be *domain.User, *domain.Master, *domain.Admin) and nil error
+	return UserInfo{}, gorm.ErrRecordNotFound
 }
