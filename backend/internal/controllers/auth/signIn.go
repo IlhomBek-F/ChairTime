@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"chairTime/constant"
 	_ "chairTime/docs"
 	"chairTime/internal/app"
 	"chairTime/internal/auth"
@@ -12,10 +11,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/IlhomBek-F/sliceutils"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
@@ -106,74 +105,33 @@ type UserInfo struct {
 }
 
 func checkUserExistence(app *app.Application, rCtx context.Context, userName string) (UserInfo, error) {
-	ctx, cancel := context.WithCancel(rCtx)
-	defer cancel()
+	user, userErr := app.Repository.Auth.GetUserByName(rCtx, userName)
+	master, masterErr := app.Repository.Master.GetMasterByName(rCtx, userName)
+	admin, adminErr := app.Repository.Admin.GetAdminByName(rCtx, userName)
 
-	g, ctx := errgroup.WithContext(ctx)
-	resultChan := make(chan interface{}, 1)
-
-	g.Go(func() error {
-		user, err := app.Repository.Auth.GetUserByName(ctx, userName)
-		if user.ID != 0 && err == nil {
-			select {
-			case resultChan <- user:
-				cancel() // stop others
-			default:
-			}
-		}
-
-		return nil
+	isSomeUnexpectedError := sliceutils.Some([]error{userErr, masterErr, adminErr}, func(err error, _ int) bool {
+		return err != nil && !errors.Is(err, gorm.ErrRecordNotFound)
 	})
 
-	g.Go(func() error {
-		master, err := app.Repository.Master.GetMasterByName(ctx, userName)
-		if master.ID != 0 && err == nil {
-			select {
-			case resultChan <- master:
-				cancel() // stop others
-			default:
-			}
-		}
+	if isSomeUnexpectedError {
+		return UserInfo{}, gorm.ErrInvalidDB
+	}
 
-		return nil
+	isUserNotFound := sliceutils.Every([]error{userErr, masterErr, adminErr}, func(err error, _ int) bool {
+		return errors.Is(err, gorm.ErrRecordNotFound)
 	})
 
-	g.Go(func() error {
-		admin, err := app.Repository.Admin.GetAdminByName(ctx, userName)
-
-		if admin.ID != 0 && err == nil {
-			select {
-			case resultChan <- admin:
-				cancel() // stop others
-			default:
-			}
-		}
-
-		return nil
-	})
-
-	var result interface{}
-
-	select {
-	case result = <-resultChan:
-	case <-ctx.Done():
+	if isUserNotFound {
+		return UserInfo{}, gorm.ErrRecordNotFound
 	}
 
-	_ = g.Wait()
-
-	if result == nil {
-		return UserInfo{}, nil
+	if user.ID != 0 {
+		return UserInfo{Id: user.ID, Password: user.Password, RoleId: user.RoleId}, nil
 	}
 
-	switch v := result.(type) {
-	case domain.User:
-		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.UserRoleId}, nil
-	case domain.Master:
-		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.MasterRoleId}, nil
-	case domain.Admin:
-		return UserInfo{Id: v.ID, Password: v.Password, RoleId: constant.AdminRoleId}, nil
+	if master.ID != 0 {
+		return UserInfo{Id: master.ID, Password: master.Password, RoleId: master.RoleId}, nil
 	}
 
-	// return the found result (could be *domain.User, *domain.Master, *domain.Admin) and nil error
-	return UserInfo{}, gorm.ErrRecordNotFound
+	return UserInfo{Id: admin.ID, Password: admin.Password, RoleId: admin.RoleId}, nil
 }
