@@ -3,20 +3,22 @@ package controllers
 import (
 	_ "chairTime/docs"
 	"chairTime/internal/app"
-	"chairTime/internal/auth"
 	"chairTime/internal/domain"
 	"context"
 	"errors"
 	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/IlhomBek-F/sliceutils"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+
+type UserInfo struct {
+	Id       int
+	Password string
+	RoleId   int
+}
 
 // Sign in godoc
 //
@@ -55,27 +57,8 @@ func SignIn(app *app.Application, e echo.Context) error {
 		return app.UnauthorizedErrorResponse(e, passwordErr)
 	}
 
-	claimsAccessToken := auth.CustomClaims{
-		Role: result.RoleId,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(result.Id),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.AccessTokenExp)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
-		},
-	}
-
-	claimsRefreshToken := auth.CustomClaims{
-		Role: result.RoleId,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(result.Id),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(app.Config.Auth.RefreshTokenExp)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			Audience:  jwt.ClaimStrings{app.Config.Auth.Iss},
-		},
-	}
+	claimsAccessToken := app.Authenticator.CreateNewClaims(result.Id, result.RoleId, app.Config.Auth.AccessTokenExp, app.Config.Auth.Iss)
+	claimsRefreshToken := app.Authenticator.CreateNewClaims(result.Id, result.RoleId, app.Config.Auth.RefreshTokenExp, app.Config.Auth.Iss)
 
 	accessToken, accessTokenErr := app.Authenticator.GenerateToken(claimsAccessToken)
 	refreshToken, refreshTokenErr := app.Authenticator.GenerateRefreshToken(claimsRefreshToken)
@@ -96,12 +79,6 @@ func SignIn(app *app.Application, e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, successRes)
-}
-
-type UserInfo struct {
-	Id       int
-	Password string
-	RoleId   int
 }
 
 func checkUserExistence(app *app.Application, rCtx context.Context, userName string) (UserInfo, error) {

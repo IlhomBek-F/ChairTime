@@ -2,12 +2,14 @@ package domain
 
 import (
 	"chairTime/internal/auth"
+	"time"
 )
 
 type Authenticator interface {
 	GenerateToken(claims auth.CustomClaims) (string, error)
 	GenerateRefreshToken(claims auth.CustomClaims) (string, error)
 	ParseToken(token, secretKey string) (*auth.CustomClaims, error)
+	CreateNewClaims(userId, roleId int, exp time.Duration, iss string) auth.CustomClaims
 }
 
 type LoginPayload struct {

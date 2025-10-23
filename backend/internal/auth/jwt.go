@@ -2,6 +2,8 @@ package auth
 
 import (
 	"errors"
+	"strconv"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -65,4 +67,19 @@ func (a JwtAuthenticator) GenerateRefreshToken(claims CustomClaims) (string, err
 	}
 
 	return tokenString, nil
+}
+
+func (a JwtAuthenticator) CreateNewClaims(userId, roleId int, exp time.Duration, iss string) CustomClaims {
+	now := time.Now()
+
+	return CustomClaims{
+		Role: roleId,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   strconv.Itoa(userId),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
+			IssuedAt:  jwt.NewNumericDate(now),
+			NotBefore: jwt.NewNumericDate(now),
+			Audience:  jwt.ClaimStrings{iss},
+		},
+	}
 }
